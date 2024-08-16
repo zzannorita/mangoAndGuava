@@ -17,8 +17,8 @@ function Header() {
     console.log("ClickedAlarm 상태 변경:", clickedAlarm);
   };
   ////////////////////////로그인/////////////////////////////
-  const REST_API_KEY = "";
-  const REDIRECT_URI = "";
+  const REST_API_KEY = "533d7762a1ee320813d03cb068e53ada";
+  const REDIRECT_URI = "http://localhost:3001/auth/kakao/callback";
   const link = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
   const loginHandler = () => {
     window.location.href = link;

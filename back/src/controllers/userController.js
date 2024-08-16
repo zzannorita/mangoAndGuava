@@ -7,7 +7,6 @@ const kakaoLogin = async (req, res) => {
   const { code } = req.query;
   const REST_API_KEY = process.env.KAKAO_REST_API_KEY;
   const REDIRECT_URI = process.env.KAKAO_REDIRECT_URI;
-
   try {
     const tokenResponse = await axios.post(
       "https://kauth.kakao.com/oauth/token",
@@ -33,21 +32,27 @@ const kakaoLogin = async (req, res) => {
       secure: process.env.NODE_ENV === "production", // HTTPS 사용 시 true
       sameSite: "Strict", // CSRF 방지
     });
-
     const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-
     const userId = userResponse.data.id;
+    const nickname = userResponse.data.kakao_account.profile.nickname;
+    const email = userResponse.data.kakao_account.email;
+    const createdAt = new Date().toISOString().slice(0, 19).replace("T", " ");
+    const user = {
+      userId,
+      nickname,
+      email,
+      createdAt,
+    };
 
     // 데이터베이스에서 사용자 정보 조회
     const existingUser = await userDao.getUserById(userId);
-
     if (!existingUser) {
       //새 사용자
-      const addUser = await userDao.addUser();
+      const addUser = await userDao.addUser(user);
       const addShopUser = await shopDao.addShopUser(userId);
       //이후 메인페이지가 아닌 설정페이지로 유도
       return res.redirect("http://localhost:3000/");

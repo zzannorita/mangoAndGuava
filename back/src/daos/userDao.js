@@ -11,14 +11,11 @@ const getUserById = async (userId) => {
 };
 
 const addUser = async (user) => {
-  const query =
-    "INSERT INTO user (userId, nickname, email, createdAt) VALUES (?, ?, ?, ?)";
-  await db.execute(query, [
+  const query = `INSERT INTO user (userId, nickname, email, createdAt) VALUES (${parseInt(
     user.userId,
-    user.nickname,
-    user.email,
-    user.createdAt,
-  ]);
+    10
+  )}, '${user.nickname}', '${user.email}', '${user.createdAt}')`;
+  await db.execute(query);
 };
 
 const updateUserInfo = async (userId, nickname, address, account) => {
