@@ -1,0 +1,22 @@
+.myShopStarBox {
+  width: 100px;
+  display: flex;
+  justify-content: center;
+}
+
+.myShopStars {
+  display: flex;
+  align-items: center;
+  margin-left: 5px;
+}
+
+.rating {
+  display: inline-block;
+  direction: rtl;
+  unicode-bidi: bidi-override;
+}
+
+.star {
+  color: gold;
+  /* font-size: 1.2rem; */
+}

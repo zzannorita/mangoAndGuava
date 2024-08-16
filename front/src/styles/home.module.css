@@ -1,0 +1,21 @@
+.recommendBox {
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+}
+.productList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.userRecommendName {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.cowBoy {
+  width: 100%;
+  height: 400px;
+  padding: 20px 0;
+}

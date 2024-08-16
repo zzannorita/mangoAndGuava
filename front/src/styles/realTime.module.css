@@ -1,0 +1,21 @@
+.searchContainer {
+  width: 220px;
+  display: flex;
+  align-items: center;
+  border: 2.5px solid #ffc107;
+  overflow: hidden;
+  border-radius: 5px;
+}
+
+.searchBox {
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  outline: none;
+  flex-grow: 1;
+  display: flex;
+}
+
+.rankNum {
+  width: 23px;
+}

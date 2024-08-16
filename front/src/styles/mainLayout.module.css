@@ -1,0 +1,51 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  height: 50px;
+  min-width: 1200px;
+  position: relative;
+}
+
+.recentBoxContainer {
+  position: absolute;
+  top: 5px;
+  right: -180px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  width: 140px;
+  height: 340px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.recentBoxTop {
+  display: flex;
+  margin: 10px;
+}
+.eyeImg {
+  width: 20px;
+  height: 20px;
+  margin-left: 2px;
+}
+
+.recentImgBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: scroll;
+}
+.recentImgBox::-webkit-scrollbar {
+  display: none;
+}
+
+.imageImg {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  background-color: #f1f1f1;
+}

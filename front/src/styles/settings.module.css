@@ -1,0 +1,68 @@
+.myProductsBox {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.nickNameBox {
+  display: flex;
+}
+
+.nickNameInputBox {
+  border: none;
+  outline: none;
+  background-color: #ccc;
+}
+
+/* 주소등록 */
+.addressContainer {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.addressInputsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.postCodeContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.zonecodeStyle {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.addressButtonStyle {
+  padding: 10px 15px;
+  background-color: #c05850;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.boxStyle {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.inputStyle {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
