@@ -1,0 +1,246 @@
+const mysql = require("mysql2"); // MySQL2 모듈 불러오기
+//userDao.js에서 데이터베이스와의 상호작용을 담당합니다.
+//예를 들어, 유저 정보를 데이터베이스에 저장하거나 검색하는 기능을 구현합니다.
+const db = require("../config/dbConfig");
+const getProductsAll = async (limit, offset) => {
+  console.log(limit, offset);
+  const query = `
+    SELECT
+      p.*,
+      pi.productImage
+    FROM
+      product p
+    LEFT JOIN
+      productimage pi
+    ON
+      p.productId = pi.productId
+    ORDER BY
+      p.productId DESC
+    LIMIT ${limit} OFFSET ${offset};
+  `;
+
+  try {
+    const [rows] = await db.execute(query);
+
+    // 상품별로 이미지를 묶기 위한 객체
+    const productsMap = {};
+
+    rows.forEach((row) => {
+      const productId = row.productId;
+
+      if (!productsMap[productId]) {
+        // 이미지 정보를 제외한 상품 정보
+        const { productImage, ...productData } = row;
+        productsMap[productId] = {
+          ...productData,
+          images: [],
+        };
+      }
+
+      // 이미지가 있을 경우에만 추가
+      if (row.productImage) {
+        const imageUrl = `http://localhost:3001/uploads/${row.productImage}`;
+        productsMap[productId].images.push(imageUrl);
+      }
+    });
+
+    // 객체를 배열로 변환
+    const products = Object.values(productsMap);
+
+    return products;
+  } catch (error) {
+    throw new Error("Database query error: " + error.message);
+  }
+};
+
+const getProductsAllOrder = async (limit, offset, order) => {
+  let orderMethod = "";
+  if (order === "price-asc") {
+    // 낮은 가격순
+    orderMethod = "productPrice ASC";
+  } else if (order === "price-desc") {
+    // 높은 가격순
+    orderMethod = "productPrice DESC";
+  } else if (order === "date") {
+    // 최신순
+    orderMethod = "productCreatedDate DESC";
+  }
+
+  const query = `
+    SELECT 
+      p.*,
+      GROUP_CONCAT(pi.productImage) AS images 
+    FROM 
+      product p 
+    LEFT JOIN 
+      productimage pi 
+    ON 
+      p.productId = pi.productId 
+    GROUP BY 
+      p.productId 
+    ORDER BY 
+      ${orderMethod}
+    LIMIT ${limit} OFFSET ${offset};
+  `;
+
+  try {
+    const [rows] = await db.execute(query);
+
+    // 상품별로 이미지를 묶기 위한 객체
+    const products = rows.map((row) => {
+      const productData = { ...row };
+      productData.images = row.images
+        ? row.images
+            .split(",")
+            .map((image) => `http://localhost:3001/uploads/${image}`)
+        : [];
+      return productData;
+    });
+
+    return products;
+  } catch (error) {
+    throw new Error("Database query error: " + error.message);
+  }
+};
+
+const getProductsByItemPageLimit = async (item, limit, offset) => {
+  const itemSafe = mysql.escape(`%${item}%`); // LIKE 패턴을 위한 값
+  const query = `
+  SELECT
+    p.*,
+    pi.productImage
+  FROM
+    product p
+  LEFT JOIN
+    productimage pi
+  ON
+    p.productId = pi.productId
+  WHERE
+    p.productName LIKE ${itemSafe}
+  ORDER BY
+    p.productId DESC
+  LIMIT ${limit} OFFSET ${offset};
+`;
+
+  try {
+    const [rows] = await db.execute(query);
+
+    // 상품별로 이미지를 묶기 위한 객체
+    const productsMap = {};
+
+    rows.forEach((row) => {
+      const productId = row.productId;
+
+      if (!productsMap[productId]) {
+        // 이미지 정보를 제외한 상품 정보
+        const { productImage, ...productData } = row;
+        productsMap[productId] = {
+          ...productData,
+          images: [],
+        };
+      }
+
+      // 이미지가 있을 경우에만 추가
+      if (row.productImage) {
+        const imageUrl = `http://localhost:3001/uploads/${row.productImage}`;
+        productsMap[productId].images.push(imageUrl);
+      }
+    });
+
+    // 객체를 배열로 변환
+    const products = Object.values(productsMap);
+
+    return products;
+  } catch (error) {
+    throw new Error("Database query error: " + error.message);
+  }
+};
+
+const getProductsByItemPageLimitOrder = async (item, limit, offset, order) => {
+  const itemSafe = mysql.escape(`%${item}%`); // LIKE 패턴을 위한 값
+  let orderMethod = "";
+  if (order === "price-asc") {
+    //높은 가격순
+    orderMethod = "productPrice DESC";
+  } else if (order === "price-desc") {
+    //낮은 가격순
+    orderMethod = "productPrice";
+  } else if (order === "date") {
+    orderMethod = "productCreatedDate";
+  }
+  const query = `
+  SELECT
+    p.*,
+    GROUP_CONCAT(pi.productImage) AS images
+  FROM
+    product p
+  LEFT JOIN
+    productimage pi
+  ON
+    p.productId = pi.productId
+  WHERE
+    p.productName LIKE ${itemSafe}
+  GROUP BY
+    p.productId
+  ORDER BY
+    ${orderMethod}
+  LIMIT ${limit} OFFSET ${offset};
+`;
+};
+
+const getProductsByUserId = async (userId) => {
+  const query = `
+    SELECT
+      p.*,
+      pi.productImage
+    FROM
+      product p
+    LEFT JOIN
+      productimage pi
+    ON
+      p.productId = pi.productId
+    WHERE
+      p.userId = ${mysql.escape(userId)}
+    ORDER BY
+      p.productId DESC
+  `;
+  try {
+    const [rows] = await db.execute(query);
+
+    // 상품별로 이미지를 묶기 위한 객체
+    const productsMap = {};
+
+    rows.forEach((row) => {
+      const productId = row.productId;
+
+      if (!productsMap[productId]) {
+        // 이미지 정보를 제외한 상품 정보
+        const { productImage, ...productData } = row;
+        productsMap[productId] = {
+          ...productData,
+          images: [],
+        };
+      }
+
+      // 이미지가 있을 경우에만 추가
+      if (row.productImage) {
+        const imageUrl = `http://localhost:3001/uploads/${row.productImage}`;
+        productsMap[productId].images.push(imageUrl);
+      }
+    });
+
+    // 객체를 배열로 변환
+    const products = Object.values(productsMap);
+
+    return products;
+  } catch (error) {
+    throw new Error("Database query error: " + error.message);
+  }
+};
+module.exports = {
+  getProductsAll,
+  getProductsByItemPageLimit,
+  getProductsByItemPageLimitOrder,
+  getProductsAllOrder,
+  getProductsByUserId,
+};
