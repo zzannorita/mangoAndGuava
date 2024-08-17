@@ -25,7 +25,7 @@ function Header() {
   const link = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
   const [isLogin, setIsLogin] = useState(false);
 
-  //컴포넌트 마운트될때 로그인상태 확인
+  // //컴포넌트 마운트될때 로그인상태 확인
   useEffect(() => {
     const checkLoginStatus = () => {
       const accessToken = getCookie("accessToken");
@@ -33,10 +33,6 @@ function Header() {
     };
     checkLoginStatus();
   }, []);
-
-  const loginHandler = () => {
-    window.location.href = link;
-  };
 
   ////////////////////////로그아웃///////////////////////////
   const handleLogout = async () => {
