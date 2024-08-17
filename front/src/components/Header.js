@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import Alarm from "./Alarm";
 import HeaderStyle from "../styles/header.module.css";
@@ -63,6 +63,13 @@ function Header() {
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(";").shift();
   };
+
+  /////////////////////////로고 리다이렉트///////////////////
+  const navigate = useNavigate();
+
+  const logoClickHandler = () => {
+    navigate("/");
+  };
   return (
     <header className="container">
       <div className={HeaderStyle.headerBox}>
@@ -92,7 +99,7 @@ function Header() {
           </div>
         </div>
         <div className={HeaderStyle.headerBottom}>
-          <div className={HeaderStyle.logoBox}>
+          <div className={HeaderStyle.logoBox} onClick={logoClickHandler}>
             <div className={HeaderStyle.logo}>
               <img alt="logo" src={logo} />
             </div>
