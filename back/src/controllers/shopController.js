@@ -98,16 +98,47 @@ const getMyShopData = async (req, res) => {
 
     const shopData = await shopDao.getShopInfo(userId);
     const shopProducts = await productsDao.getProductsByUserId(userId);
+    const commentData = await shopDao.getShopCommentData(userId);
+    const commentCount = {
+      commentCount: commentData.length,
+      ratingAvg: await shopDao.getShopAvg(userId),
+    };
+    const purchasedProduct = await productsDao.getProductsByPurchasedUserId(
+      userId
+    );
+    const bookmarkProduct = await productsDao.getBookmarkProductByUserId(
+      userId
+    );
+    const bookmarkUser = getUsersForBookmark(userId);
 
     return res.status(200).json({
       shopData,
       shopProducts,
+      commentData,
+      commentCount,
+      purchasedProduct,
+      bookmarkProduct,
+      bookmarkUser,
     });
   } catch (error) {
     if (error.response && error.response.status === 401) {
       throw new Error("Token expired");
     }
     throw new Error("Failed to fetch user data");
+  }
+};
+
+const getUsersForBookmark = async (userId) => {
+  try {
+    // Step 1: shopbookmark 테이블에서 bookmarkUserId 검색
+    const bookmarkUserIds = await shopDao.getBookmarkUserIds(userId);
+
+    // Step 2: user 테이블에서 bookmarkUserId들로 사용자 정보 검색
+    const users = await shopDao.getUsersByIds(bookmarkUserIds);
+
+    return users;
+  } catch (error) {
+    throw new Error("Error fetching users for bookmarks: " + error.message);
   }
 };
 
@@ -220,6 +251,42 @@ const addBookmark = async (req, res) => {
   }
 };
 
+const addShopComment = async (req, res) => {
+  const accessToken = req.headers.authorization?.split(" ")[1];
+  const shopOwnerUserId = req.body.shopOwnerUserId;
+  const comment = req.body.comment;
+  const avg = req.body.avg;
+
+  if (!accessToken) {
+    return res.status(401).json({ message: "No access token provided" });
+  }
+
+  try {
+    const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const commentUserId = userResponse.data.id;
+    const commentData = {
+      shopOwnerUserId,
+      comment,
+      avg,
+      commentUserId,
+    };
+
+    const commentStart = await shopDao.addShopComment(commentData);
+
+    return res.status(200).json({ code: "SUCCESS_INSERT_SHOP_COMMENT" });
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      throw new Error("Token expired");
+    }
+    throw new Error("Failed to fetch user data");
+  }
+};
+
 module.exports = {
   uploadProduct,
   uploadImages,
@@ -228,4 +295,5 @@ module.exports = {
   getMyShopData,
   updateUserInfo,
   addBookmark,
+  addShopComment,
 };

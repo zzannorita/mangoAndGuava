@@ -237,10 +237,130 @@ const getProductsByUserId = async (userId) => {
     throw new Error("Database query error: " + error.message);
   }
 };
+
+const getProductsByPurchasedUserId = async (userId) => {
+  const query = `
+    SELECT
+      p.*,
+      pi.productImage
+    FROM
+      product p
+    LEFT JOIN
+      productimage pi
+    ON
+      p.productId = pi.productId
+    WHERE
+      p.buyerUserId = ${mysql.escape(userId)}
+    ORDER BY
+      p.productId DESC
+  `;
+  try {
+    const [rows] = await db.execute(query);
+
+    // 상품별로 이미지를 묶기 위한 객체
+    const productsMap = {};
+
+    rows.forEach((row) => {
+      const productId = row.productId;
+
+      if (!productsMap[productId]) {
+        // 이미지 정보를 제외한 상품 정보
+        const { productImage, ...productData } = row;
+        productsMap[productId] = {
+          ...productData,
+          images: [],
+        };
+      }
+
+      // 이미지가 있을 경우에만 추가
+      if (row.productImage) {
+        const imageUrl = `http://localhost:3001/uploads/${row.productImage}`;
+        productsMap[productId].images.push(imageUrl);
+      }
+    });
+
+    // 객체를 배열로 변환
+    const products = Object.values(productsMap);
+
+    return products;
+  } catch (error) {
+    throw new Error("Database query error: " + error.message);
+  }
+};
+
+const getBookmarkProductByUserId = async (userId) => {
+  try {
+    const bookmarkQuery = `
+    SELECT productId 
+    FROM productbookmark 
+    WHERE userId = ${parseInt(userId, 10)}
+  `;
+    // Step 1: productbookmark 테이블에서 userId가 일치하는 productId들을 가져옴
+    const [bookmarkRows] = await db.execute(bookmarkQuery);
+
+    // Step 2: 검색 결과가 없을 경우 빈 배열 반환
+    if (bookmarkRows.length === 0) {
+      return [];
+    }
+
+    // 검색된 productId들을 추출
+    const productIds = bookmarkRows.map((row) => row.productId);
+
+    // Step 3: productIds 배열을 사용하여 product 테이블에서 해당 상품들을 가져옴
+    const productQuery = `
+        SELECT
+          p.*,
+          pi.productImage
+        FROM
+          product p
+        LEFT JOIN
+          productimage pi
+        ON
+          p.productId = pi.productId
+        WHERE
+          p.productId IN (${productIds.join(",")})
+        ORDER BY
+          p.productId DESC;
+      `;
+
+    const [productRows] = await db.execute(productQuery);
+
+    // 상품별로 이미지를 묶기 위한 객체
+    const productsMap = {};
+
+    productRows.forEach((row) => {
+      const productId = row.productId;
+
+      if (!productsMap[productId]) {
+        // 이미지 정보를 제외한 상품 정보
+        const { productImage, ...productData } = row;
+        productsMap[productId] = {
+          ...productData,
+          images: [],
+        };
+      }
+
+      // 이미지가 있을 경우에만 추가
+      if (row.productImage) {
+        const imageUrl = `http://localhost:3001/uploads/${row.productImage}`;
+        productsMap[productId].images.push(imageUrl);
+      }
+    });
+
+    // 객체를 배열로 변환
+    const products = Object.values(productsMap);
+
+    return products;
+  } catch (error) {
+    throw new Error("Database query error: " + error.message);
+  }
+};
 module.exports = {
   getProductsAll,
   getProductsByItemPageLimit,
   getProductsByItemPageLimitOrder,
   getProductsAllOrder,
   getProductsByUserId,
+  getProductsByPurchasedUserId,
+  getBookmarkProductByUserId,
 };
