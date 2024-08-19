@@ -118,7 +118,8 @@ const addProduct = async (productData) => {
 };
 
 const addShopUser = async (userId) => {
-  const query = `INSERT INTO shop (userId) VALUES ${userId}`;
+  console.log(userId);
+  const query = `INSERT INTO shop (userId) VALUES (${parseInt(userId, 10)})`;
 
   try {
     const [rows] = await db.execute(query);

@@ -1,6 +1,7 @@
 // src/daos/userDao.js
 //userDao.js에서 데이터베이스와의 상호작용을 담당합니다.
 // 예를 들어, 유저 정보를 데이터베이스에 저장하거나 검색하는 기능을 구현합니다.
+const e = require("express");
 const db = require("../config/dbConfig");
 const mysql = require("mysql2");
 
@@ -15,7 +16,12 @@ const addUser = async (user) => {
     user.userId,
     10
   )}, '${user.nickname}', '${user.email}', '${user.createdAt}')`;
-  await db.execute(query);
+
+  try {
+    await db.execute(query);
+  } catch (error) {
+    console.error("addUser Query Error", error);
+  }
 };
 
 const updateUserInfo = async (userId, nickname, address, account) => {

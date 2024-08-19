@@ -55,9 +55,11 @@ const kakaoLogin = async (req, res) => {
       const addUser = await userDao.addUser(user);
       const addShopUser = await shopDao.addShopUser(userId);
       //이후 메인페이지가 아닌 설정페이지로 유도
-      return res.redirect("http://localhost:3000/");
+      return res.redirect("http://localhost:3000/authCallBack?code=NEW_MEMBER");
     } else {
-      return res.redirect("http://localhost:3000/");
+      return res.redirect(
+        "http://localhost:3000/authCallBack?code=EXISTING_MEMBER"
+      );
     }
   } catch (error) {
     console.error("Error during Kakao login:", error);
