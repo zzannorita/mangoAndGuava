@@ -13,5 +13,6 @@ router.patch("/update-info", shopController.updateShopInfo);
 router.get("/shop", shopController.getShopData);
 router.patch("/user-update", shopController.updateUserInfo);
 router.post("/bookmark", shopController.addBookmark);
+router.post("/shop/comment", shopController.addShopComment);
 
 module.exports = router;

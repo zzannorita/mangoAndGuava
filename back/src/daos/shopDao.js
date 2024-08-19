@@ -1,10 +1,38 @@
 const db = require("../config/dbConfig");
 
 const getShopInfo = async (userId) => {
-  const query = `SELECT * FROM shop WHERE userId = ${userId}`;
+  const query = `SELECT * FROM shop WHERE userId = ${parseInt(userId, 10)}`;
   try {
     const [rows] = await db.execute(query);
     return rows;
+  } catch (error) {
+    throw new Error("Database query error: " + error.message);
+  }
+};
+
+const getShopCommentData = async (userId) => {
+  const query = `SELECT * FROM shopcomment WHERE userId = ${parseInt(
+    userId,
+    10
+  )}`;
+
+  try {
+    const [rows] = await db.execute(query);
+    return rows;
+  } catch (error) {
+    throw new Error("Database query error: " + error.message);
+  }
+};
+
+const getShopAvg = async (userId) => {
+  const query = `SELECT AVG(avg) AS average_avg
+FROM shop
+WHERE shopOwnerUserId = ${mysql.escape(parseInt(shopOwnerUserId, 10))}`;
+  try {
+    const [rows] = await db.execute(query);
+    const avrageAvg = rows[0].average_avg;
+
+    return avrageAvg;
   } catch (error) {
     throw new Error("Database query error: " + error.message);
   }
@@ -125,10 +153,69 @@ const addBookmark = async (userId, bookmarkUserId) => {
   }
 };
 
+const addShopComment = async (commentData) => {
+  const query = `INSERT INTO shopcomment (shopOwnerUserId, commentUserId, comment, avg) VALUES (${parseInt(
+    commentData.shopOwnerUserId,
+    10
+  )}, ${parseInt(commentData.commentUserId, 10)}, '${
+    commentData.comment
+  }', ${parseFloat(commentData.avg)})`;
+
+  try {
+    const [rows] = await db.execute(query);
+    return rows;
+  } catch (error) {
+    throw new Error("Database query error: " + error.message);
+  }
+};
+
+const getBookmarkUser = async (userId) => {
+  const query = `
+      SELECT bookmarkUserId
+      FROM shopbookmark
+      WHERE userId = ${parseInt(userId, 10)};
+    `;
+
+  try {
+    const [rows] = await db.execute(query);
+    // bookmarkUserId 배열 반환
+    return rows.map((row) => row.bookmarkUserId);
+  } catch (error) {
+    throw new Error("Database query error: " + error.message);
+  }
+};
+
+const getUsersByIds = async (bookmarkUserIds) => {
+  // bookmarkUserIds가 비어 있으면 빈 배열 반환
+  if (bookmarkUserIds.length === 0) {
+    return [];
+  }
+
+  const query = `
+    SELECT *
+    FROM user
+    WHERE userId IN (${bookmarkUserIds.map(() => "?").join(",")});
+  `;
+
+  try {
+    const [rows] = await db.execute(query, bookmarkUserIds);
+    return rows;
+  } catch (error) {
+    throw new Error("Database query error: " + error.message);
+  }
+};
+
 module.exports = {
   getShopInfo,
   addProduct,
   addShopUser,
   updateShopInfo,
   addBookmark,
+  addShopComment,
+  getShopCommentData,
+  getShopAvg,
+  getBookmarkUser,
+  getUsersByIds,
+  getBookmarkUser,
+  getUsersByIds,
 };
