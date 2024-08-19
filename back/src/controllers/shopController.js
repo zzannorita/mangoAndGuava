@@ -84,41 +84,44 @@ const uploadProduct = async (req, res) => {
 
 const getMyShopData = async (req, res) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
+  console.log("getMyShopData1");
 
   if (!accessToken) {
     return res.status(401).json({ message: "No access token provided" });
   }
   try {
+    console.log("getMyShopData2");
     const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
     });
+    console.log("@@@");
     const userId = userResponse.data.id;
-
+    console.log(userId);
     const shopData = await shopDao.getShopInfo(userId);
     const shopProducts = await productsDao.getProductsByUserId(userId);
-    const commentData = await shopDao.getShopCommentData(userId);
-    const commentCount = {
-      commentCount: commentData.length,
-      ratingAvg: await shopDao.getShopAvg(userId),
-    };
-    const purchasedProduct = await productsDao.getProductsByPurchasedUserId(
-      userId
-    );
-    const bookmarkProduct = await productsDao.getBookmarkProductByUserId(
-      userId
-    );
-    const bookmarkUser = getUsersForBookmark(userId);
+    // const commentData = await shopDao.getShopCommentData(userId);
+    // const commentCount = {
+    //   commentCount: commentData.length,
+    //   ratingAvg: await shopDao.getShopAvg(userId),
+    // };
+    // const purchasedProduct = await productsDao.getProductsByPurchasedUserId(
+    //   userId
+    // );
+    // const bookmarkProduct = await productsDao.getBookmarkProductByUserId(
+    //   userId
+    // );
+    // const bookmarkUser = getUsersForBookmark(userId);
 
     return res.status(200).json({
       shopData,
       shopProducts,
-      commentData,
-      commentCount,
-      purchasedProduct,
-      bookmarkProduct,
-      bookmarkUser,
+      // commentData,
+      // commentCount,
+      // purchasedProduct,
+      // bookmarkProduct,
+      // bookmarkUser,
     });
   } catch (error) {
     if (error.response && error.response.status === 401) {
