@@ -7,62 +7,95 @@
 .mainContainer {
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 30px 0;
 }
 
-.nickNameBox {
-  display: flex;
-}
-
-.nickNameInputBox {
-  border: none;
-  outline: none;
-  background-color: #ccc;
-}
-
-/* 주소등록 */
-.addressContainer {
-  margin-top: 20px;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-}
-
-.addressInputsContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.postCodeContainer {
+.commonSettingBox {
   display: flex;
   align-items: center;
-  gap: 10px;
+  width: 100%;
+  height: 70px;
+  border-top: 1px solid #f1f1f1;
 }
 
-.zonecodeStyle {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+.settingTitle {
+  width: 200px;
+  display: flex;
+  justify-content: center;
+  background-color: #f9f9f9;
+  height: 100%;
+  align-items: center;
+  border-bottom: 1px solid #f1f1f1;
 }
 
-.addressButtonStyle {
-  padding: 10px 15px;
-  background-color: #c05850;
-  color: white;
+.commonInputBox {
   border: none;
-  border-radius: 4px;
-  cursor: pointer;
+  border-bottom: 1px solid #ccc;
+  outline: none;
+  background-color: white;
+  width: 200px;
+  height: 40px;
+  margin: 0 20px;
+  font-family: "Pretendard-Regular";
+  font-size: 16px;
+  color: #333;
 }
 
-.boxStyle {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+.editImg {
+  width: 20px;
+  height: 20px;
 }
 
-.inputStyle {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+.addressBox {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 180px;
+  border-top: 1px solid #f1f1f1;
+}
+
+.addressInputBox {
+  border: none;
+  border-bottom: 1px solid #ccc;
+  outline: none;
+  background-color: white;
+  width: 100px;
+  height: 40px;
+  margin: 0 20px;
+  font-family: "Pretendard-Regular";
+  font-size: 16px;
+  color: #333;
+}
+
+.nickNameTitle {
+  width: 200px;
+  display: flex;
+  justify-content: center;
+  background-color: #f9f9f9;
+  height: 100%;
+  align-items: center;
+  border-bottom: 1px solid #f1f1f1;
+}
+.buttonStyle {
+  width: 80px;
+  height: 40px;
+  background-color: #f9f9f9;
+  border: 1px solid #f1f1f1;
+  border-radius: 10px;
+  font-family: "Pretendard-Regular";
+}
+
+.buttonStyle:hover {
+  background-color: #f1f1f1;
+}
+
+.accountBox {
+  display: flex;
+}
+
+.accountTitle {
+  display: flex;
+  padding: 20px;
+  /* width: 200px; */
+  align-items: center;
 }
