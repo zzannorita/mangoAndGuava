@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import shopStyle from "../styles/shop.module.css";
 import userImg from "../image/userImg.png";
 import editImg from "../image/edit.png";
@@ -8,6 +8,8 @@ import Review from "./Review";
 import Settings from "./Settings";
 import Favorites from "./Favorites";
 import RatingStars from "../components/RatingStars";
+import Cookies from "js-cookie";
+import axios from "axios";
 
 export default function Shop() {
   /////////////////////소개글 수정//////////////////////
@@ -83,6 +85,35 @@ export default function Shop() {
     }
     return null;
   };
+
+  //myshop api호출
+  useEffect(() => {
+    const accessToken = Cookies.get("accessToken");
+    if (!accessToken) {
+      console.error("토큰이 없음");
+      return;
+    }
+    axios
+      .get("http://localhost:3001/myshop", null, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then(
+        (response) => {
+          // if (response.status === 200) {
+          const { shopData } = response.data.shopData;
+          console.log(shopData);
+          // console.log("userId:", userId);
+          // console.log("shopRating:", shopRating);
+          // console.log("shopInfo:", shopInfo);
+        }
+        // }
+      )
+      .catch((error) => {
+        console.log("데이터 가져오기 실패", error);
+      });
+  }, []);
   return (
     <div className="container">
       <div className={shopStyle.container}>
