@@ -9,6 +9,7 @@ import person from "../image/person.png";
 import sell from "../image/sell.png";
 import SearchBox from "../components/SearchBox";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 function Header() {
   ////////////////////////알림///////////////////////////////
@@ -25,18 +26,19 @@ function Header() {
   const link = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
   const [isLogin, setIsLogin] = useState(false);
 
-  // //컴포넌트 마운트될때 로그인상태 확인
+  //컴포넌트 마운트될때 로그인상태 확인
   useEffect(() => {
     const checkLoginStatus = () => {
-      const accessToken = getCookie("accessToken");
+      const accessToken = Cookies.get("accessToken");
       setIsLogin(!!accessToken); // 토큰이 있으면 로그인 상태로 설정
+      console.log("로그인 성공");
     };
     checkLoginStatus();
   }, []);
 
   ////////////////////////로그아웃///////////////////////////
   const handleLogout = async () => {
-    const accessToken = getCookie("accessToken");
+    const accessToken = Cookies.get("accessToken");
     if (!accessToken) {
       console.error("토큰이 없음");
       return;
@@ -49,19 +51,14 @@ function Header() {
       })
       .then((response) => {
         if (response.status === 200) {
+          Cookies.remove("accessToken");
+          setIsLogin(false);
           console.log("로그아웃성공");
         }
       })
       .catch((error) => {
         console.log("로그아웃 실패", error);
       });
-  };
-
-  // 쿠키에서 특정 이름의 쿠키 값을 가져오는 함수
-  const getCookie = (name) => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(";").shift();
   };
 
   /////////////////////////로고 리다이렉트///////////////////
@@ -77,9 +74,12 @@ function Header() {
           <div className={HeaderStyle.headerTopRightBox}>
             <div className={HeaderStyle.loginBox}>
               {isLogin ? (
-                <div onClick={handleLogout} className={HeaderStyle.logoutBtn}>
+                <button
+                  onClick={handleLogout}
+                  className={HeaderStyle.logoutBtn}
+                >
                   로그아웃
-                </div>
+                </button>
               ) : (
                 <a href={link} className={HeaderStyle.link}>
                   로그인/회원가입

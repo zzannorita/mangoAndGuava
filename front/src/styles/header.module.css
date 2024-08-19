@@ -20,6 +20,11 @@
 
 .logoutBtn {
   background-color: #f9f9f9;
+  outline: none;
+  border: none;
+  font-size: 16px;
+  font-family: "Pretendard-Regular";
+  margin-left: 25px;
 }
 .link {
   text-decoration: none;
