@@ -53,6 +53,7 @@ function Header() {
         if (response.status === 200) {
           Cookies.remove("accessToken");
           setIsLogin(false);
+          navigate("/");
           console.log("로그아웃성공");
         }
       })
@@ -66,6 +67,16 @@ function Header() {
 
   const logoClickHandler = () => {
     navigate("/");
+  };
+
+  ///////////////////미로그인시 페이지 접근 방지//////////////
+  const protectedHandler = (event, redirect) => {
+    event.preventDefault();
+    if (isLogin) {
+      navigate(redirect);
+    } else {
+      window.location.href = link;
+    }
   };
   return (
     <header className="container">
@@ -107,15 +118,24 @@ function Header() {
           </div>
           <SearchBox />
           <div className={HeaderStyle.rightBox}>
-            <div className={HeaderStyle.box}>
+            <div
+              className={HeaderStyle.box}
+              onClick={(e) => protectedHandler(e, "/sell")}
+            >
               <img className="commonImgSize" alt="sell" src={sell} />
               <div className={HeaderStyle.overlay}>판매</div>
             </div>
-            <div className={HeaderStyle.box}>
+            <div
+              className={HeaderStyle.box}
+              onClick={(e) => protectedHandler(e, "/chat")}
+            >
               <img className="commonImgSize" alt="chat" src={chat} />
               <div className={HeaderStyle.overlay}>채팅</div>
             </div>
-            <div className={HeaderStyle.box}>
+            <div
+              className={HeaderStyle.box}
+              onClick={(e) => protectedHandler(e, "/myshop")}
+            >
               <img className="commonImgSize" alt="perosn" src={person} />
               <Link
                 to="/myshop"
