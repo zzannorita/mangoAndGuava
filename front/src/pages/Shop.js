@@ -94,22 +94,19 @@ export default function Shop() {
       return;
     }
     axios
-      .get("http://localhost:3001/myshop", null, {
+      .get("http://localhost:3001/myshop", {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       })
-      .then(
-        (response) => {
-          // if (response.status === 200) {
-          const { shopData } = response.data.shopData;
-          console.log(shopData);
-          // console.log("userId:", userId);
-          // console.log("shopRating:", shopRating);
-          // console.log("shopInfo:", shopInfo);
-        }
-        // }
-      )
+      .then((response) => {
+        const shopData = response.data;
+        console.log(shopData);
+        // const { userId, shopRating, shopInfo } = shopData;
+        // console.log("userId:", userId);
+        // console.log("shopRating:", shopRating);
+        // console.log("shopInfo:", shopInfo);
+      })
       .catch((error) => {
         console.log("데이터 가져오기 실패", error);
       });
