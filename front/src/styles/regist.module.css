@@ -1,0 +1,61 @@
+.container {
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  height: 1200px;
+  border: 1px solid #ccc;
+  justify-content: space-around;
+}
+
+.imageContainer {
+  display: flex;
+  flex-direction: column;
+}
+.imageSection {
+  display: flex;
+  flex-wrap: wrap;
+}
+.imageBox {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ccc;
+  width: 200px;
+  height: 200px;
+  justify-content: center;
+  align-items: center;
+  background-color: #f9f9f9;
+  margin: 8px;
+  border-radius: 10px;
+  position: relative;
+}
+.registImg {
+  width: 200px;
+
+  height: 200px;
+}
+
+.imgInputBox {
+  display: none;
+}
+.cameraImg {
+  width: 50px;
+  height: 50px;
+}
+
+.cameraText {
+  color: #777;
+}
+
+.imgCountAlarm {
+  padding: 8px;
+  color: #333;
+}
+
+.removeButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}

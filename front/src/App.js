@@ -26,7 +26,7 @@ function App() {
       <div className="mainContent">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/regist" element={<Regist />} />
+          <Route path="/sell" element={<Regist />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/search" element={<Search />} />
           {/* <Route path="/products?item={search-data}" element={<Search />} /> */}
