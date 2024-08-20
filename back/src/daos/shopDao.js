@@ -11,7 +11,7 @@ const getShopInfo = async (userId) => {
 };
 
 const getShopCommentData = async (userId) => {
-  const query = `SELECT * FROM shopcomment WHERE userId = ${parseInt(
+  const query = `SELECT * FROM shopcomment WHERE shopOwnerUserId = ${parseInt(
     userId,
     10
   )}`;
@@ -26,13 +26,14 @@ const getShopCommentData = async (userId) => {
 
 const getShopAvg = async (userId) => {
   const query = `SELECT AVG(avg) AS average_avg
-FROM shop
-WHERE shopOwnerUserId = ${mysql.escape(parseInt(shopOwnerUserId, 10))}`;
-  try {
-    const [rows] = await db.execute(query);
-    const avrageAvg = rows[0].average_avg;
+  FROM shopcomment
+  WHERE shopOwnerUserId = ?`;
 
-    return avrageAvg;
+  try {
+    const [rows] = await db.execute(query, [parseInt(userId, 10)]);
+
+    const averageAvg = rows[0].average_avg;
+    return averageAvg;
   } catch (error) {
     throw new Error("Database query error: " + error.message);
   }

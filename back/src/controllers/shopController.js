@@ -96,31 +96,31 @@ const getMyShopData = async (req, res) => {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    console.log("@@@");
     const userId = userResponse.data.id;
-    console.log(userId);
     const shopData = await shopDao.getShopInfo(userId);
     const shopProducts = await productsDao.getProductsByUserId(userId);
-    // const commentData = await shopDao.getShopCommentData(userId);
-    // const commentCount = {
-    //   commentCount: commentData.length,
-    //   ratingAvg: await shopDao.getShopAvg(userId),
-    // };
-    // const purchasedProduct = await productsDao.getProductsByPurchasedUserId(
-    //   userId
-    // );
-    // const bookmarkProduct = await productsDao.getBookmarkProductByUserId(
-    //   userId
-    // );
+    const userData = await userDao.getUserById(userId);
+    const commentData = await shopDao.getShopCommentData(userId);
+    const commentCount = {
+      commentCount: commentData.length,
+      ratingAvg: await shopDao.getShopAvg(userId),
+    };
+    const purchasedProduct = await productsDao.getProductsByPurchasedUserId(
+      userId
+    );
+    const bookmarkProduct = await productsDao.getBookmarkProductByUserId(
+      userId
+    );
     // const bookmarkUser = getUsersForBookmark(userId);
 
     return res.status(200).json({
       shopData,
       shopProducts,
-      // commentData,
-      // commentCount,
-      // purchasedProduct,
-      // bookmarkProduct,
+      userData,
+      commentData,
+      commentCount,
+      purchasedProduct,
+      bookmarkProduct,
       // bookmarkUser,
     });
   } catch (error) {
