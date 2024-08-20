@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import registStyle from "../styles/regist.module.css";
 import cameraImg from "../image/camera.png";
 import removeImg from "../image/x.png";
+import checkEmptyImg from "../image/checkEmpty.png";
+import checkFillImg from "../image/checkFill.png";
+import RegistCategory from "./RegistCategory";
 export default function Regist() {
   ////////////////////이미지 업로드//////////////////
   const [images, setImages] = useState([]);
@@ -19,13 +22,20 @@ export default function Regist() {
       prevImages.filter((_, index) => index !== indexToRemove)
     );
   };
+
+  /////////////////////배송비별도///////////////////////
+  const [isCheckedImg, setCheckedImg] = useState(false);
+
+  const imageCheckHandler = () => {
+    setCheckedImg(!isCheckedImg);
+  };
   return (
     <div className="container">
       <div className={registStyle.container}>
-        <div>상품등록</div>
+        <div className={registStyle.registTitle}>상품등록</div>
         <div className={registStyle.imageContainer}>
           <div className={registStyle.imgCountAlarm}>
-            이미지를 등록해주세요. 최대 5개
+            이미지를 등록해주세요 (최대 5개)
           </div>
           <div className={registStyle.imageSection}>
             <label htmlFor="imageUpload">
@@ -64,9 +74,42 @@ export default function Regist() {
             ))}
           </div>
         </div>
-        <div className={registStyle.productNameContainer}>상품명</div>
-        <div className={registStyle.categoryContainer}>카테고리</div>
-        <div className={registStyle.priceContainer}>가격</div>
+        <div className={registStyle.commonContainer}>
+          <div className={registStyle.registName}>상품명</div>
+          <input
+            className={registStyle.registInputBox}
+            placeholder="상품명을 입력해주세요. (최대 30자)"
+          />
+        </div>
+        <div className={registStyle.commonContainer}>
+          <div className={registStyle.registName}>카테고리</div>
+          <RegistCategory />
+        </div>
+        <div className={registStyle.commonContainer}>
+          <div className={registStyle.registName}>가격</div>
+          <input
+            className={registStyle.registInputBox}
+            placeholder="가격을 입력해주세요.(원)"
+          />
+          <div className={registStyle.deliveryFeeBox}>
+            <div>배송비포함 </div>
+            {isCheckedImg ? (
+              <img
+                className={registStyle.checkImg}
+                src={checkFillImg}
+                alt="checkFillImg"
+                onClick={imageCheckHandler}
+              />
+            ) : (
+              <img
+                className={registStyle.checkImg}
+                src={checkEmptyImg}
+                alt="checkEmptyImg"
+                onClick={imageCheckHandler}
+              />
+            )}
+          </div>
+        </div>
         <div className={registStyle.contentContainer}>내용</div>
         <div className={registStyle.productStatusContainer}>상품상태</div>
         <div className={registStyle.dealFormContainer}>거래방법</div>
