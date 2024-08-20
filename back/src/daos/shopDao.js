@@ -11,14 +11,27 @@ const getShopInfo = async (userId) => {
 };
 
 const getShopCommentData = async (userId) => {
-  const query = `SELECT * FROM shopcomment WHERE shopOwnerUserId = ${parseInt(
-    userId,
-    10
-  )}`;
+  console.log("g", userId);
+  const query = `SELECT * FROM shopcomment WHERE shopOwnerUserId = ?`;
 
   try {
-    const [rows] = await db.execute(query);
-    return rows;
+    const [comments] = await db.execute(query, [parseInt(userId, 10)]);
+    console.log("g2", comments);
+
+    const commentsWithUserData = await Promise.all(
+      comments.map(async (comment) => {
+        console.log(comment.commentUserId);
+        const userQuery = `SELECT * FROM user WHERE userId = ?`;
+        const [userRows] = await db.execute(userQuery, [comment.commentUserId]);
+
+        if (userRows.length > 0) {
+          comment.userInfo = userRows[0];
+        }
+
+        return comment;
+      })
+    );
+    return commentsWithUserData;
   } catch (error) {
     throw new Error("Database query error: " + error.message);
   }

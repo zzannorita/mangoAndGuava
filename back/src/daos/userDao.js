@@ -6,23 +6,34 @@ const db = require("../config/dbConfig");
 const mysql = require("mysql2");
 
 const getUserById = async (userId) => {
+  console.log("1");
   const query = "SELECT * FROM user WHERE userId = ?";
-  const [rows] = await db.execute(query, [userId]);
-  if (rows.length > 0) {
-    const user = rows[0];
-
-    // 프로필 이미지 URL 생성
-    if (user.profileImage !== null) {
-      const imageUrl = `http://localhost:3001/profileImage/${user.profileImage}`;
-
-      // user 객체에 imageUrl 추가
-      user.imageUrl = imageUrl;
+  console.log("받은값", userId);
+  try {
+    const [rows] = await db.execute(query, [parseInt(userId, 10)]);
+    console.log("2");
+    if (rows.length > 0) {
+      console.log("3");
+      const user = rows[0];
+      console.log("4");
+      // 프로필 이미지 URL 생성
+      if (user.profileImage !== null) {
+        const imageUrl = `http://localhost:3001/profileImage/${user.profileImage}`;
+        console.log("5");
+        // user 객체에 imageUrl 추가
+        user.imageUrl = imageUrl;
+        console.log("6");
+      }
+      console.log("7");
+      return user;
+    } else {
+      console.log("8");
+      return null; // 유저가 존재하지 않는 경우
     }
-
-    return user;
-  } else {
-    return null; // 유저가 존재하지 않는 경우
+  } catch (error) {
+    throw new Error("Database query error: " + error.message);
   }
+
   // return rows[0];
 };
 
