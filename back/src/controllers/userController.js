@@ -2,6 +2,21 @@
 const axios = require("axios");
 const userDao = require("../daos/userDao");
 const shopDao = require("../daos/shopDao");
+const multer = require("multer");
+const path = require("path");
+
+// Multer 설정
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "profileImage/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+const upload = multer({ storage });
+// 업로드된 이미지를 처리하는 미들웨어
+const uploadImages = upload.array("profileImage", 10); // 최대 10개의 이미지를 업로드
 
 const kakaoLogin = async (req, res) => {
   const { code } = req.query;
@@ -137,8 +152,39 @@ const kakaoLogout = async (req, res) => {
   }
 };
 
+const uploadProfileImage = async (req, res) => {
+  const accessToken = req.headers.authorization?.split(" ")[1];
+
+  if (!accessToken) {
+    return res.status(401).json({ message: "No access token provided" });
+  }
+
+  try {
+    const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const userId = userResponse.data.id;
+    // req.files를 통해 업로드된 파일 정보 접근
+    const profileImage = req.files.map((file) => file.filename); // 파일 이름 배열
+    const userData = { userId, profileImage };
+    const updateProfileImage = await userDao.updateProfileImage(userData);
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      return res.status(401).json({ message: "Token expired" });
+    }
+    return res
+      .status(500)
+      .json({ message: "Failed to fetch user data", error: error.message });
+  }
+};
+
 module.exports = {
   kakaoLogin,
   getUserData,
   kakaoLogout,
+  uploadProfileImage,
+  uploadImages,
 };

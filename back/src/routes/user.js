@@ -7,4 +7,9 @@ const userController = require("../controllers/userController");
 router.get("/auth/kakao/callback", userController.kakaoLogin);
 router.get("/user-data", userController.getUserData);
 router.post("/logout", userController.kakaoLogout);
+router.patch(
+  "/profile-image",
+  userController.uploadImages,
+  userController.uploadProfileImage
+);
 module.exports = router;
