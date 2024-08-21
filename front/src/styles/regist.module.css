@@ -132,11 +132,12 @@
 }
 .registButton {
   background-color: #f9f9f9;
-  border: 1px solid #ccc;
+  border: 1px solid #f1f1f1;
   width: 100px;
   height: 50px;
   font-family: "Pretendard-Regular";
   font-size: 16px;
+  border-radius: 10px;
 }
 
 .registButton:hover {

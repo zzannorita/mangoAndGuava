@@ -42,21 +42,21 @@ export default function Settings() {
   };
 
   //////////////////닉네임수정///////////////
-  const [tempNickName, setTempNickName] = useState("");
+  const [nickName, setNickName] = useState("");
 
   const handleNickNameChange = (event) => {
-    setTempNickName(event.target.value);
+    setNickName(event.target.value);
   };
 
   /////////////////////계좌수정/////////////////////
-  const [tempAccount, setTempAccount] = useState("");
-  const [tempBankName, setTempBankName] = useState("");
+  const [account, setAccount] = useState("");
+  const [bankName, setBankName] = useState("");
 
   const handleAccountChange = (event) => {
-    setTempAccount(event.target.value);
+    setAccount(event.target.value);
   };
   const handleBankNameChange = (event) => {
-    setTempBankName(event.target.value);
+    setBankName(event.target.value);
   };
 
   useEffect(() => {
@@ -71,12 +71,12 @@ export default function Settings() {
         const [receivedBankName, receivedAccountNumber] =
           userData.account.split(",");
 
-        setTempNickName(userData.nickname);
+        setNickName(userData.nickname);
         setZoneCode(receivedZoneCode || "");
         setAddress(receivedAddress || "");
         setDetailedAddress(receivedDetailedAddress || "");
-        setTempBankName(receivedBankName || "");
-        setTempAccount(receivedAccountNumber || "");
+        setBankName(receivedBankName || "");
+        setAccount(receivedAccountNumber || "");
       })
       .catch((error) => {
         console.log("데이터 가져오기 실패", error);
@@ -87,9 +87,9 @@ export default function Settings() {
   const navigate = useNavigate();
   const handleUpdate = () => {
     const updatedData = {
-      nickname: tempNickName,
+      nickname: nickName,
       address: `${zoneCode},${address},${detailedAddress}`,
-      account: `${tempBankName},${tempAccount}`,
+      account: `${bankName},${account}`,
     };
     console.log("업데이트 데이터:", updatedData);
     axiosInstance
@@ -114,7 +114,7 @@ export default function Settings() {
           <div className={settingsStyle.settingTitle}>닉네임</div>
           <input
             className={settingsStyle.commonInputBox}
-            value={tempNickName}
+            value={nickName}
             onChange={handleNickNameChange}
           />
         </div>
@@ -163,7 +163,7 @@ export default function Settings() {
               <div>은행명</div>
               <input
                 className={settingsStyle.addressInputBox}
-                value={tempBankName}
+                value={bankName}
                 onChange={handleBankNameChange}
               />
             </div>
@@ -171,7 +171,7 @@ export default function Settings() {
               <div>계좌번호</div>
               <input
                 className={settingsStyle.commonInputBox}
-                value={tempAccount}
+                value={account}
                 onChange={handleAccountChange}
               />
             </div>

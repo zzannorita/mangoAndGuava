@@ -1,9 +1,8 @@
-// src/api.js
 import axios from "axios";
 import Cookies from "js-cookie";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:3001", // 기본 API URL 설정
+  baseURL: "http://localhost:3001",
 });
 
 // 요청 인터셉터
