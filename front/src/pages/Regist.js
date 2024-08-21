@@ -29,6 +29,27 @@ export default function Regist() {
   const imageCheckHandler = () => {
     setCheckedImg(!isCheckedImg);
   };
+
+  /////////////////////상품상태//////////////////////////
+  const [selectedStatus, setSelectedStatus] = useState(null);
+
+  const statusClickHandler = (id) => {
+    setSelectedStatus(id);
+  };
+
+  /////////////////////교환가능유무//////////////////////////
+  const [selectedExchange, setSelectedExchange] = useState(null);
+
+  const ExchangeClickHandler = (id) => {
+    setSelectedExchange(id);
+  };
+
+  /////////////////////거래방법//////////////////////////
+  const [selectedDelivery, setSelectedDelivery] = useState(null);
+
+  const deliveryClickHandler = (id) => {
+    setSelectedDelivery(id);
+  };
   return (
     <div className="container">
       <div className={registStyle.container}>
@@ -110,11 +131,101 @@ export default function Regist() {
             )}
           </div>
         </div>
-        <div className={registStyle.contentContainer}>내용</div>
-        <div className={registStyle.productStatusContainer}>상품상태</div>
-        <div className={registStyle.dealFormContainer}>거래방법</div>
-        <div className={registStyle.locationContainer}>위치</div>
-        <div className={registStyle.keywordContainer}>키워드</div>
+        <div className={registStyle.commonContainer}>
+          <div className={registStyle.registName}>내용</div>
+          <textarea
+            className={registStyle.registContentInputBox}
+            placeholder="상품에 대한 내용을 상세하게 입력해주세요."
+          />
+        </div>
+        <div className={registStyle.commonContainer}>
+          <div className={registStyle.registName}>상품 상태</div>
+          <div className={registStyle.productStatusBox}>
+            <div
+              className={`${registStyle.productStatusText} ${
+                selectedStatus === "new" ? registStyle.active : ""
+              }`}
+              onClick={() => statusClickHandler("new")}
+            >
+              새상품
+            </div>
+            <div>|</div>
+            <div
+              className={`${registStyle.productStatusText} ${
+                selectedStatus === "old" ? registStyle.active : ""
+              }`}
+              onClick={() => statusClickHandler("old")}
+            >
+              중고
+            </div>
+          </div>
+        </div>
+        <div className={registStyle.commonContainer}>
+          <div className={registStyle.registName}>교환 가능 유무</div>
+          <div className={registStyle.productStatusBox}>
+            <div
+              className={`${registStyle.productStatusText} ${
+                selectedExchange === "yes" ? registStyle.active : ""
+              }`}
+              onClick={() => ExchangeClickHandler("yes")}
+            >
+              가능
+            </div>
+            <div>|</div>
+            <div
+              className={`${registStyle.productStatusText} ${
+                selectedExchange === "no" ? registStyle.active : ""
+              }`}
+              onClick={() => ExchangeClickHandler("no")}
+            >
+              불가능
+            </div>
+          </div>
+        </div>
+        <div className={registStyle.commonContainer}>
+          <div className={registStyle.registName}>거래 방법</div>
+          <div className={registStyle.productStatusBox}>
+            <div
+              className={`${registStyle.productStatusText} ${
+                selectedDelivery === "delivery" ? registStyle.active : ""
+              }`}
+              onClick={() => deliveryClickHandler("delivery")}
+            >
+              택배거래
+            </div>
+            <div>|</div>
+            <div
+              className={`${registStyle.productStatusText} ${
+                selectedDelivery === "direct" ? registStyle.active : ""
+              }`}
+              onClick={() => deliveryClickHandler("direct")}
+            >
+              직거래
+            </div>
+          </div>
+        </div>
+        {selectedDelivery === "direct" ? (
+          <div className={registStyle.commonContainer}>
+            <div className={registStyle.registName}>위치</div>
+            <input
+              className={registStyle.registInputBox}
+              placeholder="거래하실 위치를 상세하게 입력해주세요."
+            />
+          </div>
+        ) : (
+          ""
+        )}
+
+        <div className={registStyle.commonContainer}>
+          <div className={registStyle.registName}>키워드</div>
+          <input
+            className={registStyle.registInputBox}
+            placeholder="키워드를 입력해주세요. (최대 5개)"
+          />
+        </div>
+        <div className={registStyle.registButtonBox}>
+          <button className={registStyle.registButton}>등록</button>
+        </div>
       </div>
     </div>
   );

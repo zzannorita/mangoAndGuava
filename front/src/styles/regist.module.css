@@ -1,5 +1,5 @@
 .container {
-  padding: 50px;
+  padding: 20px 50px;
   display: flex;
   flex-direction: column;
 }
@@ -84,6 +84,19 @@
   width: 840px;
   padding: 0 20px;
   outline: none;
+  font-family: "Pretendard-Regular";
+  font-size: 16px;
+}
+
+.registContentInputBox {
+  height: 200px;
+  border: 1px solid #ccc;
+  width: 840px;
+  padding: 20px;
+  outline: none;
+  resize: none;
+  font-family: "Pretendard-Regular";
+  font-size: 16px;
 }
 
 .deliveryFeeBox {
@@ -96,4 +109,36 @@
 .checkImg {
   width: 20px;
   height: 20px;
+}
+
+.productStatusBox {
+  display: flex;
+  width: 300px;
+  justify-content: space-evenly;
+}
+.productStatusText:hover {
+  color: #ffc107;
+}
+
+.active {
+  color: #ffc107;
+}
+
+.registButtonBox {
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+  border-top: 1px solid #f1f1f1;
+}
+.registButton {
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  width: 100px;
+  height: 50px;
+  font-family: "Pretendard-Regular";
+  font-size: 16px;
+}
+
+.registButton:hover {
+  background-color: #ffc107;
 }
