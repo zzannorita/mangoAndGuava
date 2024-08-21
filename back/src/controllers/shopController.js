@@ -64,8 +64,6 @@ const uploadProduct = async (req, res) => {
       productImage,
     };
 
-    console.log(productData);
-
     const addProductResult = await shopDao.addProduct(productData);
 
     return res.status(200).json({

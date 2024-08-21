@@ -11,12 +11,20 @@ const getShopInfo = async (userId) => {
 };
 
 const getShopCommentData = async (userId) => {
-  console.log("g", userId);
-  const query = `SELECT * FROM shopcomment WHERE shopOwnerUserId = ?`;
+  const query = `SELECT 
+    shopcomment.*, 
+    product.productName
+FROM 
+    shopcomment
+JOIN 
+    product 
+ON 
+    shopcomment.purchasedProductId = product.productId
+WHERE 
+    shopcomment.shopOwnerUserId = ?`;
 
   try {
     const [comments] = await db.execute(query, [parseInt(userId, 10)]);
-    console.log("g2", comments);
 
     const commentsWithUserData = await Promise.all(
       comments.map(async (comment) => {
