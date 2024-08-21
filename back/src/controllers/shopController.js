@@ -119,10 +119,10 @@ const getMyShopData = async (req, res) => {
       // bookmarkUser,
     });
   } catch (error) {
-    if (error.response && error.response.status === 401) {
-      throw new Error("Token expired");
-    }
-    throw new Error("Failed to fetch user data");
+    // if (error.response && error.response.status === 401) {
+    //   throw new Error("Token expired");
+    // }
+    // throw new Error("Failed to fetch user data");
   }
 };
 

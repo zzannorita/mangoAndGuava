@@ -25,10 +25,8 @@ WHERE
 
   try {
     const [comments] = await db.execute(query, [parseInt(userId, 10)]);
-
     const commentsWithUserData = await Promise.all(
       comments.map(async (comment) => {
-        console.log(comment.commentUserId);
         const userQuery = `SELECT * FROM user WHERE userId = ?`;
         const [userRows] = await db.execute(userQuery, [comment.commentUserId]);
 

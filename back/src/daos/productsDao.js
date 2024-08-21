@@ -376,8 +376,7 @@ const getProductByProductId = async (productId) => {
   `;
 
   try {
-    const [rows] = await db.execute(query, [productId]);
-
+    const [rows] = await db.execute(query, [parseInt(productId, 10)]);
     // 상품별로 이미지를 묶기 위한 객체
     const productsMap = {};
 
