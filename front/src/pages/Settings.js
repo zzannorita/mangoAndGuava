@@ -1,22 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import settingsStyle from "../styles/settings.module.css";
 import shopStyle from "../styles/shop.module.css";
+import registStyle from "../styles/regist.module.css";
 import PostCode from "react-daum-postcode";
-import editImg from "../image/edit.png";
-import checkImg from "../image/checkbox.png";
+import axiosInstance from "../axios";
 
 export default function Settings() {
   /////////////////////////주소등록//////////////////////
-  const [zonecode, setZonecode] = useState("");
+  const [zoneCode, setZoneCode] = useState("");
   const [address, setAddress] = useState("");
-  const [isOpen, setIsOpen] = useState("false");
   const [detailedAddress, setDetailedAddress] = useState("");
+  const [isOpen, setIsOpen] = useState(true);
 
   const completeHandler = (data) => {
-    console.log(data);
     const { address, zonecode } = data;
-    setZonecode(zonecode);
+    setZoneCode(zonecode);
     setAddress(address);
+    setDetailedAddress("");
   };
 
   const closeHandler = (state) => {
@@ -31,63 +32,73 @@ export default function Settings() {
     setIsOpen((prevOpenState) => !prevOpenState);
   };
 
-  const inputChangeHandler = (event) => {
+  ////////////////////주소수정///////////////////
+  const handleAddressChange = (event) => {
+    setAddress(event.target.value);
+  };
+
+  const handleDetailedAddressChange = (event) => {
     setDetailedAddress(event.target.value);
   };
 
   //////////////////닉네임수정///////////////
-  const [nickName, setNickName] = useState("");
-  const [editNickName, setEditNickName] = useState(false);
-  const [nickNameDescription, setNickNameDescription] = useState("");
   const [tempNickName, setTempNickName] = useState("");
-
-  const handleEditNickName = () => {
-    if (editNickName) {
-      setNickNameDescription(tempNickName);
-    } else {
-      setNickNameDescription(nickNameDescription);
-    }
-    setEditNickName(!editNickName);
-  };
 
   const handleNickNameChange = (event) => {
     setTempNickName(event.target.value);
   };
 
-  ////////////////////주소수정///////////////////
-  const [editAddress, setEditAddress] = useState(false);
-  const [addressDescription, setAddressDescription] = useState("");
-  const [tempAddress, setTempAddress] = useState("");
-
-  const handleEditAddress = () => {
-    if (editAddress) {
-      setAddressDescription(tempAddress);
-    } else {
-      setAddressDescription(addressDescription);
-    }
-    setEditAddress(!editAddress);
-  };
-
-  const handleAddressChange = (event) => {
-    setTempAddress(event.target.value);
-  };
-
   /////////////////////계좌수정/////////////////////
-  const [editAccount, setEditAccount] = useState(false);
-  const [accountDescription, setAccountDescription] = useState("");
   const [tempAccount, setTempAccount] = useState("");
-
-  const handleEditAccount = () => {
-    if (editAccount) {
-      setAccountDescription(tempAccount);
-    } else {
-      setAccountDescription(accountDescription);
-    }
-    setEditAccount(!editAccount);
-  };
+  const [tempBankName, setTempBankName] = useState("");
 
   const handleAccountChange = (event) => {
     setTempAccount(event.target.value);
+  };
+  const handleBankNameChange = (event) => {
+    setTempBankName(event.target.value);
+  };
+
+  useEffect(() => {
+    axiosInstance
+      .get("/myshop")
+      .then((response) => {
+        const shopData = response.data;
+        const { userData } = shopData;
+
+        const [receivedZoneCode, receivedAddress, receivedDetailedAddress] =
+          userData.address.split(",");
+        const [receivedBankName, receivedAccountNumber] =
+          userData.account.split(",");
+
+        setTempNickName(userData.nickname);
+        setZoneCode(receivedZoneCode || "");
+        setAddress(receivedAddress || "");
+        setDetailedAddress(receivedDetailedAddress || "");
+        setTempBankName(receivedBankName || "");
+        setTempAccount(receivedAccountNumber || "");
+      })
+      .catch((error) => {
+        console.log("데이터 가져오기 실패", error);
+      });
+  }, []);
+
+  // 등록 핸들러
+  const navigate = useNavigate();
+  const handleUpdate = () => {
+    const updatedData = {
+      nickname: tempNickName,
+      address: `${zoneCode},${address},${detailedAddress}`,
+      account: `${tempBankName},${tempAccount}`,
+    };
+    console.log("업데이트 데이터:", updatedData);
+    axiosInstance
+      .patch("/user-update", updatedData)
+      .then((response) => {
+        alert("회원정보가 수정되었습니다.");
+        navigate("/");
+      })
+      .catch((error) => {});
   };
   return (
     <div className={settingsStyle.myProductsBox}>
@@ -103,33 +114,18 @@ export default function Settings() {
           <div className={settingsStyle.settingTitle}>닉네임</div>
           <input
             className={settingsStyle.commonInputBox}
-            value={editNickName ? tempNickName : nickNameDescription}
+            value={tempNickName}
             onChange={handleNickNameChange}
-            disabled={!editNickName}
           />
-          {editNickName ? (
-            <img
-              className={settingsStyle.editImg}
-              src={checkImg}
-              alt="checkImg"
-              onClick={handleEditNickName}
-            ></img>
-          ) : (
-            <img
-              className={settingsStyle.editImg}
-              src={editImg}
-              alt="editImg"
-              onClick={handleEditNickName}
-            ></img>
-          )}
         </div>
         <div className={settingsStyle.addressBox}>
           <div className={settingsStyle.settingTitle}>주소등록</div>
           <div>
             <div>
               <input
-                value={zonecode}
+                value={zoneCode}
                 className={settingsStyle.addressInputBox}
+                readOnly
               />
               <button
                 className={settingsStyle.buttonStyle}
@@ -141,36 +137,23 @@ export default function Settings() {
               {!isOpen && (
                 <div>
                   <PostCode
-                    className={settingsStyle.nickNameInputBox}
                     onComplete={completeHandler}
                     onClose={closeHandler}
                   />
                 </div>
               )}
             </div>
-
-            <div>{address}</div>
+            <div
+              className={settingsStyle.commonInputBox}
+              onChange={handleAddressChange}
+            >
+              {address}
+            </div>
             <input
               className={settingsStyle.commonInputBox}
-              value={editAddress ? tempAddress : addressDescription}
-              onChange={handleAddressChange}
-              disabled={!editAddress}
+              value={detailedAddress}
+              onChange={handleDetailedAddressChange}
             />
-            {editAddress ? (
-              <img
-                className={settingsStyle.editImg}
-                src={checkImg}
-                alt="checkImg"
-                onClick={handleEditAddress}
-              ></img>
-            ) : (
-              <img
-                className={settingsStyle.editImg}
-                src={editImg}
-                alt="editImg"
-                onClick={handleEditAddress}
-              ></img>
-            )}
           </div>
         </div>
         <div className={settingsStyle.commonSettingBox}>
@@ -180,34 +163,24 @@ export default function Settings() {
               <div>은행명</div>
               <input
                 className={settingsStyle.addressInputBox}
-                onChange={handleAccountChange}
-                disabled={!editAccount}
+                value={tempBankName}
+                onChange={handleBankNameChange}
               />
             </div>
             <div className={settingsStyle.accountTitle}>
               <div>계좌번호</div>
               <input
                 className={settingsStyle.commonInputBox}
+                value={tempAccount}
                 onChange={handleAccountChange}
-                disabled={!editAccount}
               />
-              {editAccount ? (
-                <img
-                  className={settingsStyle.editImg}
-                  src={checkImg}
-                  alt="checkImg"
-                  onClick={handleEditAccount}
-                ></img>
-              ) : (
-                <img
-                  className={settingsStyle.editImg}
-                  src={editImg}
-                  alt="editImg"
-                  onClick={handleEditAccount}
-                ></img>
-              )}
             </div>
           </div>
+        </div>
+        <div className={registStyle.registButtonBox}>
+          <button className={registStyle.registButton} onClick={handleUpdate}>
+            등록
+          </button>
         </div>
       </div>
     </div>
