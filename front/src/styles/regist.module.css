@@ -1,15 +1,18 @@
 .container {
-  padding: 50px;
+  padding: 20px 50px;
   display: flex;
   flex-direction: column;
-  height: 1200px;
-  border: 1px solid #ccc;
-  justify-content: space-around;
 }
 
+.registTitle {
+  font-size: 20px;
+  padding: 20px 0;
+}
 .imageContainer {
   display: flex;
   flex-direction: column;
+  padding: 30px 0;
+  border-top: 1px solid #f1f1f1;
 }
 .imageSection {
   display: flex;
@@ -47,8 +50,8 @@
 }
 
 .imgCountAlarm {
-  padding: 8px;
-  color: #333;
+  margin-left: 8px;
+  color: #777;
 }
 
 .removeButton {
@@ -58,4 +61,84 @@
   width: 20px;
   height: 20px;
   cursor: pointer;
+}
+
+.commonContainer {
+  display: flex;
+  padding: 20px 0;
+  border-top: 1px solid #f1f1f1;
+  align-items: center;
+}
+
+.registName {
+  width: 200px;
+  display: flex;
+  /* justify-content: center; */
+  padding-left: 10px;
+  color: #333;
+  position: relative;
+}
+.registInputBox {
+  height: 55px;
+  border: 1px solid #ccc;
+  width: 840px;
+  padding: 0 20px;
+  outline: none;
+  font-family: "Pretendard-Regular";
+  font-size: 16px;
+}
+
+.registContentInputBox {
+  height: 200px;
+  border: 1px solid #ccc;
+  width: 840px;
+  padding: 20px;
+  outline: none;
+  resize: none;
+  font-family: "Pretendard-Regular";
+  font-size: 16px;
+}
+
+.deliveryFeeBox {
+  display: flex;
+  position: absolute;
+  right: 425px;
+  width: 100px;
+  justify-content: space-between;
+}
+.checkImg {
+  width: 20px;
+  height: 20px;
+}
+
+.productStatusBox {
+  display: flex;
+  width: 300px;
+  justify-content: space-evenly;
+}
+.productStatusText:hover {
+  color: #ffc107;
+}
+
+.active {
+  color: #ffc107;
+}
+
+.registButtonBox {
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+  border-top: 1px solid #f1f1f1;
+}
+.registButton {
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  width: 100px;
+  height: 50px;
+  font-family: "Pretendard-Regular";
+  font-size: 16px;
+}
+
+.registButton:hover {
+  background-color: #ffc107;
 }

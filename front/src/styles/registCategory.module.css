@@ -1,0 +1,54 @@
+.categoryBox {
+  display: flex;
+  align-items: flex-start;
+  height: 300px;
+  border: 1px solid #ccc;
+  width: 880px;
+  position: relative;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.navbar {
+  position: relative;
+  border-right: 1px solid #f1f1f1;
+  background-color: #f9f9f9;
+  width: 300px;
+}
+.navbar li:hover {
+  background-color: #ffe187;
+}
+
+.navbar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.navbar li {
+  position: relative;
+  padding: 15px 15px;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: #333;
+}
+
+.subNavbar {
+  border-right: 1px solid #f1f1f1;
+  width: 300px;
+  position: absolute;
+  top: 0;
+  left: 300px;
+  background-color: #f1f1f1;
+}
+
+.subSubNavbar {
+  border-right: 1px solid #f1f1f1;
+  width: 300px;
+  position: absolute;
+  top: 0;
+  left: 300px;
+  background-color: #f9f9f9;
+}
