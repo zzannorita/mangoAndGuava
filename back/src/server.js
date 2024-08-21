@@ -20,6 +20,10 @@ app.use(express.urlencoded({ extended: true }));
 // app.use("/uploads", express.static("uploads"));
 // 정적 파일 제공을 위한 설정
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+app.use(
+  "/profileImage",
+  express.static(path.join(__dirname, "../profileImage"))
+);
 //app.use(tokenMiddleware); //모든 백엔드 호출에 대해 토큰검증
 
 // Enable CORS for all origins

@@ -7,8 +7,25 @@ const mysql = require("mysql2");
 
 const getUserById = async (userId) => {
   const query = "SELECT * FROM user WHERE userId = ?";
-  const [rows] = await db.execute(query, [userId]);
-  return rows[0];
+  try {
+    const [rows] = await db.execute(query, [parseInt(userId, 10)]);
+    if (rows.length > 0) {
+      const user = rows[0];
+      // 프로필 이미지 URL 생성
+      if (user.profileImage !== null) {
+        const imageUrl = `http://localhost:3001/profileImage/${user.profileImage}`;
+        // user 객체에 imageUrl 추가
+        user.imageUrl = imageUrl;
+      }
+      return user;
+    } else {
+      return null; // 유저가 존재하지 않는 경우
+    }
+  } catch (error) {
+    throw new Error("Database query error: " + error.message);
+  }
+
+  // return rows[0];
 };
 
 const addUser = async (user) => {
@@ -56,8 +73,23 @@ const updateUserInfo = async (userId, nickname, address, account) => {
   }
 };
 
+const updateProfileImage = async (userData) => {
+  const userId = userData.userId;
+  const profileImage = userData.profileImage;
+  const query = `UPDATE user
+SET profileImage = ?
+WHERE userId = ?`;
+  try {
+    const [rows] = await db.execute(query, [profileImage[0], userId]);
+    return rows;
+  } catch (error) {
+    throw new Error("Database query error: " + error.message);
+  }
+};
+
 module.exports = {
   getUserById,
   addUser,
   updateUserInfo,
+  updateProfileImage,
 };

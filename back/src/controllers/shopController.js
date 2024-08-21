@@ -64,8 +64,6 @@ const uploadProduct = async (req, res) => {
       productImage,
     };
 
-    console.log(productData);
-
     const addProductResult = await shopDao.addProduct(productData);
 
     return res.status(200).json({
@@ -84,13 +82,10 @@ const uploadProduct = async (req, res) => {
 
 const getMyShopData = async (req, res) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
-  console.log("getMyShopData1");
-
   if (!accessToken) {
     return res.status(401).json({ message: "No access token provided" });
   }
   try {
-    console.log("getMyShopData2");
     const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -111,7 +106,7 @@ const getMyShopData = async (req, res) => {
     const bookmarkProduct = await productsDao.getBookmarkProductByUserId(
       userId
     );
-    // const bookmarkUser = getUsersForBookmark(userId);
+    //const bookmarkUser = getUsersForBookmark(userId);
 
     return res.status(200).json({
       shopData,

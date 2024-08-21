@@ -110,6 +110,23 @@ const handleProducts = async (req, res) => {
   }
 };
 
+const getProduct = async (req, res) => {
+  const productId = req.query.productId;
+
+  try {
+    const getProductByProductId = await productsDao.getProductByProductId(
+      productId
+    );
+    return res.status(200).json({
+      code: "SUCCESS_SEARCH_PRODUCT",
+    });
+  } catch (error) {
+    console.error("Error during search products:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   handleProducts,
+  getProduct,
 };
