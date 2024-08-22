@@ -8,28 +8,36 @@ import Review from "./Review";
 import Settings from "./Settings";
 import Favorites from "./Favorites";
 import RatingStars from "../components/RatingStars";
-import Cookies from "js-cookie";
-import axios from "axios";
+import axiosInstance from "../axios";
 
 export default function Shop() {
   /////////////////////소개글 수정//////////////////////
   const [isEditing, setIsEditing] = useState(false);
   const [description, setDescription] = useState("");
-  const [tempDescription, setTempDescription] = useState("");
+  const [shopData, setShopData] = useState({
+    userId: "",
+    shopRating: 0,
+    shopInfo: "",
+  });
 
   const handleEditClick = () => {
     if (isEditing) {
-      // 수정 후 저장하면 description에 tempDescription 저장
-      setDescription(tempDescription);
-    } else {
-      // 수정 모드로 들어갈 때 현재 description을 tempDescription에 저장
-      setTempDescription(description);
+      axiosInstance
+        .patch("/update-info", { shopInfo: description })
+        .then(() => {
+          setShopData((prevShopData) => ({
+            ...prevShopData,
+            shopInfo: description,
+          }));
+          console.log("설명 업데이트 성공");
+        })
+        .catch((error) => console.error("설명 업데이트 실패", error));
     }
     setIsEditing(!isEditing);
   };
 
   const handleChange = (event) => {
-    setTempDescription(event.target.value);
+    setDescription(event.target.value);
   };
 
   /////////////////필터///////////////////
@@ -47,26 +55,94 @@ export default function Shop() {
     setSelectedFilter(null); // "내 정보"를 선택했을 때는 "내 상품" 필터 초기화
   };
 
+  //상점 데이터 상태
+  const [userData, setUserData] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [bookmarkedProducts, setBookmarkedProducts] = useState([]);
+  const [purchasedProducts, setPurchasedProducts] = useState([]);
+
+  //myshop api호출
+  useEffect(() => {
+    axiosInstance
+      .get("http://localhost:3001/myshop")
+      .then((response) => {
+        const data = response.data;
+        setShopData(data);
+        // shopInfo 값을 description 상태에 반영
+        setDescription(data.shopInfo || "");
+        setUserData(data.userData || { address: "주소 없음" });
+        console.log("userData:", data.userData);
+        setProducts(data.shopProducts);
+        setReviews(data.comentData);
+        setBookmarkedProducts(data.bookmarkProduct);
+        setPurchasedProducts(data.purchasedProduct);
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log("데이터 가져오기 실패", error);
+      });
+  }, []);
+
   //필터에 따른 컨테이너
   const renderContainer = () => {
     if (selectedFilter) {
       switch (selectedFilter) {
         case "판매중":
-          return <div>판매중인상품</div>;
+          return (
+            <div className="productItem">
+              {products
+                .filter((product) => product.tradeState === "판매중")
+                .map((product) => (
+                  <ProductsCard
+                    key={product.productId}
+                    product={product}
+                    userData={userData || { address: "" }}
+                  />
+                ))}
+            </div>
+          );
         case "예약중":
-          return <div>예약중인상품</div>;
+          return (
+            <div className="productItem">
+              {products
+                .filter((product) => product.tradeState === "예약중")
+                .map((product) => (
+                  <ProductsCard
+                    key={product.productId}
+                    product={product}
+                    userData={userData || { address: "" }}
+                  />
+                ))}
+            </div>
+          );
         case "판매완료":
-          return <div>판매완료상품</div>;
+          return (
+            <div className="productItem">
+              {products
+                .filter((product) => product.tradeState === "판매완료")
+                .map((product) => (
+                  <ProductsCard
+                    key={product.productId}
+                    product={product}
+                    userData={userData || { address: "" }}
+                  />
+                ))}
+            </div>
+          );
         case "거래후기":
           return <Review />;
         default:
           return (
-            <>
-              <ProductsCard />
-              <ProductsCard />
-              <ProductsCard />
-              {/* 여기에 전체 상품 목록을 추가 */}
-            </>
+            <div className="productItem">
+              {products.map((product) => (
+                <ProductsCard
+                  key={product.productId}
+                  product={product}
+                  userData={userData || { address: "" }}
+                />
+              ))}
+            </div>
           );
       }
     } else if (selectedInfo) {
@@ -86,31 +162,6 @@ export default function Shop() {
     return null;
   };
 
-  //myshop api호출
-  useEffect(() => {
-    const accessToken = Cookies.get("accessToken");
-    if (!accessToken) {
-      console.error("토큰이 없음");
-      return;
-    }
-    axios
-      .get("http://localhost:3001/myshop", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
-      .then((response) => {
-        const shopData = response.data;
-        console.log(shopData);
-        // const { userId, shopRating, shopInfo } = shopData;
-        // console.log("userId:", userId);
-        // console.log("shopRating:", shopRating);
-        // console.log("shopInfo:", shopInfo);
-      })
-      .catch((error) => {
-        console.log("데이터 가져오기 실패", error);
-      });
-  }, []);
   return (
     <div className="container">
       <div className={shopStyle.container}>
@@ -147,7 +198,9 @@ export default function Shop() {
         <div className={shopStyle.rightBox}>
           <div className={shopStyle.myShopBox}>
             <div className={shopStyle.myShopTitleBox}>
-              <div className={shopStyle.myShopTitleText}>000님의 상점</div>
+              <div className={shopStyle.myShopTitleText}>
+                {userData?.nickname}님의 상점
+              </div>
               <RatingStars />
             </div>
             <div className={shopStyle.myShopInfoBox}>
@@ -161,27 +214,18 @@ export default function Shop() {
                   className={`${shopStyle.textArea} ${
                     isEditing ? shopStyle.textAreaEditing : ""
                   }`}
-                  value={isEditing ? tempDescription : description}
+                  value={description}
                   onChange={handleChange}
                   disabled={!isEditing}
                   placeholder="상점을 소개하는 글을 작성하여 신뢰도를 높여 보세요."
                 ></textarea>
               </div>
-              {isEditing ? (
-                <img
-                  className={shopStyle.editImg}
-                  src={checkImg}
-                  alt="checkImg"
-                  onClick={handleEditClick}
-                ></img>
-              ) : (
-                <img
-                  className={shopStyle.editImg}
-                  src={editImg}
-                  alt="editImg"
-                  onClick={handleEditClick}
-                ></img>
-              )}
+              <img
+                className={shopStyle.editImg}
+                src={isEditing ? checkImg : editImg}
+                alt={isEditing ? "저장" : "편집"}
+                onClick={handleEditClick}
+              />
             </div>
           </div>
           <div className={shopStyle.myProductsBox}>

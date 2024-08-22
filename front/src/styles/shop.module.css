@@ -174,12 +174,15 @@
   display: flex;
 }
 
-.mainProductsBox {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-}
-
 .filterTextBox:hover {
   color: #ffc107;
+}
+
+.mainProductsBox {
+  display: flex;
+}
+
+.productItem {
+  flex: 0 0 auto;
+  margin-right: 15px;
 }

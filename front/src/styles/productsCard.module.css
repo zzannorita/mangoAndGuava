@@ -8,11 +8,10 @@
 }
 
 .productImage {
-  width: 190px;
+  width: 230px;
   height: 260px;
   background-color: #f1f1f1;
   border-radius: 10px;
-  padding: 20px;
 }
 
 .emptyHeartImg {

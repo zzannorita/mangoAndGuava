@@ -29,21 +29,6 @@ export default function Home() {
             {/* {recommendedProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))} */}
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
           </div>
         </div>
       </div>
