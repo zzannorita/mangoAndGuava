@@ -1,19 +1,29 @@
 import React, { useState } from "react";
 import CategoryStyle from "../styles/registCategory.module.css";
 
-export default function Category() {
+export default function Category({ onCategorySelect }) {
   const [clickedCategory, setClickedCategory] = useState(null);
   const [clickedSubCategory, setClickedSubCategory] = useState(null);
+  const [clickedSubSubCategory, setClickedSubSubCategory] = useState(null);
 
   // 카테고리 클릭 시
   const handleCategoryClick = (category) => {
     setClickedCategory(category);
     setClickedSubCategory(null); // 서브 카테고리 초기화
+    setClickedSubSubCategory(null);
   };
 
   // 서브 카테고리 클릭 시
   const handleSubCategoryClick = (subCategory) => {
     setClickedSubCategory(subCategory);
+    setClickedSubSubCategory(null);
+  };
+
+  // 서브 서브 카테고리 클릭 시
+  const handleSubSubCategoryClick = (subSubCategoryCode) => {
+    setClickedSubSubCategory(subSubCategoryCode);
+    const fullCategoryCode = `${clickedCategory}${clickedSubCategory}${subSubCategoryCode}`;
+    onCategorySelect(fullCategoryCode);
   };
 
   return (
@@ -21,48 +31,66 @@ export default function Category() {
       <div className={CategoryStyle.navbar}>
         <ul>
           <li>
-            <div onClick={() => handleCategoryClick("의류")}>의류</div>
-            {clickedCategory === "의류" && (
+            <div onClick={() => handleCategoryClick("100")}>의류</div>
+            {clickedCategory === "100" && (
               <div className={CategoryStyle.subNavbar}>
                 <ul>
                   <li>
-                    <div onClick={() => handleSubCategoryClick("남성의류")}>
+                    <div onClick={() => handleSubCategoryClick("110")}>
                       남성의류
                     </div>
-                    {clickedSubCategory === "남성의류" && (
+                    {clickedSubCategory === "110" && (
                       <div className={CategoryStyle.subSubNavbar}>
                         <ul>
-                          <li>상의</li>
-                          <li>하의</li>
-                          <li>운동화</li>
+                          <li onClick={() => handleSubSubCategoryClick("111")}>
+                            상의
+                          </li>
+                          <li onClick={() => handleSubSubCategoryClick("112")}>
+                            하의
+                          </li>
+                          <li onClick={() => handleSubSubCategoryClick("113")}>
+                            운동화
+                          </li>
                         </ul>
                       </div>
                     )}
                   </li>
                   <li>
-                    <div onClick={() => handleSubCategoryClick("여성의류")}>
+                    <div onClick={() => handleSubCategoryClick("120")}>
                       여성의류
                     </div>
-                    {clickedSubCategory === "여성의류" && (
+                    {clickedSubCategory === "120" && (
                       <div className={CategoryStyle.subSubNavbar}>
                         <ul>
-                          <li>원피스</li>
-                          <li>스커트</li>
-                          <li>하이힐</li>
+                          <li onClick={() => handleSubSubCategoryClick("121")}>
+                            원피스
+                          </li>
+                          <li onClick={() => handleSubSubCategoryClick("122")}>
+                            스커트
+                          </li>
+                          <li onClick={() => handleSubSubCategoryClick("123")}>
+                            하이힐
+                          </li>
                         </ul>
                       </div>
                     )}
                   </li>
                   <li>
-                    <div onClick={() => handleSubCategoryClick("아동의류")}>
+                    <div onClick={() => handleSubCategoryClick("130")}>
                       아동의류
                     </div>
-                    {clickedSubCategory === "아동의류" && (
+                    {clickedSubCategory === "130" && (
                       <div className={CategoryStyle.subSubNavbar}>
                         <ul>
-                          <li>티셔츠</li>
-                          <li>바지</li>
-                          <li>운동화</li>
+                          <li onClick={() => handleSubSubCategoryClick("131")}>
+                            티셔츠
+                          </li>
+                          <li onClick={() => handleSubSubCategoryClick("132")}>
+                            바지
+                          </li>
+                          <li onClick={() => handleSubSubCategoryClick("133")}>
+                            운동화
+                          </li>
                         </ul>
                       </div>
                     )}
@@ -72,27 +100,33 @@ export default function Category() {
             )}
           </li>
           <li>
-            <div onClick={() => handleCategoryClick("가전제품")}>가전제품</div>
-            {clickedCategory === "가전제품" && (
+            <div onClick={() => handleCategoryClick("200")}>가전제품</div>
+            {clickedCategory === "200" && (
               <div className={CategoryStyle.subNavbar}>
                 <ul>
                   <li>
-                    <div onClick={() => handleSubCategoryClick("TV")}>TV</div>
-                    {clickedSubCategory === "TV" && (
+                    <div onClick={() => handleSubCategoryClick("210")}>TV</div>
+                    {clickedSubCategory === "210" && (
                       <div className={CategoryStyle.subSubNavbar}>
                         <ul>
-                          <li>LED TV</li>
-                          <li>OLED TV</li>
-                          <li>QLED TV</li>
+                          <li onClick={() => handleSubSubCategoryClick("211")}>
+                            LED TV
+                          </li>
+                          <li onClick={() => handleSubSubCategoryClick("212")}>
+                            OLED TV
+                          </li>
+                          <li onClick={() => handleSubSubCategoryClick("213")}>
+                            QLED TV
+                          </li>
                         </ul>
                       </div>
                     )}
                   </li>
                   <li>
-                    <div onClick={() => handleSubCategoryClick("냉장고")}>
+                    <div onClick={() => handleSubCategoryClick("220")}>
                       냉장고
                     </div>
-                    {clickedSubCategory === "냉장고" && (
+                    {clickedSubCategory === "220" && (
                       <div className={CategoryStyle.subSubNavbar}>
                         <ul>
                           <li>양문형</li>
@@ -103,10 +137,10 @@ export default function Category() {
                     )}
                   </li>
                   <li>
-                    <div onClick={() => handleSubCategoryClick("세탁기")}>
+                    <div onClick={() => handleSubCategoryClick("230")}>
                       세탁기
                     </div>
-                    {clickedSubCategory === "세탁기" && (
+                    {clickedSubCategory === "230" && (
                       <div className={CategoryStyle.subSubNavbar}>
                         <ul>
                           <li>드럼 세탁기</li>

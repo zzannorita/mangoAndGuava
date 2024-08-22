@@ -116,6 +116,12 @@
   width: 300px;
   justify-content: space-evenly;
 }
+
+.productStatusText {
+  width: 60px;
+  display: flex;
+  justify-content: center;
+}
 .productStatusText:hover {
   color: #ffc107;
 }
