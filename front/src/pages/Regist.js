@@ -100,7 +100,7 @@ export default function Regist() {
     formData.append("tradingMethod", tradingMethod);
     formData.append(
       "tradingAddress",
-      tradingMethod === "delivery" ? null : tradingAddress
+      tradingMethod === false ? null : tradingAddress
     );
 
     axiosInstance
@@ -228,18 +228,18 @@ export default function Regist() {
           <div className={registStyle.productStatusBox}>
             <div
               className={`${registStyle.productStatusText} ${
-                productState === "new" ? registStyle.active : ""
+                productState === true ? registStyle.active : ""
               }`}
-              onClick={() => statusClickHandler("new")}
+              onClick={() => statusClickHandler(true)}
             >
               새상품
             </div>
             <div>|</div>
             <div
               className={`${registStyle.productStatusText} ${
-                productState === "old" ? registStyle.active : ""
+                productState === false ? registStyle.active : ""
               }`}
-              onClick={() => statusClickHandler("old")}
+              onClick={() => statusClickHandler(false)}
             >
               중고
             </div>
@@ -250,18 +250,18 @@ export default function Regist() {
           <div className={registStyle.productStatusBox}>
             <div
               className={`${registStyle.productStatusText} ${
-                isTrade === "yes" ? registStyle.active : ""
+                isTrade === true ? registStyle.active : ""
               }`}
-              onClick={() => ExchangeClickHandler("yes")}
+              onClick={() => ExchangeClickHandler(true)}
             >
               가능
             </div>
             <div>|</div>
             <div
               className={`${registStyle.productStatusText} ${
-                isTrade === "no" ? registStyle.active : ""
+                isTrade === false ? registStyle.active : ""
               }`}
-              onClick={() => ExchangeClickHandler("no")}
+              onClick={() => ExchangeClickHandler(false)}
             >
               불가능
             </div>
@@ -272,24 +272,24 @@ export default function Regist() {
           <div className={registStyle.productStatusBox}>
             <div
               className={`${registStyle.productStatusText} ${
-                tradingMethod === "delivery" ? registStyle.active : ""
+                tradingMethod === false ? registStyle.active : ""
               }`}
-              onClick={() => deliveryClickHandler("delivery")}
+              onClick={() => deliveryClickHandler(false)}
             >
               택배거래
             </div>
             <div>|</div>
             <div
               className={`${registStyle.productStatusText} ${
-                tradingMethod === "direct" ? registStyle.active : ""
+                tradingMethod === true ? registStyle.active : ""
               }`}
-              onClick={() => deliveryClickHandler("direct")}
+              onClick={() => deliveryClickHandler(true)}
             >
               직거래
             </div>
           </div>
         </div>
-        {tradingMethod === "direct" ? (
+        {tradingMethod === true ? (
           <div className={registStyle.commonContainer}>
             <div className={registStyle.registName}>위치</div>
             <input
