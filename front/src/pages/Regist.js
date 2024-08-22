@@ -47,10 +47,10 @@ export default function Regist() {
   const [productPrice, setProductPrice] = useState("");
 
   /////////////////////배송비별도///////////////////////
-  const [shippingFee, setShippingFee] = useState(false);
+  const [isShippingFee, setShippingFee] = useState(false);
 
   const imageCheckHandler = () => {
-    setShippingFee(!shippingFee);
+    setShippingFee((prevState) => (prevState ? "false" : "true"));
   };
 
   ////////////////////////내용///////////////////////////
@@ -93,14 +93,14 @@ export default function Regist() {
     formData.append("productName", productName);
     formData.append("productCategory", productCategory);
     formData.append("productPrice", parseInt(productPrice, 10));
-    formData.append("shippingFee", shippingFee);
+    formData.append("isShippingFee", isShippingFee);
     formData.append("productInfo", productInfo);
     formData.append("productState", productState);
     formData.append("isTrade", isTrade);
     formData.append("tradingMethod", tradingMethod);
     formData.append(
       "tradingAddress",
-      tradingMethod === false ? null : tradingAddress
+      tradingMethod === "false" ? null : tradingAddress
     );
 
     axiosInstance
@@ -197,21 +197,12 @@ export default function Regist() {
           />
           <div className={registStyle.deliveryFeeBox}>
             <div>배송비포함 </div>
-            {shippingFee ? (
-              <img
-                className={registStyle.checkImg}
-                src={checkFillImg}
-                alt="checkFillImg"
-                onClick={imageCheckHandler}
-              />
-            ) : (
-              <img
-                className={registStyle.checkImg}
-                src={checkEmptyImg}
-                alt="checkEmptyImg"
-                onClick={imageCheckHandler}
-              />
-            )}
+            <img
+              className={registStyle.checkImg}
+              src={isShippingFee === "true" ? checkFillImg : checkEmptyImg}
+              alt={isShippingFee === "true" ? "checkFillImg" : "checkEmptyImg"}
+              onClick={imageCheckHandler}
+            />
           </div>
         </div>
         <div className={registStyle.commonContainer}>
@@ -228,18 +219,18 @@ export default function Regist() {
           <div className={registStyle.productStatusBox}>
             <div
               className={`${registStyle.productStatusText} ${
-                productState === true ? registStyle.active : ""
+                productState === "new" ? registStyle.active : ""
               }`}
-              onClick={() => statusClickHandler(true)}
+              onClick={() => statusClickHandler("new")}
             >
               새상품
             </div>
             <div>|</div>
             <div
               className={`${registStyle.productStatusText} ${
-                productState === false ? registStyle.active : ""
+                productState === "old" ? registStyle.active : ""
               }`}
-              onClick={() => statusClickHandler(false)}
+              onClick={() => statusClickHandler("old")}
             >
               중고
             </div>
@@ -250,18 +241,18 @@ export default function Regist() {
           <div className={registStyle.productStatusBox}>
             <div
               className={`${registStyle.productStatusText} ${
-                isTrade === true ? registStyle.active : ""
+                isTrade === "true" ? registStyle.active : ""
               }`}
-              onClick={() => ExchangeClickHandler(true)}
+              onClick={() => ExchangeClickHandler("true")}
             >
               가능
             </div>
             <div>|</div>
             <div
               className={`${registStyle.productStatusText} ${
-                isTrade === false ? registStyle.active : ""
+                isTrade === "false" ? registStyle.active : ""
               }`}
-              onClick={() => ExchangeClickHandler(false)}
+              onClick={() => ExchangeClickHandler("false")}
             >
               불가능
             </div>
@@ -272,24 +263,24 @@ export default function Regist() {
           <div className={registStyle.productStatusBox}>
             <div
               className={`${registStyle.productStatusText} ${
-                tradingMethod === false ? registStyle.active : ""
+                tradingMethod === "false" ? registStyle.active : ""
               }`}
-              onClick={() => deliveryClickHandler(false)}
+              onClick={() => deliveryClickHandler("false")}
             >
               택배거래
             </div>
             <div>|</div>
             <div
               className={`${registStyle.productStatusText} ${
-                tradingMethod === true ? registStyle.active : ""
+                tradingMethod === "true" ? registStyle.active : ""
               }`}
-              onClick={() => deliveryClickHandler(true)}
+              onClick={() => deliveryClickHandler("true")}
             >
               직거래
             </div>
           </div>
         </div>
-        {tradingMethod === true ? (
+        {tradingMethod === "true" ? (
           <div className={registStyle.commonContainer}>
             <div className={registStyle.registName}>위치</div>
             <input
