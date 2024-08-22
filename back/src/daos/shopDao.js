@@ -70,11 +70,11 @@ const addProduct = async (productData) => {
     tradingMethod,
     isTrade,
     isShippingFee,
+    tradingAddress,
   } = productData;
   const tradeState = "판매중";
 
   const productCreatedDate = new Date();
-  const tradingAddress = "123-123-123-123";
 
   const connection = await db.getConnection();
   try {
