@@ -5,25 +5,35 @@ export default function Category({ onCategorySelect }) {
   const [clickedCategory, setClickedCategory] = useState(null);
   const [clickedSubCategory, setClickedSubCategory] = useState(null);
   const [clickedSubSubCategory, setClickedSubSubCategory] = useState(null);
-
+  const [clickedCategoryName, setClickedCategoryName] = useState("");
+  const [clickedSubCategoryName, setClickedSubCategoryName] = useState("");
+  const [clickedSubSubCategoryName, setClickedSubSubCategoryName] =
+    useState("");
   // 카테고리 클릭 시
-  const handleCategoryClick = (category) => {
+  const handleCategoryClick = (category, categoryName) => {
     setClickedCategory(category);
+    setClickedCategoryName(categoryName);
     setClickedSubCategory(null); // 서브 카테고리 초기화
     setClickedSubSubCategory(null);
   };
 
   // 서브 카테고리 클릭 시
-  const handleSubCategoryClick = (subCategory) => {
+  const handleSubCategoryClick = (subCategory, categoryName) => {
     setClickedSubCategory(subCategory);
+    setClickedSubCategoryName(categoryName);
     setClickedSubSubCategory(null);
   };
 
   // 서브 서브 카테고리 클릭 시
-  const handleSubSubCategoryClick = (subSubCategoryCode) => {
+  const handleSubSubCategoryClick = (
+    subSubCategoryCode,
+    subSubCategoryName
+  ) => {
     setClickedSubSubCategory(subSubCategoryCode);
+    setClickedSubSubCategoryName(subSubCategoryName);
     const fullCategoryCode = `${clickedCategory}${clickedSubCategory}${subSubCategoryCode}`;
-    onCategorySelect(fullCategoryCode);
+    const fullCategoryName = `${clickedCategoryName} > ${clickedSubCategoryName} > ${subSubCategoryName}`;
+    onCategorySelect(fullCategoryCode, fullCategoryName);
   };
 
   return (
@@ -31,24 +41,38 @@ export default function Category({ onCategorySelect }) {
       <div className={CategoryStyle.navbar}>
         <ul>
           <li>
-            <div onClick={() => handleCategoryClick("100")}>의류</div>
+            <div onClick={() => handleCategoryClick("100", "의류")}>의류</div>
             {clickedCategory === "100" && (
               <div className={CategoryStyle.subNavbar}>
                 <ul>
                   <li>
-                    <div onClick={() => handleSubCategoryClick("110")}>
+                    <div
+                      onClick={() => handleSubCategoryClick("110", "남성의류")}
+                    >
                       남성의류
                     </div>
                     {clickedSubCategory === "110" && (
                       <div className={CategoryStyle.subSubNavbar}>
                         <ul>
-                          <li onClick={() => handleSubSubCategoryClick("111")}>
+                          <li
+                            onClick={() =>
+                              handleSubSubCategoryClick("111", "상의")
+                            }
+                          >
                             상의
                           </li>
-                          <li onClick={() => handleSubSubCategoryClick("112")}>
+                          <li
+                            onClick={() =>
+                              handleSubSubCategoryClick("112", "하의")
+                            }
+                          >
                             하의
                           </li>
-                          <li onClick={() => handleSubSubCategoryClick("113")}>
+                          <li
+                            onClick={() =>
+                              handleSubSubCategoryClick("113", "운동화")
+                            }
+                          >
                             운동화
                           </li>
                         </ul>
@@ -56,19 +80,33 @@ export default function Category({ onCategorySelect }) {
                     )}
                   </li>
                   <li>
-                    <div onClick={() => handleSubCategoryClick("120")}>
+                    <div
+                      onClick={() => handleSubCategoryClick("120", "여성의류")}
+                    >
                       여성의류
                     </div>
                     {clickedSubCategory === "120" && (
                       <div className={CategoryStyle.subSubNavbar}>
                         <ul>
-                          <li onClick={() => handleSubSubCategoryClick("121")}>
+                          <li
+                            onClick={() =>
+                              handleSubSubCategoryClick("121", "원피스")
+                            }
+                          >
                             원피스
                           </li>
-                          <li onClick={() => handleSubSubCategoryClick("122")}>
+                          <li
+                            onClick={() =>
+                              handleSubSubCategoryClick("122", "스커트")
+                            }
+                          >
                             스커트
                           </li>
-                          <li onClick={() => handleSubSubCategoryClick("123")}>
+                          <li
+                            onClick={() =>
+                              handleSubSubCategoryClick("123", "하이힐")
+                            }
+                          >
                             하이힐
                           </li>
                         </ul>
@@ -76,19 +114,33 @@ export default function Category({ onCategorySelect }) {
                     )}
                   </li>
                   <li>
-                    <div onClick={() => handleSubCategoryClick("130")}>
+                    <div
+                      onClick={() => handleSubCategoryClick("130", "아동의류")}
+                    >
                       아동의류
                     </div>
                     {clickedSubCategory === "130" && (
                       <div className={CategoryStyle.subSubNavbar}>
                         <ul>
-                          <li onClick={() => handleSubSubCategoryClick("131")}>
+                          <li
+                            onClick={() =>
+                              handleSubSubCategoryClick("131", "티셔츠")
+                            }
+                          >
                             티셔츠
                           </li>
-                          <li onClick={() => handleSubSubCategoryClick("132")}>
+                          <li
+                            onClick={() =>
+                              handleSubSubCategoryClick("132", "바지")
+                            }
+                          >
                             바지
                           </li>
-                          <li onClick={() => handleSubSubCategoryClick("133")}>
+                          <li
+                            onClick={() =>
+                              handleSubSubCategoryClick("133", "운동화")
+                            }
+                          >
                             운동화
                           </li>
                         </ul>

@@ -38,9 +38,11 @@ export default function Regist() {
 
   /////////////////////카테고리/////////////////////////
   const [productCategory, setProductCategory] = useState("");
+  const [productCategoryName, setProductCategoryName] = useState("");
 
-  const handleCategorySelect = (categoryCode) => {
-    setProductCategory(categoryCode); // selectedCategory 대신 productCategory에 저장
+  const handleCategorySelect = (categoryCode, categoryName) => {
+    setProductCategory(categoryCode);
+    setProductCategoryName(categoryName);
   };
 
   /////////////////////가격////////////////////////////
@@ -186,7 +188,9 @@ export default function Regist() {
           <div className={registStyle.registName}>카테고리</div>
           <RegistCategory onCategorySelect={handleCategorySelect} />
         </div>
-        <div>선택된 카테고리 코드: {productCategory}</div>
+        <div className={registStyle.selectedCategory}>
+          {productCategoryName}
+        </div>
         <div className={registStyle.commonContainer}>
           <div className={registStyle.registName}>가격</div>
           <input

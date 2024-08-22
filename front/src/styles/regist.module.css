@@ -73,7 +73,6 @@
 .registName {
   width: 200px;
   display: flex;
-  /* justify-content: center; */
   padding-left: 10px;
   color: #333;
   position: relative;
@@ -99,6 +98,11 @@
   font-size: 16px;
 }
 
+.selectedCategory {
+  padding-left: 210px;
+  padding-bottom: 20px;
+  color: #333;
+}
 .deliveryFeeBox {
   display: flex;
   position: absolute;
