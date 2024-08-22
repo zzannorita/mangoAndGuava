@@ -46,6 +46,7 @@ const uploadProduct = async (req, res) => {
       tradingMethod,
       isTrade,
       isShippingFee,
+      tradingAddress,
     } = req.body;
 
     // req.files를 통해 업로드된 파일 정보 접근
@@ -61,6 +62,7 @@ const uploadProduct = async (req, res) => {
       tradingMethod: tradingMethod === "true" ? 1 : 0, // 변환
       isTrade: isTrade === "true" ? 1 : 0, // 변환
       isShippingFee: isShippingFee === "true" ? 1 : 0, // 변환
+      tradingAddress,
       productImage,
     };
 
