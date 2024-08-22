@@ -75,7 +75,8 @@ function Header() {
     if (isLogin) {
       navigate(redirect);
     } else {
-      window.location.href = link;
+      alert("로그인 후 이용 가능합니다.");
+      navigate("/");
     }
   };
   return (
