@@ -7,7 +7,7 @@ import fillHeartImg from "../image/fillHeart.png";
 import getRelativeTime from "../utils/getRelativeTime";
 import extractLocation from "../utils/extractLocation";
 
-const ProductCard = ({ product, userData }) => {
+const ProductsCard = ({ product, userData }) => {
   ////////////////////////찜/////////////////////////////////
   const [clickedHeart, setClickedHeart] = useState(true);
 
@@ -51,7 +51,7 @@ const ProductCard = ({ product, userData }) => {
   );
 };
 
-ProductCard.propTypes = {
+ProductsCard.propTypes = {
   product: PropTypes.shape({
     images: PropTypes.arrayOf(PropTypes.string).isRequired,
     name: PropTypes.string.isRequired,
@@ -62,4 +62,4 @@ ProductCard.propTypes = {
   }).isRequired,
 };
 
-export default ProductCard;
+export default ProductsCard;
