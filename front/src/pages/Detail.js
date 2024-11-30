@@ -1,9 +1,26 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axiosInstance from "../axios";
 import DetailStyle from "../styles/detail.module.css";
 import camera from "../image/camera.png";
 import emptyHeartImg from "../image/emptyHeart.png";
 import eyeImg from "../image/eye.png";
+import rightImg from "../image/right.png";
 export default function Detail() {
+  // 현재 URL에서 쿼리 파라미터 추출
+  const currentUrl = new URL(window.location.href);
+  const productId = currentUrl.searchParams.get("itemId");
+
+  useEffect(() => {
+    axiosInstance
+      .get(`http://localhost:3001/detail?itemId=${productId}`)
+      .then((response) => {
+        console.log("API Response:", response.data); // 데이터 확인
+      })
+      .catch((error) => {
+        console.log("데이터 가져오기 실패", error);
+      });
+  });
+
   return (
     <div className="container">
       <div className={DetailStyle.productInfoBox}>
@@ -36,6 +53,10 @@ export default function Detail() {
             </div>
           </div>
           <div className={DetailStyle.productInfoRightBox}>
+            <div className={DetailStyle.productShopEnterBox}>
+              000님 상점 &nbsp;
+              <img src={rightImg} alt="rightImg" className="smallImgSize"></img>
+            </div>
             <div className={DetailStyle.productInfoTopBox}>
               <div className={DetailStyle.productDetainInfoBox}>
                 <div className={DetailStyle.productDetainInfoBoxes}>
