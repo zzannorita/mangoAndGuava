@@ -1,17 +1,27 @@
 .productCard {
-  width: 230px;
-  height: 360px;
-  margin: 16px 0;
+  width: 200px;
+  height: 320px;
+  margin: 16px 6px 16px;
   display: flex;
   flex-direction: column;
   position: relative;
 }
 
 .productImage {
-  width: 230px;
-  height: 260px;
+  width: 200px;
+  height: 230px;
   background-color: #f1f1f1;
   border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.productImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .emptyHeartImg {
@@ -24,8 +34,8 @@
 
 .heartAlarm {
   position: absolute;
-  top: 115px;
-  right: 27px;
+  top: 80px;
+  right: 15px;
   background-color: #ffc107;
 
   border-radius: 15px;

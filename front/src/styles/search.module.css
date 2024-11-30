@@ -1,0 +1,73 @@
+.resultTextBottomBox {
+  /* height: 150px; */
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  border-top: 1px solid #f1f1f1;
+}
+
+.category {
+  display: flex;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.categoryNameBox {
+  display: flex;
+  align-items: center;
+  width: 100px;
+  padding: 30px 30px;
+  justify-content: space-between;
+  background-color: #f9f9f9;
+}
+
+.categoryAddButton {
+  border: none;
+  background: #f9f9f9;
+  cursor: pointer;
+}
+
+.categorySelectedBox {
+  padding: 30px 30px;
+}
+.priceSelectedBox {
+  padding: 20px 20px;
+  display: flex;
+  align-items: center;
+}
+.selectedCategory {
+  padding: 10px;
+}
+.priceBox {
+  border: 1px solid #f1f1f1;
+  outline: none;
+  background-color: white;
+  width: 100px;
+  padding: 10px;
+  font-family: "Pretendard-Regular";
+  font-size: 16px;
+  color: #333;
+}
+
+.priceBoxBetween {
+  margin: 0 10px 0 10px;
+}
+.priceFilteredButton {
+  border: 1px solid #f1f1f1;
+  border-radius: 10px;
+  padding: 10px;
+  color: #333;
+  background-color: #f9f9f9;
+  margin-left: 10px;
+}
+.priceFilteredButton:hover {
+  background-color: #ffc107;
+}
+.resultProductsBox {
+  padding: 10px;
+}
+.noProductsText {
+  padding: 10px;
+  color: #333;
+  display: flex;
+}

@@ -1,34 +1,30 @@
 import React, { useState, useEffect } from "react";
-import ProductCard from "../components/ProductsCard";
+import ProductList from "../components/ProductList";
 import HomeStyle from "../styles/home.module.css";
-import cowBoy from "../image/banner.png";
+import cowBoy from "../image/maggo.jpg";
+import axiosInstance from "../axios";
 export default function Home() {
-  // const [recommendedProducts, setRecommendedProducts] = useState([]);
+  const [products, setProducts] = useState([]);
 
-  // useEffect(() => {
-  //   const fetchProducts = async () => {
-  //     try {
-  //       const response = await fetch("/api/recommended-products");
-  //       const data = await response.json();
-  //       setRecommendedProducts(data);
-  //     } catch (error) {
-  //       console.error("Error fetching recommended products:", error);
-  //     }
-  //   };
-
-  //   fetchProducts();
-  // }, []);
-
+  useEffect(() => {
+    axiosInstance
+      .get("http://localhost:3001/products")
+      .then((response) => {
+        setProducts(response.data.data || []);
+        console.log("API Response:", response.data); // 데이터 확인
+      })
+      .catch((error) => {
+        console.log("데이터 가져오기 실패", error);
+      });
+  }, []);
   return (
     <div className="container">
       <img src={cowBoy} alt="cowBoy" className={HomeStyle.cowBoy}></img>
       <div className={HomeStyle.recommendBox}>
         <div className={HomeStyle.userRecommendBox}>
-          <div className={HomeStyle.userRecommendName}>사용자 추천 상품</div>
+          <div className={HomeStyle.userRecommendName}>최신 상품 목록</div>
           <div className={HomeStyle.productList}>
-            {/* {recommendedProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))} */}
+            <ProductList products={products} />
           </div>
         </div>
       </div>

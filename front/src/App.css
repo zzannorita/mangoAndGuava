@@ -74,10 +74,17 @@ body {
   height: 30px;
 }
 
+.smallImgSize {
+  width: 20px;
+  height: 20px;
+}
 .impact {
   color: #ffc107;
 }
 
+.impact2 {
+  font-size: 24px;
+}
 /*app.js해당 css */
 .header {
   position: fixed;
@@ -111,4 +118,19 @@ body {
   margin-top: 230px;
   z-index: 500;
   position: relative;
+}
+
+/* 링크 색상 변경 방지 */
+a {
+  color: inherit; /* 기본 색상 유지 */
+  text-decoration: none; /* 밑줄 제거 */
+}
+
+/* 링크 클릭 후 색상 변경 방지 */
+a:visited {
+  color: inherit; /* 클릭 후에도 색상 유지 */
+}
+
+a:active {
+  color: inherit; /* 클릭 시에도 색상 유지 */
 }

@@ -3,7 +3,8 @@ import shopStyle from "../styles/shop.module.css";
 import userImg from "../image/userImg.png";
 import editImg from "../image/edit.png";
 import checkImg from "../image/checkbox.png";
-import ProductsCard from "../components/ProductsCard";
+// import ProductsCard from "../components/ProductsCard";
+import ProductList from "../components/ProductList";
 import Review from "./Review";
 import Settings from "./Settings";
 import Favorites from "./Favorites";
@@ -90,59 +91,39 @@ export default function Shop() {
       switch (selectedFilter) {
         case "판매중":
           return (
-            <div className="productItem">
-              {products
-                .filter((product) => product.tradeState === "판매중")
-                .map((product) => (
-                  <ProductsCard
-                    key={product.productId}
-                    product={product}
-                    userData={userData || { address: "" }}
-                  />
-                ))}
-            </div>
+            <ProductList
+              products={products.filter(
+                (product) => product.tradeState === "판매중"
+              )}
+              userData={userData || { address: "" }}
+            />
           );
         case "예약중":
           return (
-            <div className="productItem">
-              {products
-                .filter((product) => product.tradeState === "예약중")
-                .map((product) => (
-                  <ProductsCard
-                    key={product.productId}
-                    product={product}
-                    userData={userData || { address: "" }}
-                  />
-                ))}
-            </div>
+            <ProductList
+              products={products.filter(
+                (product) => product.tradeState === "예약중"
+              )}
+              userData={userData || { address: "" }}
+            />
           );
         case "판매완료":
           return (
-            <div className="productItem">
-              {products
-                .filter((product) => product.tradeState === "판매완료")
-                .map((product) => (
-                  <ProductsCard
-                    key={product.productId}
-                    product={product}
-                    userData={userData || { address: "" }}
-                  />
-                ))}
-            </div>
+            <ProductList
+              products={products.filter(
+                (product) => product.tradeState === "판매완료"
+              )}
+              userData={userData || { address: "" }}
+            />
           );
         case "거래후기":
           return <Review />;
         default:
           return (
-            <div className="productItem">
-              {products.map((product) => (
-                <ProductsCard
-                  key={product.productId}
-                  product={product}
-                  userData={userData || { address: "" }}
-                />
-              ))}
-            </div>
+            <ProductList
+              products={products}
+              userData={userData || { address: "" }}
+            />
           );
       }
     } else if (selectedInfo) {
