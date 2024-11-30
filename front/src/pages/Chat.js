@@ -1,68 +1,90 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import chatStyle from "../styles/chat.module.css";
 import chatTestImg from "../image/chat.png";
 import chatRemove from "../image/x.png";
 import axiosInstance from "../axios";
 
 const Chat = () => {
-  const [message, setMessage] = useState(""); // 인풋에 입력된 메시지를 상태로 관리
-  const [userId, setUserId] = useState("");
-  const [chatList, setChatList] = useState([]);
-  const [chatEach, setChatEach] = useState([]); // 선택된 채팅방 내역 상태
-  const [selectedRoomId, setSelectedRoomId] = useState(null); // 현재 선택된 room_id
+  const [message, setMessage] = useState(""); // 입력 메시지
+  const [userId, setUserId] = useState(""); // 현재 사용자 ID
+  const [otherUserId, setOtherUserId] = useState(""); // 채팅 상대 ID
+  const [chatList, setChatList] = useState([]); // 채팅방 목록
+  const [chatEach, setChatEach] = useState([]); // 선택된 채팅방 내역
+  const [selectedRoomId, setSelectedRoomId] = useState(null); // 선택된 room_id
+  const socket = useRef(null); // WebSocket 인스턴스 참조
 
-  // 메시지를 전송하는 함수 (엔터키를 누를 때 실행)
-  const sendMessage = (e) => {
-    if (e.key === "Enter" && message.trim() !== "") {
-      console.log("채팅 전송:", message); // 실제로 메시지를 서버에 전송하는 로직
-      setMessage(""); // 메시지 전송 후 인풋 초기화
-    }
-  };
+  // WebSocket 연결
+  useEffect(() => {
+    socket.current = new WebSocket("ws://localhost:3001");
 
-  // 인풋 내용 변경 함수
-  const handleChange = (e) => {
-    setMessage(e.target.value); // 인풋에 입력된 텍스트를 상태로 관리
-  };
+    // WebSocket 열리면 userId 전달 (인증)
+    socket.current.onopen = () => {
+      socket.current.send(JSON.stringify({ type: "auth", userId }));
+    };
 
-  // 채팅방 클릭 시 room_id로 채팅 내역 가져오기
-  const fetchChatRoomMessages = async (roomId) => {
+    // WebSocket으로 메시지 수신
+    socket.current.onmessage = (event) => {
+      const newMessage = JSON.parse(event.data);
+
+      // 현재 선택된 채팅방에 해당하는 메시지면 추가
+      if (newMessage.roomId === selectedRoomId) {
+        setChatEach((prevMessages) => [...prevMessages, newMessage]);
+      }
+    };
+
+    return () => {
+      socket.current.close();
+    };
+  }, [userId, selectedRoomId]);
+
+  // 채팅방 클릭 시 채팅 내역 가져오기
+  const fetchChatRoomMessages = async (roomId, otherUser) => {
     try {
+      console.log("클릭됨");
+      setOtherUserId(otherUser);
       const response = await axiosInstance.get(
         `http://localhost:3001/chat-each?roomId=${roomId}`
       );
-      setChatEach(response.data.data); // 채팅 내역 저장
-      console.log(response.data.data);
-      setSelectedRoomId(roomId); // 선택된 채팅방 ID 저장
+      setChatEach(response.data.data);
+      setSelectedRoomId(roomId);
     } catch (error) {
       console.error("채팅 내역 가져오기 실패:", error);
     }
   };
 
-  useEffect(() => {
-    axiosInstance
-      .get("http://localhost:3001/chat-my")
-      .then((response) => {
-        const data = response.data.data;
-        setChatList(data);
-        console.log(data);
-      })
-      .catch((error) => {
-        console.log("데이터 가져오기 실패", error);
-      });
-  }, []);
+  // 채팅 메시지 전송
+  const sendMessage = (e) => {
+    if (e.key === "Enter" && message.trim() !== "") {
+      const newMessage = {
+        roomId: selectedRoomId,
+        user_from: userId, // userFrom -> user_from
+        user_to: otherUserId, // userTo -> user_to
+        message: message.trim(), // content -> message
+      };
 
-  //자신의 userId를 얻어오기 위함
+      // WebSocket으로 메시지 전송
+      socket.current.send(JSON.stringify(newMessage));
+
+      // 로컬에서 즉시 메시지 렌더링 (낙관적 업데이트)
+      setChatEach((prevMessages) => [...prevMessages, newMessage]);
+      setMessage("");
+    }
+  };
+
+  // 입력 내용 변경
+  const handleChange = (e) => setMessage(e.target.value);
+
+  // 초기 데이터 로드: 채팅방 목록 및 userId 가져오기
   useEffect(() => {
-    axiosInstance
-      .get("http://localhost:3001/user-data")
-      .then((response) => {
-        const data = response.data.user;
-        setUserId(data.userId);
-        //console.log(data);
-      })
-      .catch((error) => {
-        console.log("데이터 가져오기 실패", error);
-      });
+    axiosInstance.get("http://localhost:3001/chat-my").then((response) => {
+      setChatList(response.data.data);
+      console.log(response.data.data);
+    });
+
+    axiosInstance.get("http://localhost:3001/user-data").then((response) => {
+      setUserId(response.data.user.userId);
+      console.log(response.data.user.userId);
+    });
   }, []);
 
   return (
@@ -73,17 +95,18 @@ const Chat = () => {
             <div className={chatStyle.chatTitleTextBox}>
               <div className={chatStyle.chatTitleText}>채팅</div>
             </div>
-            <div className={chatStyle.chatTitleSearch}></div>
           </div>
           <div className={chatStyle.chatBox}>
-            {/* 채팅방 리스트 */}
+            {/* 채팅방 목록 */}
             <div className={chatStyle.chatListBox}>
               {chatList.length > 0 ? (
                 chatList.map((chat, index) => (
                   <div
                     key={index}
                     className={chatStyle.chatEachBox}
-                    onClick={() => fetchChatRoomMessages(chat.room_id)}
+                    onClick={() =>
+                      fetchChatRoomMessages(chat.room_id, chat.other_user)
+                    }
                   >
                     <div className={chatStyle.chatEachImgBox}>
                       <img src={chatTestImg} alt="chatTestImg" />
@@ -108,7 +131,7 @@ const Chat = () => {
               )}
             </div>
 
-            {/* 선택된 채팅방의 채팅 내역 */}
+            {/* 채팅 내용 */}
             <div className={chatStyle.chattingBox}>
               <div className={chatStyle.chatContentBox}>
                 <div className={chatStyle.chatContentTitleBox}>
@@ -129,7 +152,7 @@ const Chat = () => {
                       <div
                         key={index}
                         className={
-                          message.user_from === `${userId}`
+                          String(message.user_from) === String(userId)
                             ? chatStyle.myMessage
                             : chatStyle.otherMessage
                         }
@@ -143,18 +166,15 @@ const Chat = () => {
                 </div>
               </div>
 
-              {/* 입력창 */}
+              {/* 메시지 입력 */}
               <div className={chatStyle.chatFieldBox}>
-                <div className={chatStyle.chatInputContainer}>
-                  <input
-                    type="text"
-                    className={chatStyle.chatInput}
-                    value={message}
-                    onChange={handleChange}
-                    onKeyDown={sendMessage}
-                    placeholder="메시지를 입력하세요..."
-                  />
-                </div>
+                <input
+                  type="text"
+                  value={message}
+                  onChange={handleChange}
+                  onKeyDown={sendMessage}
+                  placeholder="메시지를 입력하세요..."
+                />
               </div>
             </div>
           </div>

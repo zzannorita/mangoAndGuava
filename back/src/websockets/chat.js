@@ -1,4 +1,4 @@
-const { Server } = require("ws"); // WebSocket 모듈
+const { Server } = require("ws");
 const db = require("../config/dbConfig"); // 데이터베이스 연결 가져오기
 
 // WebSocket 관련 설정
@@ -9,21 +9,37 @@ function setupWebSocket(server) {
   wss.on("connection", (ws) => {
     console.log("WebSocket client connected");
 
-    // 메시지 수신 이벤트
-    ws.on("message", async (message) => {
+    // 각 클라이언트마다 고유한 userId 저장
+    ws.on("message", async (data) => {
+      const parsedData = JSON.parse(data);
+      console.log("테스트", parsedData);
+      if (parsedData.type === "auth") {
+        ws.userId = parsedData.userId; // WebSocket 인스턴스에 userId 저장
+        return;
+      }
+
       try {
-        const parsedMessage = JSON.parse(message);
-        const { roomId, userFrom, userTo, content } = parsedMessage;
+        const {
+          roomId,
+          user_from: userFrom,
+          user_to: userTo,
+          message: content,
+        } = parsedData;
+        console.log("테스트2", parsedData);
+        console.log(roomId, userFrom, userTo, content);
 
         // MySQL 데이터베이스에 메시지 저장
         await db.execute(
           `INSERT INTO chat (room_id, user_from, user_to, message) VALUES (?, ?, ?, ?)`,
-          [roomId, userFrom, userTo, content]
+          [String(roomId), String(userFrom), String(userTo), String(content)]
         );
 
-        // WebSocket 브로드캐스트
+        // 특정 클라이언트(userTo)에게만 메시지 전송
         wss.clients.forEach((client) => {
-          if (client.readyState === ws.OPEN) {
+          if (
+            client.readyState === ws.OPEN &&
+            (client.userId === userTo || client.userId === userFrom)
+          ) {
             client.send(
               JSON.stringify({
                 roomId,
