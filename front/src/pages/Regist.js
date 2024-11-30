@@ -7,6 +7,7 @@ import checkFillImg from "../image/checkFill.png";
 import RegistCategory from "./RegistCategory";
 import axiosInstance from "../axios";
 import { useNavigate } from "react-router-dom";
+import LocationList from "../components/LocationList";
 export default function Regist() {
   ////////////////////이미지 업로드//////////////////
   const [images, setImages] = useState([]);
@@ -81,6 +82,7 @@ export default function Regist() {
 
   //////////////////////위치/////////////////////////////
   const [tradingAddress, setTradingAddress] = useState("");
+  const [selectedTradingAddress, setSelectedTradingAddress] = useState("");
 
   ////////////////////////데이터 전송/////////////////////
   const navigate = useNavigate();
@@ -287,12 +289,21 @@ export default function Regist() {
         {tradingMethod === "true" ? (
           <div className={registStyle.commonContainer}>
             <div className={registStyle.registName}>위치</div>
-            <input
-              value={tradingAddress}
-              onChange={(e) => setTradingAddress(e.target.value)}
-              className={registStyle.registInputBox}
-              placeholder="거래하실 위치를 상세하게 입력해주세요."
-            />
+            <div className={registStyle.registNameBox}>
+              <input
+                disabled
+                value={selectedTradingAddress || tradingAddress}
+                onChange={(e) => setTradingAddress(e.target.value)}
+                className={registStyle.registInputBox}
+                placeholder="거래하실 위치를 선택해주세요."
+              />
+              <LocationList
+                className={registStyle.locationList}
+                onLocationSelect={(address) =>
+                  setSelectedTradingAddress(address)
+                }
+              />
+            </div>
           </div>
         ) : (
           ""

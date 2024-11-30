@@ -77,6 +77,15 @@
   color: #333;
   position: relative;
 }
+
+.registNameBox {
+  display: flex;
+  flex-direction: column;
+}
+
+.locationList {
+  display: flex;
+}
 .registInputBox {
   height: 55px;
   border: 1px solid #ccc;
