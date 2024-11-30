@@ -6,7 +6,7 @@
 
 .productCategoryBox {
   display: flex;
-  padding: 20px 0;
+  padding: 30px 0;
 }
 
 .productInfoBottomBox {
@@ -33,17 +33,20 @@
   justify-content: space-between;
 }
 
-.productNameBox,
-.productPriceBox {
-  height: 30px;
-  padding: 5px;
+.productNameBox {
   font-size: 30px;
   font-weight: bold;
-  color: #333;
 }
 
+.productPriceBox {
+  width: 100%;
+  font-size: 40px;
+  font-weight: bold;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f1f1f1;
+}
 .productDetailBox {
-  height: 250px;
+  height: 230px;
   display: flex;
   align-content: space-around;
   justify-content: center;
@@ -76,6 +79,13 @@
   padding: 10px 0;
   justify-content: space-between;
 }
+
+.productShopEnterBox {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  cursor: pointer;
+}
 .productInfoTopBox {
   display: flex;
   flex-direction: column;
@@ -83,7 +93,7 @@
 
 .productDetainInfoBox {
   display: flex;
-  padding-top: 130px;
+  padding-bottom: 150px;
   justify-content: space-between;
 }
 .productDetainInfoBoxes {
@@ -107,11 +117,12 @@
   background-color: #ffc107;
 }
 .productContentBoxName {
-  margin: 50px 0 30px 0;
+  margin: 70px 0 30px 0;
 }
 .productContent {
   height: 500px;
-  border: 1px solid #f1f1f1;
-  padding: 30px;
-  background-color: #f9f9f9;
+  border-top: 1px solid #f1f1f1;
+  border-bottom: 1px solid #f1f1f1;
+  padding: 30px 0;
+  /* background-color: #f9f9f9; */
 }
