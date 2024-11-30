@@ -85,6 +85,9 @@ body {
 .impact2 {
   font-size: 24px;
 }
+.impact3 {
+  font-weight: bold;
+}
 /*app.js해당 css */
 .header {
   position: fixed;
