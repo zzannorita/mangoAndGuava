@@ -135,7 +135,7 @@ const getDetailProduct = async (req, res) => {
 
   try {
     const getProductByProductId = await productsDao.getProductByProductId(
-      productId
+      itemId
     );
     const userId = getProductByProductId.userId;
     const user = await userDao.getUserById(userId);
