@@ -180,7 +180,7 @@ export default function Shop() {
           <div className={shopStyle.myShopBox}>
             <div className={shopStyle.myShopTitleBox}>
               <div className={shopStyle.myShopTitleText}>
-                {userData?.nickname}님의 상점
+                <span className="impact3">{userData?.nickname}</span>님의 상점
               </div>
               <RatingStars />
             </div>
