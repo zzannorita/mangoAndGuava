@@ -1,0 +1,167 @@
+.container {
+  width: 100%;
+  height: 600px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.chatContainer {
+  display: flex;
+  flex-direction: column;
+  width: 95%;
+  height: 100%;
+  border: 1px solid #f1f1f1;
+  border-radius: 10px;
+}
+
+.chatTitleBox {
+  /* background-color: #f1f1f1; */
+  border-bottom: solid 1px #f1f1f1;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 10%;
+  flex-shrink: 0; /* 줄어들지 않도록 설정 */
+}
+.chatTitleTextBox {
+  width: 5%;
+  height: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.chatTitleText {
+  font-size: x-large;
+}
+
+.chatBox {
+  /* background-color: #f9f9f9; */
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+.chatListBox {
+  display: flex;
+  flex-direction: column;
+  width: 45%;
+  height: 100%;
+
+  padding-top: 5px;
+
+  overflow-y: auto; /* 세로 스크롤 생성 */
+  overflow-x: hidden; /* 가로 스크롤 제거 */
+}
+
+/* .chatEach {
+  border: 1px solid blueviolet;
+  width: 100%;
+} */
+
+.chatEachBox {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  height: 60px;
+  margin-bottom: 3px;
+}
+
+.chatEachImgBox {
+  width: 15%;
+  height: auto;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}
+
+.chatEachImgBox img {
+  width: 50%;
+  height: 90%;
+}
+
+.chatEachMainBox {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  padding-right: 1%;
+}
+
+.chatEachNameBox {
+  height: 50%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chatEachContentBox {
+  height: 50%;
+}
+
+.chattingBox {
+  width: 55%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid #f1f1f1;
+}
+
+.chatContentBox {
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+}
+
+.chatContentTitleBox {
+  border-bottom: solid 1px #f1f1f1;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 10%;
+  padding-left: 10px;
+  padding-right: 10px;
+  align-items: center;
+}
+
+.chatContentNameBox div {
+  font-size: larger;
+}
+
+.chatFieldBox {
+  width: 100%;
+  border-bottom: solid 1px #f1f1f1;
+  height: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chatInputContainer {
+  width: 90%; /* 부모 div 너비 90% */
+  margin: 0 auto; /* 가운데 정렬 */
+}
+
+/* 입력창 스타일 */
+.chatInput {
+  width: 100%; /* 부모 div의 너비 100% */
+  padding: 10px; /* 패딩 추가 */
+  font-size: 16px; /* 폰트 사이즈 설정 */
+  border: 1px solid #ccc; /* 테두리 설정 */
+  border-radius: 15px; /* 둥근 모서리 */
+  outline: none; /* 포커스 시 테두리 제거 */
+}
+
+.myMessage {
+  text-align: right;
+  background-color: #d1e7dd;
+}
+
+.otherMessage {
+  text-align: left;
+  background-color: #f8d7da;
+}

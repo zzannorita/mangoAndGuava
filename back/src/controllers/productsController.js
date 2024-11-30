@@ -1,5 +1,6 @@
 const axios = require("axios");
 const productsDao = require("../daos/productsDao");
+const userDao = require("../daos/userDao");
 
 const handleProducts = async (req, res) => {
   const item = req.query.item;
@@ -128,7 +129,30 @@ const getProduct = async (req, res) => {
   }
 };
 
+// 클릭해서 상품을 들어갔을때 상세 정보
+const getDetailProduct = async (req, res) => {
+  const itemId = req.query.productId;
+
+  try {
+    const getProductByProductId = await productsDao.getProductByProductId(
+      productId
+    );
+    const userId = getProductByProductId.userId;
+    const user = await userDao.getUserById(userId);
+
+    return res.status(200).json({
+      code: "SUCCESS_SEARCH_PRODUCT",
+      product: getProductByProductId,
+      user: user,
+    });
+  } catch (error) {
+    console.error("Error during search products:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   handleProducts,
   getProduct,
+  getDetailProduct,
 };
