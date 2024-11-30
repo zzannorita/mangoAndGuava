@@ -33,6 +33,19 @@ export default function Category() {
     setHoveredSubSubCategory(subSubCategory);
   };
 
+  const categories = [
+    { code: 100, name: "의류" },
+    { code: 200, name: "가전제품" },
+    { code: 300, name: "주방용품" },
+    { code: 400, name: "자동차용품" },
+    { code: 100110, name: "남성의류" },
+    { code: 100120, name: "여성의류" },
+    { code: 100130, name: "아동의류" },
+    { code: 100110111, name: "상의" },
+    { code: 100110112, name: "하의" },
+    { code: 100110113, name: "운동화" },
+  ];
+
   return (
     <div className={CategoryStyle.categoryBox}>
       <img
@@ -83,7 +96,7 @@ export default function Category() {
             onMouseEnter={() => handleMouseHover("의류")}
             onMouseLeave={handleMouseLeave}
           >
-            <Link to="/clothing">의류</Link>
+            <Link to="/search?category?category={100}">의류</Link>
             {hoveredCategory === "의류" && (
               <div className={CategoryStyle.subNavbar}>
                 <ul>
@@ -91,7 +104,7 @@ export default function Category() {
                     onMouseEnter={() => handleSubMouseHover("남성의류")}
                     onMouseLeave={handleMouseLeave}
                   >
-                    <Link to="/clothing/men">남성의류</Link>
+                    <Link to="/search?productCategory=100110">남성의류</Link>
                     {hoveredSubCategory === "남성의류" && (
                       <div className={CategoryStyle.subSubNavbar}>
                         <ul>
@@ -99,13 +112,17 @@ export default function Category() {
                             onMouseEnter={() => handleSubSubMouseHover("상의")}
                             onMouseLeave={handleMouseLeave}
                           >
-                            <Link to="/clothing/men/shirts">상의</Link>
+                            <Link to="/search?category?category=100110111">
+                              상의
+                            </Link>
                           </li>
                           <li
                             onMouseEnter={() => handleSubSubMouseHover("하의")}
                             onMouseLeave={handleMouseLeave}
                           >
-                            <Link to="/clothing/men/pants">하의</Link>
+                            <Link to="/search?productCategory=100110112">
+                              하의
+                            </Link>
                           </li>
                           <li
                             onMouseEnter={() =>
@@ -113,17 +130,19 @@ export default function Category() {
                             }
                             onMouseLeave={handleMouseLeave}
                           >
-                            <Link to="/clothing/men/shoes">운동화</Link>
+                            <Link to="/search?productCategory=100110113">
+                              운동화
+                            </Link>
                           </li>
                         </ul>
                       </div>
                     )}
                   </li>
                   <li>
-                    <Link to="/clothing/women">여성의류</Link>
+                    <Link to="/search?productCategory=100120">여성의류</Link>
                   </li>
                   <li>
-                    <Link to="/clothing/kids">아동의류</Link>
+                    <Link to="/search?productCategory=100130">아동의류</Link>
                   </li>
                 </ul>
               </div>
