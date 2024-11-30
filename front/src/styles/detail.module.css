@@ -1,0 +1,117 @@
+.productInfoBox {
+  width: 1200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.productCategoryBox {
+  display: flex;
+  padding: 20px 0;
+}
+
+.productInfoBottomBox {
+  display: flex;
+  height: 400px;
+}
+
+.productInfoLeftBox {
+  display: flex;
+  background-color: #f1f1f1;
+  border-radius: 15px;
+}
+
+.productImg {
+  width: 400px;
+  height: 400px;
+}
+
+.productInfoMiddleBox {
+  display: flex;
+  width: 500px;
+  flex-direction: column;
+  padding: 10px 30px;
+  justify-content: space-between;
+}
+
+.productNameBox,
+.productPriceBox {
+  height: 30px;
+  padding: 5px;
+  font-size: 30px;
+  font-weight: bold;
+  color: #333;
+}
+
+.productDetailBox {
+  height: 250px;
+  display: flex;
+  align-content: space-around;
+  justify-content: center;
+  align-items: center;
+  background-color: #f9f9f9;
+  border: 1px solid #f1f1f1;
+}
+
+.tradeState,
+.tradingMethod,
+.tradingAddress,
+.isShippingFee {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.tradeState,
+.tradingMethod,
+.tradingAddress {
+  border-right: 1px solid #f1f1f1;
+}
+.productInfoRightBox {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  padding: 10px 0;
+  justify-content: space-between;
+}
+.productInfoTopBox {
+  display: flex;
+  flex-direction: column;
+}
+
+.productDetainInfoBox {
+  display: flex;
+  padding-top: 130px;
+  justify-content: space-between;
+}
+.productDetainInfoBoxes {
+  display: flex;
+  width: 50px;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.chattingBtnBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #f1f1f1;
+}
+
+.chattingBtnBox:hover {
+  background-color: #ffc107;
+}
+.productContentBoxName {
+  margin: 50px 0 30px 0;
+}
+.productContent {
+  height: 500px;
+  border: 1px solid #f1f1f1;
+  padding: 30px;
+  background-color: #f9f9f9;
+}
