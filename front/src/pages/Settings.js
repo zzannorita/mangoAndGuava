@@ -5,6 +5,7 @@ import shopStyle from "../styles/shop.module.css";
 import registStyle from "../styles/regist.module.css";
 import PostCode from "react-daum-postcode";
 import axiosInstance from "../axios";
+import ReactDOM from "react-dom";
 
 export default function Settings() {
   /////////////////////////주소등록//////////////////////
@@ -134,14 +135,16 @@ export default function Settings() {
               >
                 주소 찾기
               </button>
-              {!isOpen && (
-                <div>
-                  <PostCode
-                    onComplete={completeHandler}
-                    onClose={closeHandler}
-                  />
-                </div>
-              )}
+              {!isOpen &&
+                ReactDOM.createPortal(
+                  <div className={settingsStyle.postCodeBox}>
+                    <PostCode
+                      onComplete={completeHandler}
+                      onClose={closeHandler}
+                    />
+                  </div>,
+                  document.body
+                )}
             </div>
             <div
               className={settingsStyle.commonInputBox}

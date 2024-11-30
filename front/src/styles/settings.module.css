@@ -41,6 +41,18 @@
   color: #333;
 }
 
+.postCodeBox {
+  position: absolute; /* 절대 위치 지정 */
+  top: 700px; /* 원하는 위치에 띄울 수 있음 (top, left 등) */
+  left: 55%; /* 화면의 중앙에 띄우기 */
+  transform: translateX(-50%); /* 중앙 정렬 */
+  z-index: 9999; /* 다른 요소들보다 위에 오도록 */
+  width: 500px; /* 너비 */
+  height: 400px; /* 높이 */
+  background-color: #f0f0f0; /* 배경색 */
+  border: 1px solid #f1f1f1;
+  /* box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23); */
+}
 .addressBox {
   display: flex;
   align-items: center;
