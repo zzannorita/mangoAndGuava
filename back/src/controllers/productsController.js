@@ -131,13 +131,12 @@ const getProduct = async (req, res) => {
 
 // 클릭해서 상품을 들어갔을때 상세 정보
 const getDetailProduct = async (req, res) => {
-  const itemId = req.query.productId;
-
+  const itemId = req.query.itemId;
   try {
     const getProductByProductId = await productsDao.getProductByProductId(
       itemId
     );
-    const userId = getProductByProductId.userId;
+    const userId = getProductByProductId[0].userId;
     const user = await userDao.getUserById(userId);
 
     return res.status(200).json({
