@@ -1,31 +1,22 @@
 import React from "react";
 import ProductsCard from "./ProductsCard";
-import PropTypes from "prop-types";
 import productListStyle from "../styles/productList.module.css";
+import { Link } from "react-router-dom";
 
-const ProductList = ({ products, userData }) => {
+const ProductList = ({ products }) => {
+  //products는 product를 담고있는 배열
   return (
     <div className={productListStyle.product}>
       {products.map((product) => (
-        <ProductsCard key={product.id} product={product} userData={userData} />
+        <Link
+          key={product.productId}
+          to={`/detail?itemId=${product.productId}`}
+        >
+          <ProductsCard product={product} />
+        </Link>
       ))}
     </div>
   );
-};
-
-ProductList.propTypes = {
-  products: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      productName: PropTypes.string.isRequired,
-      productPrice: PropTypes.number.isRequired,
-      productCreatedDate: PropTypes.string.isRequired,
-      images: PropTypes.arrayOf(PropTypes.string).isRequired,
-    })
-  ).isRequired,
-  userData: PropTypes.shape({
-    address: PropTypes.string.isRequired,
-  }).isRequired,
 };
 
 export default ProductList;

@@ -1,22 +1,22 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import productStyle from "../styles/productsCard.module.css";
-// import productImg from "../image/exImg.png";
 import emptyHeartImg from "../image/emptyHeart.png";
 import fillHeartImg from "../image/fillHeart.png";
 import getRelativeTime from "../utils/getRelativeTime";
-import extractLocation from "../utils/extractLocation";
+// import extractLocation from "../utils/extractLocation";
 
-const ProductsCard = ({ product, userData }) => {
+const ProductsCard = ({ product }) => {
   ////////////////////////찜/////////////////////////////////
   const [clickedHeart, setClickedHeart] = useState(true);
 
-  const handleClick = () => {
+  const handleClick = (e) => {
+    e.stopPropagation();
     setClickedHeart(!clickedHeart);
   };
 
   /////////////////////////주소//////////////////////////////////
-  const location = extractLocation(userData?.address || "");
+  const location =
+    product.tradingAddress === "null" ? "" : product.tradingAddress;
 
   /////////////////////////시간//////////////////////////////////
   const relativeTime = getRelativeTime(product.productCreatedDate);
@@ -49,17 +49,6 @@ const ProductsCard = ({ product, userData }) => {
       </div>
     </div>
   );
-};
-
-ProductsCard.propTypes = {
-  product: PropTypes.shape({
-    images: PropTypes.arrayOf(PropTypes.string).isRequired,
-    name: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-  }).isRequired,
-  userData: PropTypes.shape({
-    address: PropTypes.string.isRequired,
-  }).isRequired,
 };
 
 export default ProductsCard;
