@@ -3,14 +3,14 @@ import productStyle from "../styles/productsCard.module.css";
 import emptyHeartImg from "../image/emptyHeart.png";
 import fillHeartImg from "../image/fillHeart.png";
 import getRelativeTime from "../utils/getRelativeTime";
-// import extractLocation from "../utils/extractLocation";
 
 const ProductsCard = ({ product }) => {
   ////////////////////////찜/////////////////////////////////
   const [clickedHeart, setClickedHeart] = useState(true);
 
   const handleClick = (e) => {
-    e.stopPropagation();
+    // e.stopPropagation();
+    e.preventDefault(); //링크 이동 방지
     setClickedHeart(!clickedHeart);
   };
 

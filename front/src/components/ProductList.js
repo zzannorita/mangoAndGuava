@@ -11,6 +11,7 @@ const ProductList = ({ products }) => {
         <Link
           key={product.productId}
           to={`/detail?itemId=${product.productId}`}
+          className={productListStyle.link}
         >
           <ProductsCard product={product} />
         </Link>
