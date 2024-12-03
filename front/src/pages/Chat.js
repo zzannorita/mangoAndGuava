@@ -11,7 +11,7 @@ const Chat = () => {
   const [chatList, setChatList] = useState([]); // 채팅방 목록
   const [chatEach, setChatEach] = useState([]); // 선택된 채팅방 내역
   const [selectedRoomId, setSelectedRoomId] = useState(null); // 선택된 room_id
-  const socket = useRef(null); // WebSocket 인스턴스 참조
+  const socket = useRef(null); // WebSocket 연결, 수신, 해제 등 리렌더랑 방지
 
   // WebSocket 연결
   useEffect(() => {

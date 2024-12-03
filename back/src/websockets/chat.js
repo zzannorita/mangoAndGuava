@@ -9,6 +9,14 @@ function setupWebSocket(server) {
   wss.on("connection", (ws) => {
     console.log("WebSocket client connected");
 
+    // 현재 연결된 클라이언트들 확인 테스트용
+    wss.clients.forEach((client) => {
+      console.log({
+        userId: client.userId,
+        readyState: client.readyState, // 연결 상태 (OPEN, CLOSED 등)
+      });
+    });
+
     // 각 클라이언트마다 고유한 userId 저장
     ws.on("message", async (data) => {
       const parsedData = JSON.parse(data);
