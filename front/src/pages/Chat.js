@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import chatStyle from "../styles/chat.module.css";
-import chatTestImg from "../image/chat.png";
+import chatTestImg from "../image/userImg.png";
+import mangoImg from "../image/logo.png";
 import chatRemove from "../image/x.png";
 import axiosInstance from "../axios";
 
@@ -12,6 +13,7 @@ const Chat = () => {
   const [chatEach, setChatEach] = useState([]); // 선택된 채팅방 내역
   const [selectedRoomId, setSelectedRoomId] = useState(null); // 선택된 room_id
   const socket = useRef(null); // WebSocket 연결, 수신, 해제 등 리렌더랑 방지
+  const [currentOtherUserId, setCurrentOtherUserId] = useState("");
 
   // WebSocket 연결
   useEffect(() => {
@@ -52,22 +54,27 @@ const Chat = () => {
     }
   };
 
-  // 채팅 메시지 전송
-  const sendMessage = (e) => {
-    if (e.key === "Enter" && message.trim() !== "") {
+  const handleSendMessage = () => {
+    if (message.trim() !== "") {
       const newMessage = {
         roomId: selectedRoomId,
-        user_from: userId, // userFrom -> user_from
-        user_to: otherUserId, // userTo -> user_to
-        message: message.trim(), // content -> message
+        user_from: userId,
+        user_to: otherUserId,
+        message: message.trim(),
       };
 
       // WebSocket으로 메시지 전송
       socket.current.send(JSON.stringify(newMessage));
 
-      // 로컬에서 즉시 메시지 렌더링 (낙관적 업데이트)
+      // 로컬에서 즉시 메시지 렌더링
       setChatEach((prevMessages) => [...prevMessages, newMessage]);
-      setMessage("");
+      setMessage(""); // 입력 필드 초기화
+    }
+  };
+
+  const sendMessage = (e) => {
+    if (e.key === "Enter") {
+      handleSendMessage();
     }
   };
 
@@ -86,6 +93,30 @@ const Chat = () => {
       console.log(response.data.user.userId);
     });
   }, []);
+
+  //채팅 시간 포매팅
+  function formatRelativeTime(targetTime) {
+    const now = new Date(); // 현재 시간
+    const targetDate = new Date(targetTime); // 매개변수로 받은 시간
+    const diff = now - targetDate; // 시간 차이를 밀리초로 계산 (현재 - 대상 시간)
+
+    // 시간 단위로 변환
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    // 조건에 따라 적절한 메시지 반환
+    if (minutes < 1) {
+      return "방금 전"; // 1분 미만
+    } else if (minutes < 60) {
+      return `${minutes}분 전`; // 1시간 미만
+    } else if (hours < 24) {
+      return `${hours}시간 전`; // 24시간 미만
+    } else {
+      return `${days}일 전`; // 하루 이상
+    }
+  }
 
   return (
     <div className="container">
@@ -117,7 +148,7 @@ const Chat = () => {
                           {chat.other_user}
                         </div>
                         <div className={chatStyle.chatEachDate}>
-                          {chat.recent_time}
+                          {formatRelativeTime(chat.recent_time)}
                         </div>
                       </div>
                       <div className={chatStyle.chatEachContentBox}>
@@ -138,7 +169,7 @@ const Chat = () => {
                   <div className={chatStyle.chatContentNameBox}>
                     <div>
                       {selectedRoomId
-                        ? "채팅방 대화 내용"
+                        ? `${otherUserId} 님과의 대화`
                         : "채팅방을 선택해주세요."}
                     </div>
                   </div>
@@ -153,11 +184,19 @@ const Chat = () => {
                         key={index}
                         className={
                           String(message.user_from) === String(userId)
-                            ? chatStyle.myMessage
-                            : chatStyle.otherMessage
+                            ? chatStyle.myMessageWrapper
+                            : chatStyle.otherMessageWrapper
                         }
                       >
-                        {message.message}
+                        <div
+                          className={
+                            String(message.user_from) === String(userId)
+                              ? chatStyle.myMessage
+                              : chatStyle.otherMessage
+                          }
+                        >
+                          {message.message}
+                        </div>
                       </div>
                     ))
                   ) : (
@@ -167,14 +206,27 @@ const Chat = () => {
               </div>
 
               {/* 메시지 입력 */}
-              <div className={chatStyle.chatFieldBox}>
-                <input
-                  type="text"
-                  value={message}
-                  onChange={handleChange}
-                  onKeyDown={sendMessage}
-                  placeholder="메시지를 입력하세요..."
-                />
+              <div className={chatStyle.chatFieldContainer}>
+                <div className={chatStyle.chatFieldBox}>
+                  <input
+                    type="text"
+                    value={message}
+                    onChange={handleChange}
+                    onKeyDown={sendMessage}
+                    placeholder="메시지를 입력하세요..."
+                    className={chatStyle.chatInput} // 스타일 클래스 추가
+                  />
+                  <button
+                    onClick={() => handleSendMessage()} // 버튼 클릭 시 메시지 전송
+                    className={chatStyle.sendButton} // 스타일 클래스 추가
+                  >
+                    <img
+                      src={mangoImg} // 전송 버튼의 이미지 경로
+                      alt="Send"
+                      className={chatStyle.sendIcon}
+                    />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
