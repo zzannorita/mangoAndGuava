@@ -87,6 +87,54 @@ export default function Regist() {
   ////////////////////////데이터 전송/////////////////////
   const navigate = useNavigate();
   const handleSubmit = () => {
+    // 이미지가 등록되지 않으면
+    if (images.length === 0) {
+      alert("이미지를 등록해주세요.");
+      return;
+    }
+
+    // 상품명이 입력되지 않으면
+    if (productName.trim() === "") {
+      alert("상품명을 등록해주세요.");
+      return;
+    }
+
+    // 카테고리가 선택되지 않으면
+    if (productCategory.trim() === "") {
+      alert("카테고리를 선택해주세요.");
+      return;
+    }
+
+    // 가격이 입력되지 않으면
+    if (productPrice.trim() === "") {
+      alert("가격을 입력해주세요.");
+      return;
+    }
+
+    // 상품 상태가 선택되지 않으면
+    if (productState === null) {
+      alert("상품 상태를 선택해주세요.");
+      return;
+    }
+
+    // 교환 가능 여부가 선택되지 않으면
+    if (isTrade === null) {
+      alert("교환 가능 여부를 선택해주세요.");
+      return;
+    }
+
+    // 거래 방법이 선택되지 않으면
+    if (tradingMethod === "") {
+      alert("거래 방법을 선택해주세요.");
+      return;
+    }
+
+    // 거래 방법이 직거래일 경우 위치를 입력하지 않으면
+    if (tradingMethod === "true" && tradingAddress.trim() === "") {
+      alert("거래 위치를 입력해주세요.");
+      return;
+    }
+
     const formData = new FormData();
 
     //이미지 전송
@@ -132,6 +180,7 @@ export default function Regist() {
         console.error("상품 등록 실패", error);
       });
   };
+
   return (
     <div className="container">
       <div className={registStyle.container}>
