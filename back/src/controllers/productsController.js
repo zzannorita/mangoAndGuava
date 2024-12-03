@@ -169,7 +169,7 @@ const handleProductBookmark = async (req, res) => {
     const userId = userData.id;
     const productId = req.body.productId;
 
-    const productBookmark = await productsDao.insertProductBookmark(
+    const productBookmark = await productsDao.handleProductBookmark(
       userId,
       productId
     );

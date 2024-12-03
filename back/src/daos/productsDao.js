@@ -408,16 +408,28 @@ const getProductByProductId = async (productId) => {
   }
 };
 
-const insertProductBookmark = async (userId, productId) => {
+const handleProductBookmark = async (userId, productId) => {
   const escapedUserId = mysql.escape(userId);
   const escapedProductId = mysql.escape(productId);
-  const query = `INSERT INTO productbookmark (userId, productId) VALUES (${escapedUserId}, ${escapedProductId})`;
+
+  //먼저 해당 찜이 이미 존재하는지 확인
+  const checkQuery = `SELECT * FROM productbookmark WHERE userId = ${escapedUserId} AND productId = ${escapedProductId}`;
 
   try {
-    const [rows] = await db.execute(query);
-    return rows;
+    const [existingBookmark] = await db.execute(checkQuery);
+
+    if (existingBookmark.length > 0) {
+      const deleteQuery = `DELETE FROM productbookmark WHERE userId = ${escapedUserId} AND productId = ${escapedProductId}`;
+      await db.execute(deleteQuery);
+      return;
+    } else {
+      //존재하지 않으면 새로 찜을 추가
+      const insertQuery = `INSERT INTO productbookmark (userId, productId) VALUES (${escapedUserId}, ${escapedProductId})`;
+      const [rows] = await db.execute(insertQuery);
+      return rows;
+    }
   } catch (error) {
-    console.error("Error fetching productBookmark:", error.message);
+    console.error("Error in productBookmark operation:", error.message);
     throw error; // 에러를 호출한 쪽에서 처리하도록 다시 던지기
   }
 };
@@ -431,5 +443,5 @@ module.exports = {
   getProductsByPurchasedUserId,
   getBookmarkProductByUserId,
   getProductByProductId,
-  insertProductBookmark,
+  handleProductBookmark,
 };
