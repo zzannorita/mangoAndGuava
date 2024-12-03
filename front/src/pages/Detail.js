@@ -6,6 +6,8 @@ import emptyHeartImg from "../image/emptyHeart.png";
 import eyeImg from "../image/eye.png";
 import rightImg from "../image/right.png";
 import getRelativeTime from "../utils/getRelativeTime";
+import fillHeartImg from "../image/fillHeart.png";
+import productStyle from "../styles/productsCard.module.css";
 
 const categoryMapping = {
   100: "의류",
@@ -78,6 +80,30 @@ export default function Detail() {
   const handleEnterChat = () => {
     navigate("/chat");
   };
+
+  ////////////////////////찜/////////////////////////////////
+  const [clickedHeart, setClickedHeart] = useState(true);
+  const [showAlarm, setShowAlarm] = useState(false);
+
+  const handleClick = async (e) => {
+    // e.stopPropagation();
+    e.preventDefault(); //링크 이동 방지
+    try {
+      const response = await axiosInstance.post("product/bookmark", {
+        productId: productId,
+      });
+      if (response.status === 200) {
+        setClickedHeart(!clickedHeart);
+        setShowAlarm(true); // 알람 표시
+        setTimeout(() => setShowAlarm(false), 1500);
+      } else {
+        console.error("찜하기 실패", response.data);
+      }
+    } catch (error) {
+      console.error("찜하기 요청 중 오류 발생", error);
+    }
+  };
+
   useEffect(() => {
     axiosInstance
       .get(`/detail?itemId=${productId}`)
@@ -87,7 +113,9 @@ export default function Detail() {
         setProductName(product.productName);
         setProductPrice(product.productPrice);
         setProductImg(product.images);
-        setProductTradingAddress(product.tradingAddress);
+        setProductTradingAddress(
+          product.tradingAddress === "null" ? "-" : product.tradingAddress
+        );
         setProductInfo(product.productInfo);
         setProductCreatedDate(getRelativeTime(product.productCreatedDate));
         setProductWishlistCount(
@@ -98,7 +126,7 @@ export default function Detail() {
         setProductTradingMethod(
           product.tradingMethod === 1 ? "직거래" : "택배거래"
         );
-        setProductShippngFee(product.isShippingFee === 0 ? "-" : "별도");
+        setProductShippngFee(product.isShippingFee === 0 ? "별도" : "-");
 
         const user = response.data.user;
         setUserNickName(user?.nickname === null ? user.userId : user?.nickname);
@@ -120,6 +148,19 @@ export default function Detail() {
               alt="camera"
               src={productImg}
             />
+            <img
+              src={clickedHeart ? emptyHeartImg : fillHeartImg}
+              alt="emptyHeartImg"
+              className={DetailStyle.emptyHeartImg}
+              onClick={handleClick}
+            ></img>
+            <div
+              className={`${DetailStyle.heartAlarm} ${
+                showAlarm ? DetailStyle.active : ""
+              }`}
+            >
+              상품을 찜하였습니다.
+            </div>
           </div>
           <div className={DetailStyle.productInfoMiddleBox}>
             <div className={DetailStyle.productCategoryBox}>

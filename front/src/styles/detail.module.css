@@ -28,6 +28,29 @@
   height: 400px;
 }
 
+.heartAlarm {
+  position: absolute;
+  top: 250px;
+  left: 475px;
+  background-color: #ffc107;
+  border-radius: 15px;
+  width: 170px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.heartAlarm.active {
+  opacity: 1;
+}
+.emptyHeartImg {
+  width: 40px;
+  height: 40px;
+}
+
 .productInfoMiddleBox {
   display: flex;
   width: 500px;
@@ -135,6 +158,9 @@
   color: #333;
 }
 
+.chattingBtnBox:hover {
+  background-color: #ffc107;
+}
 .productContentBoxName {
   margin: 70px 0 30px 0;
 }
@@ -143,4 +169,12 @@
   border-top: 1px solid #f1f1f1;
   border-bottom: 1px solid #f1f1f1;
   padding: 30px 0;
+}
+
+.emptyHeartImg {
+  position: absolute;
+  top: 65px;
+  left: 700px;
+  width: 40px;
+  height: 40px;
 }
