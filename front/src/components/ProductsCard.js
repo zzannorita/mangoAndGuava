@@ -14,7 +14,7 @@ const ProductsCard = ({ product }) => {
     // e.stopPropagation();
     e.preventDefault(); //링크 이동 방지
     try {
-      const response = await axiosInstance.post("/product/bookmark", {
+      const response = await axiosInstance.post("product/bookmark", {
         productId: product.productId,
       });
       if (response.status === 200) {
