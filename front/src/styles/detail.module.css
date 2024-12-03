@@ -67,6 +67,7 @@
   align-items: center;
   background-color: #f9f9f9;
   border: 1px solid #f1f1f1;
+  border-radius: 5px;
 }
 
 .tradeState,
@@ -111,7 +112,7 @@
 
 .productDetainInfoBox {
   display: flex;
-  padding-bottom: 150px;
+  padding-bottom: 100px;
   justify-content: space-between;
 }
 .productDetainInfoBoxes {
@@ -127,9 +128,11 @@
   justify-content: center;
   height: 20px;
   padding: 20px;
-  background-color: #ffe187;
-  border: 1px solid #f1f1f1;
+  /* background-color: #f9f9f9; */
+  border: 1px solid #ffc107;
   cursor: pointer;
+  border-radius: 5px;
+  color: #333;
 }
 
 .productContentBoxName {

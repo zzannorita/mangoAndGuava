@@ -66,7 +66,7 @@ export default function Shop() {
   //myshop api호출
   useEffect(() => {
     axiosInstance
-      .get("http://localhost:3001/myshop")
+      .get("/myshop")
       .then((response) => {
         const data = response.data;
         setShopData(data);

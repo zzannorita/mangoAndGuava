@@ -80,7 +80,7 @@ export default function Detail() {
   };
   useEffect(() => {
     axiosInstance
-      .get(`http://localhost:3001/detail?itemId=${productId}`)
+      .get(`/detail?itemId=${productId}`)
       .then((response) => {
         const product = response.data.product[0];
         setProductCategory(product.productCategory);
@@ -101,7 +101,7 @@ export default function Detail() {
         setProductShippngFee(product.isShippingFee === 0 ? "-" : "별도");
 
         const user = response.data.user;
-        setUserNickName(user?.nickname);
+        setUserNickName(user?.nickname === null ? user.userId : user?.nickname);
 
         console.log("API Response:", response.data); // 데이터 확인
       })
