@@ -13,19 +13,24 @@ const ProductsCard = ({ product }) => {
   const handleClick = async (e) => {
     // e.stopPropagation();
     e.preventDefault(); //링크 이동 방지
+
     try {
       const response = await axiosInstance.post("product/bookmark", {
         productId: product.productId,
       });
       if (response.status === 200) {
-        setClickedHeart(!clickedHeart);
-        setShowAlarm(true); // 알람 표시
-        setTimeout(() => setShowAlarm(false), 1500);
+        const wasHeartEmpty = clickedHeart; // 하트가 있었는지 확인
+        setClickedHeart(!clickedHeart); // 하트 상태 토글
+
+        if (wasHeartEmpty) {
+          setShowAlarm(true);
+          setTimeout(() => setShowAlarm(false), 1500);
+        }
       } else {
-        console.error("찜하기 실패", response.data);
+        console.error("찜 상태 변경 실패", response.data);
       }
     } catch (error) {
-      console.error("찜하기 요청 중 오류 발생", error);
+      console.error("찜 상태 변경 요청 중 오류 발생", error);
     }
   };
 
