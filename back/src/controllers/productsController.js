@@ -150,7 +150,7 @@ const getDetailProduct = async (req, res) => {
   }
 };
 
-//상품 찜하기 추가하는..
+//상품 찜하기 추가/삭제하는..
 const handleProductBookmark = async (req, res) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
 

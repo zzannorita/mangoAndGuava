@@ -414,18 +414,27 @@ const handleProductBookmark = async (userId, productId) => {
 
   //먼저 해당 찜이 이미 존재하는지 확인
   const checkQuery = `SELECT * FROM productbookmark WHERE userId = ${escapedUserId} AND productId = ${escapedProductId}`;
-
+  //찜 개수 업데이트 쿼리
+  const updateWishlistCountQuery = `
+    UPDATE product 
+    SET wishlistCount = (SELECT COUNT(*) FROM productbookmark WHERE productId = ${escapedProductId}) 
+    WHERE productId = ${escapedProductId}
+  `;
   try {
     const [existingBookmark] = await db.execute(checkQuery);
 
     if (existingBookmark.length > 0) {
       const deleteQuery = `DELETE FROM productbookmark WHERE userId = ${escapedUserId} AND productId = ${escapedProductId}`;
       await db.execute(deleteQuery);
+      //찜개수 업데이트
+      await db.execute(updateWishlistCountQuery);
       return;
     } else {
       //존재하지 않으면 새로 찜을 추가
       const insertQuery = `INSERT INTO productbookmark (userId, productId) VALUES (${escapedUserId}, ${escapedProductId})`;
       const [rows] = await db.execute(insertQuery);
+      //찜개수 업데이트
+      await db.execute(updateWishlistCountQuery);
       return rows;
     }
   } catch (error) {
