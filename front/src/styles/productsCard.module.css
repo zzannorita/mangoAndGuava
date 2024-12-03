@@ -44,8 +44,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  /* opacity: 0;
-  transition: opacity 1s ease; */
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.heartAlarm.active {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* .heartAlarm.visible {
