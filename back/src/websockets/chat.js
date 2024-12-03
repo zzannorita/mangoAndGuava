@@ -74,4 +74,12 @@ function setupWebSocket(server) {
   console.log("WebSocket server setup complete");
 }
 
+function generateRoomId(userFrom, userTo, productId) {
+  // userFrom과 userTo를 정렬하여 일관된 순서로 조합
+  const sortedUsers = [userFrom, userTo].sort();
+  // room_id 생성
+  const roomId = `${sortedUsers[0]}_${sortedUsers[1]}_${productId}`;
+  return roomId;
+}
+
 module.exports = setupWebSocket;
