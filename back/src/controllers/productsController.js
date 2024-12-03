@@ -150,8 +150,47 @@ const getDetailProduct = async (req, res) => {
   }
 };
 
+//상품 찜하기 추가하는..
+const handleProductBookmark = async (req, res) => {
+  const accessToken = req.headers.authorization?.split(" ")[1];
+
+  if (!accessToken) {
+    return res.status(401).json({ message: "No access token provided" });
+  }
+
+  try {
+    const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const userData = userResponse.data;
+    const userId = userData.id;
+    const productId = req.body.productId;
+
+    const productBookmark = await productsDao.insertProductBookmark(
+      userId,
+      productId
+    );
+
+    return res.json({
+      code: "SUCCESS_INSERT_PRODUCTBOOKMARK",
+      data: productBookmark,
+    });
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      return res.status(401).json({ message: "Token expired" });
+    }
+    return res
+      .status(500)
+      .json({ message: "Failed to fetch user data", error: error.message });
+  }
+};
+
 module.exports = {
   handleProducts,
   getProduct,
   getDetailProduct,
+  handleProductBookmark,
 };

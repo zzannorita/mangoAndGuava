@@ -408,6 +408,20 @@ const getProductByProductId = async (productId) => {
   }
 };
 
+const insertProductBookmark = async (userId, productId) => {
+  const escapedUserId = mysql.escape(userId);
+  const escapedProductId = mysql.escape(productId);
+  const query = `INSERT INTO productbookmark (userId, productId) VALUES (${escapedUserId}, ${escapedProductId})`;
+
+  try {
+    const [rows] = await db.execute(query);
+    return rows;
+  } catch (error) {
+    console.error("Error fetching productBookmark:", error.message);
+    throw error; // 에러를 호출한 쪽에서 처리하도록 다시 던지기
+  }
+};
+
 module.exports = {
   getProductsAll,
   getProductsByItemPageLimit,
@@ -417,4 +431,5 @@ module.exports = {
   getProductsByPurchasedUserId,
   getBookmarkProductByUserId,
   getProductByProductId,
+  insertProductBookmark,
 };
