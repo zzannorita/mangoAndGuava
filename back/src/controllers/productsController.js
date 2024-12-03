@@ -188,9 +188,44 @@ const handleProductBookmark = async (req, res) => {
   }
 };
 
+const getBookmarkList = async (req, res) => {
+  console.log("여기 부러옴");
+  const accessToken = req.headers.authorization?.split(" ")[1];
+
+  if (!accessToken) {
+    return res.status(401).json({ message: "No access token provided" });
+  }
+
+  try {
+    const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const userData = userResponse.data;
+    const userId = userData.id;
+    const productBookmarkList = await productsDao.getProductBookmarkByUserID(
+      userId
+    );
+    return res.json({
+      code: "SUCCESS_SELECT_PRODUCTBOOKMARKLiST",
+      data: productBookmarkList,
+    });
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      return res.status(401).json({ message: "Token expired" });
+    }
+    return res
+      .status(500)
+      .json({ message: "Failed to fetch user data", error: error.message });
+  }
+};
+
 module.exports = {
   handleProducts,
   getProduct,
   getDetailProduct,
   handleProductBookmark,
+  getBookmarkList,
 };

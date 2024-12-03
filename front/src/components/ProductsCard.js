@@ -7,7 +7,7 @@ import axiosInstance from "../axios";
 
 const ProductsCard = ({ product }) => {
   ////////////////////////찜/////////////////////////////////
-  const [clickedHeart, setClickedHeart] = useState(true);
+  const [clickedHeart, setClickedHeart] = useState(!product.isBookmarked);
   const [showAlarm, setShowAlarm] = useState(false);
 
   const handleClick = async (e) => {

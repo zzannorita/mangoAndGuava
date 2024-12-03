@@ -443,6 +443,24 @@ const handleProductBookmark = async (userId, productId) => {
   }
 };
 
+const getProductBookmarkByUserID = async (userId) => {
+  const escapedUserId = mysql.escape(userId);
+
+  const query = `
+  SELECT *
+  FROM productbookmark
+  WHERE userId = ${escapedUserId};
+`;
+
+  try {
+    const [rows] = await db.execute(query);
+    return rows;
+  } catch (error) {
+    console.error("Error in productBookmark operation:", error.message);
+    throw error; // 에러를 호출한 쪽에서 처리하도록 다시 던지기
+  }
+};
+
 module.exports = {
   getProductsAll,
   getProductsByItemPageLimit,
@@ -453,4 +471,5 @@ module.exports = {
   getBookmarkProductByUserId,
   getProductByProductId,
   handleProductBookmark,
+  getProductBookmarkByUserID,
 };
