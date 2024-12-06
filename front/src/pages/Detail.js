@@ -29,6 +29,7 @@ export default function Detail() {
   const [productInfo, setProductInfo] = useState("");
   //////////////////user//////////////////////////////////
   const [userNickName, setUserNickName] = useState("");
+  const [ownerUserId, setOwnerUserId] = useState("");
 
   ///////////////////////카테고리 로직 분리////////////////
   const { firstCategory, secondCategory, thirdCategory } =
@@ -42,7 +43,9 @@ export default function Detail() {
 
   /////////////////채팅//////////////////////////////////
   const handleEnterChat = () => {
-    navigate("/chat");
+    navigate("/chat", {
+      state: { ownerUserId, productId },
+    });
   };
 
   ////////////////////////찜/////////////////////////////////
@@ -93,6 +96,7 @@ export default function Detail() {
         setProductShippngFee(product.isShippingFee === 0 ? "별도" : "-");
 
         const user = response.data.user;
+        setOwnerUserId(user.userId);
         setUserNickName(user?.nickname === null ? user.userId : user?.nickname);
 
         console.log("API Response:", response.data); // 데이터 확인
