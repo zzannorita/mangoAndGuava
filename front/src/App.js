@@ -12,6 +12,7 @@ import Login from "./pages/Login";
 import Shop from "./pages/Shop";
 import NewMember from "./pages/NewMember";
 import AuthCallback from "./pages/AuthCallBack";
+import ShopForBuyer from "./pages/ShopForBuyer";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/chat" element={<Chat />} />
           <Route path="/login" element={<Login />} />
           <Route path="/myshop" element={<Shop />} />
+          <Route path="/yourShop" element={<ShopForBuyer />} />
           <Route path="/detail" element={<Detail />} />
           <Route path="/newMember" element={<NewMember />} />
           <Route path="/authCallBack" element={<AuthCallback />} />

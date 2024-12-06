@@ -3,7 +3,6 @@ import shopStyle from "../styles/shop.module.css";
 import userImg from "../image/userImg.png";
 import editImg from "../image/edit.png";
 import checkImg from "../image/checkbox.png";
-// import ProductsCard from "../components/ProductsCard";
 import ProductList from "../components/ProductList";
 import Review from "./Review";
 import Settings from "./Settings";
@@ -69,11 +68,11 @@ export default function Shop() {
       .get("/myshop")
       .then((response) => {
         const data = response.data;
+        const shopData = data.shopData[0];
         setShopData(data);
         // shopInfo 값을 description 상태에 반영
-        setDescription(data.shopInfo || "");
+        setDescription(shopData.shopInfo || "");
         setUserData(data.userData || { address: "주소 없음" });
-        console.log("userData:", data.userData);
         setProducts(data.shopProducts);
         setReviews(data.comentData);
         setBookmarkedProducts(data.bookmarkProduct);
@@ -95,7 +94,6 @@ export default function Shop() {
               products={products.filter(
                 (product) => product.tradeState === "판매중"
               )}
-              userData={userData || { address: "" }}
             />
           );
         case "예약중":
@@ -104,7 +102,6 @@ export default function Shop() {
               products={products.filter(
                 (product) => product.tradeState === "예약중"
               )}
-              userData={userData || { address: "" }}
             />
           );
         case "판매완료":
@@ -113,25 +110,23 @@ export default function Shop() {
               products={products.filter(
                 (product) => product.tradeState === "판매완료"
               )}
-              userData={userData || { address: "" }}
             />
           );
         case "거래후기":
           return <Review />;
         default:
-          return (
-            <ProductList
-              products={products}
-              userData={userData || { address: "" }}
-            />
-          );
+          return <ProductList products={products} />;
       }
     } else if (selectedInfo) {
       switch (selectedInfo) {
         case "구매내역":
           return <div>구매내역 콘텐츠</div>;
         case "찜한상품":
-          return <div>찜한상품 콘텐츠</div>;
+          return (
+            <div>
+              <ProductList products={bookmarkedProducts} />
+            </div>
+          );
         case "즐겨찾기":
           return <Favorites />;
         case "설정":

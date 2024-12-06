@@ -1,5 +1,6 @@
 .container {
   display: flex;
+  margin-top: 20px;
 }
 .leftBox {
   display: flex;
@@ -185,4 +186,10 @@
 .productItem {
   flex: 0 0 auto;
   margin-right: 15px;
+}
+
+/* 구매자입장 */
+.shopForBuyerContainer {
+  display: flex;
+  justify-content: center;
 }
