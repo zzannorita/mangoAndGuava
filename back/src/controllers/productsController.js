@@ -118,7 +118,6 @@ const getProduct = async (req, res) => {
     const getProductByProductId = await productsDao.getProductByProductId(
       productId
     );
-    console.log(getProductByProductId);
     return res.status(200).json({
       code: "SUCCESS_SEARCH_PRODUCT",
       product: getProductByProductId,

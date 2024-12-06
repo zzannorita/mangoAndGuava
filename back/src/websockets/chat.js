@@ -20,7 +20,6 @@ function setupWebSocket(server) {
     // 각 클라이언트마다 고유한 userId 저장
     ws.on("message", async (data) => {
       const parsedData = JSON.parse(data);
-      console.log("테스트", parsedData);
       if (parsedData.type === "auth") {
         ws.userId = parsedData.userId; // WebSocket 인스턴스에 userId 저장
         return;
@@ -33,8 +32,6 @@ function setupWebSocket(server) {
           user_to: userTo,
           message: content,
         } = parsedData;
-        console.log("테스트2", parsedData);
-        console.log(roomId, userFrom, userTo, content);
 
         // MySQL 데이터베이스에 메시지 저장
         await db.execute(

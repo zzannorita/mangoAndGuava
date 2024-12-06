@@ -6,9 +6,10 @@ const db = require("../config/dbConfig");
 const mysql = require("mysql2");
 
 const getUserById = async (userId) => {
-  const query = "SELECT * FROM user WHERE userId = ?";
+  const escapedUserId = mysql.escape(userId);
+  const query = `SELECT * FROM user WHERE userId = ${escapedUserId}`;
   try {
-    const [rows] = await db.execute(query, [parseInt(userId, 10)]);
+    const [rows] = await db.execute(query);
     if (rows.length > 0) {
       const user = rows[0];
       // 프로필 이미지 URL 생성
