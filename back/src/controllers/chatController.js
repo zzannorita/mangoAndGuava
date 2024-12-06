@@ -1,5 +1,6 @@
 const axios = require("axios");
 const chatDao = require("../daos/chatDao");
+const userDao = require("../daos/userDao");
 
 //상품 페이지에서 상대방에게 채팅 요청 하는경우
 const handleChatAndProduct = async (req, res) => {
@@ -48,10 +49,30 @@ const getMyChatList = async (req, res) => {
     const userId = userData.id;
 
     const chatList = await chatDao.getMyChatList(userId);
+    const updatedChatList = []; // 업데이트된 chatList를 저장할 배열
+
+    for (const chat of chatList) {
+      const roomId = chat.room_id;
+      const [userId1, userId2, productId] = roomId.split("-");
+
+      let otherUserId;
+
+      if (String(userId) !== String(userId1)) {
+        otherUserId = userId1;
+      } else {
+        otherUserId = userId2;
+      }
+      const otherUser = await userDao.getUserById(otherUserId);
+      const otherUserNickname = otherUser.nickname;
+
+      const updatedChat = { ...chat, otherUserNickname }; // 기존 chat 객체에 새로운 속성 추가
+
+      updatedChatList.push(updatedChat);
+    }
 
     return res.json({
       code: "SUCCESS_SEARCH_CHATLIST",
-      data: chatList,
+      data: updatedChatList,
     });
   } catch (error) {
     console.log(error);

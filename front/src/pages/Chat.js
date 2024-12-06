@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import chatStyle from "../styles/chat.module.css";
 import chatTestImg from "../image/userImg.png";
 import mangoImg from "../image/logo.png";
@@ -12,8 +13,16 @@ const Chat = () => {
   const [chatList, setChatList] = useState([]); // 채팅방 목록
   const [chatEach, setChatEach] = useState([]); // 선택된 채팅방 내역
   const [selectedRoomId, setSelectedRoomId] = useState(null); // 선택된 room_id
+  const [selectedProductData, setSelectedProductData] = useState([]);
+  const [selectedOtherUserData, setSelectedOtherUserData] = useState([]);
+  const [selectedUserData, setSelectedUserData] = useState([]);
   const socket = useRef(null); // WebSocket 연결, 수신, 해제 등 리렌더랑 방지
-  const [currentOtherUserId, setCurrentOtherUserId] = useState("");
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  //채팅하기 눌러서 온 변수들
+  const { ownerUserId = null, productId = null } = location.state || {}; //디테일 페이지에서 온 정보
 
   // WebSocket 연결
   useEffect(() => {
@@ -39,16 +48,80 @@ const Chat = () => {
     };
   }, [userId, selectedRoomId]);
 
+  useEffect(() => {
+    if (!ownerUserId || !productId || !userId) return; // userId가 설정된 이후에만 실행
+    const roomId = userId + "-" + ownerUserId + "test" + "-" + productId; // test 코드는 삭제해야함.(상대없어서 테스트)
+    const newMessage = {
+      roomId: roomId,
+      user_from: userId,
+      user_to: ownerUserId + "test", // test 코드는 삭제해야함.(상대없어서 테스트)
+      message: `${ownerUserId + "test"}님 상품 ${productId} 관련 채팅드립니다.`,
+    };
+
+    const sendMessage = async () => {
+      if (socket.current && socket.current.readyState === WebSocket.OPEN) {
+        const chatData = await axiosInstance.get(`chat-each?roomId=${roomId}`);
+        console.log("챗 데이터", chatData.data.data.length);
+        if (!(chatData.data.data.length > 0)) {
+          socket.current.send(JSON.stringify(newMessage));
+          fetchChatRoomMessages(roomId, ownerUserId);
+        } else {
+          fetchChatRoomMessages(roomId, ownerUserId);
+        }
+      } else {
+        console.error("WebSocket 연결 상태가 준비되지 않았습니다.");
+      }
+    };
+
+    const waitForConnection = (callback, interval = 100, retries = 10) => {
+      if (socket.current.readyState === WebSocket.OPEN) {
+        callback();
+      } else if (retries > 0) {
+        setTimeout(
+          () => waitForConnection(callback, interval, retries - 1),
+          interval
+        );
+      } else {
+        console.error("WebSocket 연결 실패");
+      }
+    };
+
+    waitForConnection(sendMessage);
+  }, [ownerUserId, productId, userId, navigate]); // userId가 설정된 이후 실행
+
   // 채팅방 클릭 시 채팅 내역 가져오기
   const fetchChatRoomMessages = async (roomId, otherUser) => {
     try {
-      console.log("클릭됨");
+      const [user1, user2, productId] = roomId.split("-");
       setOtherUserId(otherUser);
       const response = await axiosInstance.get(
         `http://localhost:3001/chat-each?roomId=${roomId}`
       );
       setChatEach(response.data.data);
       setSelectedRoomId(roomId);
+      const productData = await axiosInstance.get(
+        `http://localhost:3001/product?productId=${productId}`
+      );
+      setSelectedProductData(productData.data.product[0]);
+      if (String(user1) === String(userId)) {
+        const myUserData = await axiosInstance.get(
+          `http://localhost:3001/user-data`
+        );
+        setSelectedUserData(myUserData.data.user);
+        const otherUserData = await axiosInstance.get(
+          `http://localhost:3001/user-data/other?userId=${user2}`
+        );
+        setSelectedOtherUserData(otherUserData.data.user);
+      } else {
+        const myUserData = await axiosInstance.get(
+          `http://localhost:3001/user-data`
+        );
+        setSelectedUserData(myUserData.data.user);
+        const otherUserData = await axiosInstance.get(
+          `http://localhost:3001/user-data/other?userId=${user1}`
+        );
+        setSelectedOtherUserData(otherUserData.data.user);
+      }
     } catch (error) {
       console.error("채팅 내역 가져오기 실패:", error);
     }
@@ -59,7 +132,6 @@ const Chat = () => {
       const newMessage = {
         roomId: selectedRoomId,
         user_from: userId,
-        user_to: otherUserId,
         message: message.trim(),
       };
 
@@ -70,6 +142,34 @@ const Chat = () => {
       setChatEach((prevMessages) => [...prevMessages, newMessage]);
       setMessage(""); // 입력 필드 초기화
     }
+  };
+
+  const sendMessageAddress = () => {
+    const addressMessage = {
+      roomId: selectedRoomId,
+      user_from: userId,
+      message: "주소 정보 : " + selectedUserData.address,
+    };
+
+    // WebSocket으로 메시지 전송
+    socket.current.send(JSON.stringify(addressMessage));
+
+    // 로컬에서 즉시 메시지 렌더링
+    setChatEach((prevMessages) => [...prevMessages, addressMessage]);
+  };
+
+  const sendMessageAccount = () => {
+    const AccountMessage = {
+      roomId: selectedRoomId,
+      user_from: userId,
+      message: "계좌 정보 : " + selectedUserData.account,
+    };
+
+    // WebSocket으로 메시지 전송
+    socket.current.send(JSON.stringify(AccountMessage));
+
+    // 로컬에서 즉시 메시지 렌더링
+    setChatEach((prevMessages) => [...prevMessages, AccountMessage]);
   };
 
   const sendMessage = (e) => {
@@ -125,6 +225,9 @@ const Chat = () => {
           <div className={chatStyle.chatTitleBox}>
             <div className={chatStyle.chatTitleTextBox}>
               <div className={chatStyle.chatTitleText}>채팅</div>
+              <div className={chatStyle.chatNickNameText}>
+                {selectedOtherUserData.nickname2 + "님 과의 대화"}
+              </div>
             </div>
           </div>
           <div className={chatStyle.chatBox}>
@@ -134,7 +237,11 @@ const Chat = () => {
                 chatList.map((chat, index) => (
                   <div
                     key={index}
-                    className={chatStyle.chatEachBox}
+                    className={`${chatStyle.chatEachBox} ${
+                      selectedRoomId === chat.room_id
+                        ? chatStyle.selectedChatBox
+                        : ""
+                    }`}
                     onClick={() =>
                       fetchChatRoomMessages(chat.room_id, chat.other_user)
                     }
@@ -145,7 +252,7 @@ const Chat = () => {
                     <div className={chatStyle.chatEachMainBox}>
                       <div className={chatStyle.chatEachNameBox}>
                         <div className={chatStyle.chatEachName}>
-                          {chat.other_user}
+                          {chat.otherUserNickname}
                         </div>
                         <div className={chatStyle.chatEachDate}>
                           {formatRelativeTime(chat.recent_time)}
@@ -167,15 +274,32 @@ const Chat = () => {
               <div className={chatStyle.chatContentBox}>
                 <div className={chatStyle.chatContentTitleBox}>
                   <div className={chatStyle.chatContentNameBox}>
-                    <div>
-                      {selectedRoomId
-                        ? `${otherUserId} 님과의 대화`
-                        : "채팅방을 선택해주세요."}
+                    <div className={chatStyle.chatProductImg}>
+                      이미지{console.log("이미지", selectedProductData)}
+                      <img
+                        src={selectedProductData.images[0]}
+                        alt="productImg"
+                      />
+                    </div>
+                    <div className={chatStyle.chatProductInfoBox}>
+                      <div className={chatStyle.chatProductName}>
+                        {selectedProductData.productName}
+                      </div>
+                      <div className={chatStyle.chatProductPrice}>
+                        {selectedProductData.productPrice}
+                      </div>
                     </div>
                   </div>
                   <div className={chatStyle.chatContentDeleteImg}>
                     <img src={chatRemove} alt="chatRemove" />
                   </div>
+                </div>
+                <div>
+                  {selectedProductData.tradingMethod ? (
+                    <>{selectedProductData.tradingAddress}</>
+                  ) : (
+                    <></>
+                  )}
                 </div>
                 <div className={chatStyle.chatContentDetailBox}>
                   {chatEach.length > 0 ? (
@@ -206,28 +330,44 @@ const Chat = () => {
               </div>
 
               {/* 메시지 입력 */}
-              <div className={chatStyle.chatFieldContainer}>
-                <div className={chatStyle.chatFieldBox}>
-                  <input
-                    type="text"
-                    value={message}
-                    onChange={handleChange}
-                    onKeyDown={sendMessage}
-                    placeholder="메시지를 입력하세요..."
-                    className={chatStyle.chatInput} // 스타일 클래스 추가
-                  />
-                  <button
-                    onClick={() => handleSendMessage()} // 버튼 클릭 시 메시지 전송
-                    className={chatStyle.sendButton} // 스타일 클래스 추가
-                  >
-                    <img
-                      src={mangoImg} // 전송 버튼의 이미지 경로
-                      alt="Send"
-                      className={chatStyle.sendIcon}
+              {selectedRoomId && (
+                <div className={chatStyle.chatFieldContainer}>
+                  <div className={chatStyle.actionButtonsContainer}>
+                    <button
+                      className={chatStyle.actionButton}
+                      onClick={sendMessageAccount} // 계좌 전달 버튼 클릭 시
+                    >
+                      계좌 전달
+                    </button>
+                    <button
+                      className={chatStyle.actionButton}
+                      onClick={sendMessageAddress} // 주소 전달 버튼 클릭 시
+                    >
+                      주소 전달
+                    </button>
+                  </div>
+                  <div className={chatStyle.chatFieldBox}>
+                    <input
+                      type="text"
+                      value={message}
+                      onChange={handleChange}
+                      onKeyDown={sendMessage}
+                      placeholder="메시지를 입력하세요..."
+                      className={chatStyle.chatInput} // 스타일 클래스 추가
                     />
-                  </button>
+                    <button
+                      onClick={() => handleSendMessage()} // 버튼 클릭 시 메시지 전송
+                      className={chatStyle.sendButton} // 스타일 클래스 추가
+                    >
+                      <img
+                        src={mangoImg} // 전송 버튼의 이미지 경로
+                        alt="Send"
+                        className={chatStyle.sendIcon}
+                      />
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
