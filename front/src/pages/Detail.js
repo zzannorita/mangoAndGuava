@@ -29,12 +29,9 @@ export default function Detail() {
   const [productInfo, setProductInfo] = useState("");
   //////////////////user//////////////////////////////////
   const [userNickName, setUserNickName] = useState("");
-<<<<<<< HEAD
   const [ownerUserId, setOwnerUserId] = useState("");
 
-=======
   const [userId, setUserId] = useState("");
->>>>>>> 6a157046f50e085c7dce5f6b2a7019db1a4a82eb
   ///////////////////////카테고리 로직 분리////////////////
   const { firstCategory, secondCategory, thirdCategory } =
     getCategoryNames(productCategory);
