@@ -29,7 +29,7 @@ export default function Detail() {
   const [productInfo, setProductInfo] = useState("");
   //////////////////user//////////////////////////////////
   const [userNickName, setUserNickName] = useState("");
-
+  const [userId, setUserId] = useState("");
   ///////////////////////카테고리 로직 분리////////////////
   const { firstCategory, secondCategory, thirdCategory } =
     getCategoryNames(productCategory);
@@ -37,7 +37,7 @@ export default function Detail() {
   /////////////////상점들어가기//////////////////////////
   const navigate = useNavigate();
   const handleEnterShop = () => {
-    navigate("/myshop"); //아직 안만들어서 예시
+    navigate(`/yourShop?userId=${userId}`);
   };
 
   /////////////////채팅//////////////////////////////////
@@ -94,6 +94,9 @@ export default function Detail() {
 
         const user = response.data.user;
         setUserNickName(user?.nickname === null ? user.userId : user?.nickname);
+
+        const sellerId = user.userId; //상점 이동시 필요
+        setUserId(sellerId);
 
         console.log("API Response:", response.data); // 데이터 확인
       })
@@ -184,14 +187,12 @@ export default function Detail() {
             </div>
           </div>
           <div className={DetailStyle.productInfoRightBox}>
-            <div className={DetailStyle.productShopEnterBox}>
+            <div
+              className={DetailStyle.productShopEnterBox}
+              onClick={handleEnterShop}
+            >
               <span className="impact3">{userNickName}</span>님 상점&nbsp;
-              <img
-                src={rightImg}
-                alt="rightImg"
-                className="smallImgSize"
-                onClick={handleEnterShop}
-              ></img>
+              <img src={rightImg} alt="rightImg" className="smallImgSize"></img>
             </div>
             <div className={DetailStyle.productInfoTopBox}>
               <div className={DetailStyle.productDetainInfoBox}>
