@@ -8,6 +8,21 @@ import axiosInstance from "../axios";
 const ProductList = ({ products }) => {
   const [updatedProducts, setUpdatedProducts] = useState([]); // 상태로 관리
 
+  //자신의 제품 찜 방지를 위해 userId 가져오기
+  const [userId, setUserId] = useState("");
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const response = await axiosInstance.get("/user-data");
+        const data = response.data.user;
+        setUserId(data.userId);
+      } catch (error) {
+        console.error("사용자 데이터를 가져오는 중 에러:", error);
+      }
+    };
+    fetchUserId();
+  }, []);
+
   useEffect(() => {
     const checkLoginStatus = async () => {
       const accessToken = Cookies.get("accessToken");
@@ -47,7 +62,7 @@ const ProductList = ({ products }) => {
           to={`/detail?itemId=${product.productId}`}
           className={productListStyle.link}
         >
-          <ProductsCard product={product} />
+          <ProductsCard product={product} userId={userId} />
         </Link>
       ))}
     </div>

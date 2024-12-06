@@ -5,13 +5,16 @@ import fillHeartImg from "../image/fillHeart.png";
 import getRelativeTime from "../utils/getRelativeTime";
 import axiosInstance from "../axios";
 
-const ProductsCard = ({ product }) => {
+const ProductsCard = ({ product, userId }) => {
   ////////////////////////찜/////////////////////////////////
   const [clickedHeart, setClickedHeart] = useState(!product.isBookmarked);
   const [showAlarm, setShowAlarm] = useState(false);
 
+  const isOwner = product.userId === userId; //찜 방지
+
   const handleClick = async (e) => {
-    // e.stopPropagation();
+    if (isOwner) return; // 자신의 제품이라면 return
+
     e.preventDefault(); //링크 이동 방지
 
     try {
@@ -51,7 +54,9 @@ const ProductsCard = ({ product }) => {
       <img
         src={clickedHeart ? emptyHeartImg : fillHeartImg}
         alt="emptyHeartImg"
-        className={productStyle.emptyHeartImg}
+        className={`${productStyle.emptyHeartImg} ${
+          isOwner ? productStyle.disabled : ""
+        }`}
         onClick={handleClick}
       ></img>
       <div
