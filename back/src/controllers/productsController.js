@@ -189,7 +189,6 @@ const handleProductBookmark = async (req, res) => {
 };
 
 const getBookmarkList = async (req, res) => {
-  console.log("여기 부러옴");
   const accessToken = req.headers.authorization?.split(" ")[1];
 
   if (!accessToken) {

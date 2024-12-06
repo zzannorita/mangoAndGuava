@@ -438,7 +438,7 @@ const handleProductBookmark = async (userId, productId) => {
       return rows;
     }
   } catch (error) {
-    console.error("Error in productBookmark operation:", error.message);
+    console.error("Error in insert productBookmark operation:", error.message);
     throw error; // 에러를 호출한 쪽에서 처리하도록 다시 던지기
   }
 };
@@ -456,7 +456,7 @@ const getProductBookmarkByUserID = async (userId) => {
     const [rows] = await db.execute(query);
     return rows;
   } catch (error) {
-    console.error("Error in productBookmark operation:", error.message);
+    console.error("Error in get productBookmark operation:", error.message);
     throw error; // 에러를 호출한 쪽에서 처리하도록 다시 던지기
   }
 };
