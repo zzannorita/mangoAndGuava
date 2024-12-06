@@ -102,6 +102,28 @@ export default function Detail() {
       });
   }, [productId]);
 
+  //찜돼있는 상태 동기화 하는 useEffect 함수
+  useEffect(() => {
+    const getBookmarkList = async () => {
+      try {
+        const response = await axiosInstance.post("product/bookmark/user");
+        const bookmarkList = response.data.data;
+        console.log("테스트", bookmarkList.length);
+        if (bookmarkList.length > 0) {
+          //내부에 존재할 경우
+          bookmarkList.map((item) => {
+            if (productId === item.productId) {
+              setClickedHeart(false);
+            }
+          });
+        }
+      } catch (error) {
+        console.error("찜상태 동기화 오류", error);
+      }
+    };
+    getBookmarkList();
+  }, []);
+
   return (
     <div className="container">
       <div className={DetailStyle.productInfoBox}>
