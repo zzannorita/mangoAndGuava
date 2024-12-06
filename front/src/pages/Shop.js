@@ -68,11 +68,11 @@ export default function Shop() {
       .get("/myshop")
       .then((response) => {
         const data = response.data;
+        const shopData = data.shopData[0];
         setShopData(data);
         // shopInfo 값을 description 상태에 반영
-        setDescription(data.shopInfo || "");
+        setDescription(shopData.shopInfo || "");
         setUserData(data.userData || { address: "주소 없음" });
-        console.log("userData:", data.userData);
         setProducts(data.shopProducts);
         setReviews(data.comentData);
         setBookmarkedProducts(data.bookmarkProduct);
