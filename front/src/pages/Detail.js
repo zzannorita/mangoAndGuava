@@ -8,6 +8,7 @@ import rightImg from "../image/right.png";
 import getRelativeTime from "../utils/getRelativeTime";
 import fillHeartImg from "../image/fillHeart.png";
 import { getCategoryNames } from "../utils/categoryUtils";
+import productStyle from "../styles/productsCard.module.css";
 
 export default function Detail() {
   // 현재 URL에서 쿼리 파라미터 추출
@@ -27,38 +28,33 @@ export default function Detail() {
   const [productViews, setProductViews] = useState("");
   const [productCreatedDate, setProductCreatedDate] = useState("");
   const [productInfo, setProductInfo] = useState("");
-  //////////////////user//////////////////////////////////
-  const [userNickName, setUserNickName] = useState("");
-  const [ownerUserId, setOwnerUserId] = useState("");
 
+  ///////////////////사용자 상태//////////////////////////////
+  const [userNickName, setUserNickName] = useState("");
   const [userId, setUserId] = useState("");
-  ///////////////////////카테고리 로직 분리////////////////
+  const [ownerUserId, setOwnerUserId] = useState("");
+  // 카테고리 관련 로직 분리
   const { firstCategory, secondCategory, thirdCategory } =
     getCategoryNames(productCategory);
 
-  /////////////////상점들어가기//////////////////////////
+  /////////////////////상점 및 채팅///////////////////////////
   const navigate = useNavigate();
-  const handleEnterShop = () => {
-    navigate(`/yourShop?userId=${userId}`);
-  };
-
-  /////////////////채팅//////////////////////////////////
+  const handleEnterShop = () => navigate(`/yourShop?userId=${userId}`);
+  const handleEnterMyShop = () => navigate("/myshop");
   const handleEnterChat = () => {
     navigate("/chat", {
       state: { ownerUserId, productId },
     });
   };
 
-  ////////////////////////찜/////////////////////////////////
+  ///////////////////찜 상태 관리//////////////////////////////
   const [clickedHeart, setClickedHeart] = useState(true);
   const [showAlarm, setShowAlarm] = useState(false);
-
   const handleClick = async (e) => {
-    // e.stopPropagation();
     e.preventDefault(); //링크 이동 방지
     try {
       const response = await axiosInstance.post("product/bookmark", {
-        productId: productId,
+        productId,
       });
       if (response.status === 200) {
         setClickedHeart(!clickedHeart);
@@ -72,6 +68,13 @@ export default function Detail() {
     }
   };
 
+  // 상품 수정하기
+  const handleEditProduct = () => {
+    navigate("/update");
+  };
+
+  ///////////////////useEffect들//////////////////////////////
+  //상품 데이터와 사용자 정보 불러오기
   useEffect(() => {
     axiosInstance
       .get(`/detail?itemId=${productId}`)
@@ -97,18 +100,22 @@ export default function Detail() {
         setProductShippngFee(product.isShippingFee === 0 ? "별도" : "-");
 
         const user = response.data.user;
-        setOwnerUserId(user.userId);
-        setUserNickName(user?.nickname === null ? user.userId : user?.nickname);
-
-        const sellerId = user.userId; //상점 이동시 필요
-        setUserId(sellerId);
-
-        console.log("API Response:", response.data); // 데이터 확인
+        setUserId(user.userId);
+        setUserNickName(user?.nickname || user.userId);
       })
       .catch((error) => {
-        console.log("데이터 가져오기 실패", error);
+        console.log("상품 데이터 불러오기 실패", error);
       });
   }, [productId]);
+
+  //현재 로그인된 사용자 정보 불러오기
+  const [nowUserId, setNowUserId] = useState("");
+  useEffect(() => {
+    axiosInstance.get("/user-data").then((response) => {
+      const data = response.data;
+      setNowUserId(data.user);
+    });
+  }, []);
 
   //찜돼있는 상태 동기화 하는 useEffect 함수
   useEffect(() => {
@@ -130,7 +137,7 @@ export default function Detail() {
       }
     };
     getBookmarkList();
-  }, []);
+  }, [productId]);
 
   return (
     <div className="container">
@@ -144,10 +151,12 @@ export default function Detail() {
             />
             <img
               src={clickedHeart ? emptyHeartImg : fillHeartImg}
-              alt="emptyHeartImg"
-              className={DetailStyle.emptyHeartImg}
+              alt="heart"
+              className={`${DetailStyle.emptyHeartImg} ${
+                userId === nowUserId.userId ? productStyle.disabled : ""
+              }`}
               onClick={handleClick}
-            ></img>
+            />
             <div
               className={`${DetailStyle.heartAlarm} ${
                 showAlarm ? DetailStyle.active : ""
@@ -194,7 +203,11 @@ export default function Detail() {
           <div className={DetailStyle.productInfoRightBox}>
             <div
               className={DetailStyle.productShopEnterBox}
-              onClick={handleEnterShop}
+              onClick={
+                userId === nowUserId.userId
+                  ? handleEnterMyShop
+                  : handleEnterShop
+              }
             >
               <span className="impact3">{userNickName}</span>님 상점&nbsp;
               <img src={rightImg} alt="rightImg" className="smallImgSize"></img>
@@ -221,9 +234,13 @@ export default function Detail() {
             </div>
             <div
               className={DetailStyle.chattingBtnBox}
-              onClick={handleEnterChat}
+              onClick={
+                userId === nowUserId.userId
+                  ? handleEditProduct
+                  : handleEnterChat
+              }
             >
-              채팅하기
+              {userId === nowUserId.userId ? "수정하기" : "채팅하기"}
             </div>
           </div>
         </div>
