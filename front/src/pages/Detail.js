@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../axios";
 import DetailStyle from "../styles/detail.module.css";
-import productStyle from "../styles/productsCard.module.css";
 import emptyHeartImg from "../image/emptyHeart.png";
 import eyeImg from "../image/eye.png";
 import rightImg from "../image/right.png";
@@ -11,10 +10,11 @@ import fillHeartImg from "../image/fillHeart.png";
 import { getCategoryNames } from "../utils/categoryUtils";
 
 export default function Detail() {
+  // 현재 URL에서 쿼리 파라미터 추출
   const currentUrl = new URL(window.location.href);
   const productId = currentUrl.searchParams.get("itemId");
 
-  ///////////////////상품 상태//////////////////////////////
+  ///////////////////product//////////////////////////////
   const [productCategory, setProductCategory] = useState("");
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState("");
@@ -27,49 +27,51 @@ export default function Detail() {
   const [productViews, setProductViews] = useState("");
   const [productCreatedDate, setProductCreatedDate] = useState("");
   const [productInfo, setProductInfo] = useState("");
-
-  ///////////////////사용자 상태//////////////////////////////
+  //////////////////user//////////////////////////////////
   const [userNickName, setUserNickName] = useState("");
-  const [userId, setUserId] = useState("");
+  const [ownerUserId, setOwnerUserId] = useState("");
 
-  // 카테고리 관련 로직 분리
+  const [userId, setUserId] = useState("");
+  ///////////////////////카테고리 로직 분리////////////////
   const { firstCategory, secondCategory, thirdCategory } =
     getCategoryNames(productCategory);
 
-  /////////////////////상점 및 채팅///////////////////////////
+  /////////////////상점들어가기//////////////////////////
   const navigate = useNavigate();
-  const handleEnterShop = () => navigate(`/yourShop?userId=${userId}`);
-  const handleEnterMyShop = () => navigate("/myshop");
-  const handleEnterChat = () => navigate("/chat");
+  const handleEnterShop = () => {
+    navigate(`/yourShop?userId=${userId}`);
+  };
 
-  ///////////////////찜 상태 관리//////////////////////////////
+  /////////////////채팅//////////////////////////////////
+  const handleEnterChat = () => {
+    navigate("/chat", {
+      state: { ownerUserId, productId },
+    });
+  };
+
+  ////////////////////////찜/////////////////////////////////
   const [clickedHeart, setClickedHeart] = useState(true);
   const [showAlarm, setShowAlarm] = useState(false);
+
   const handleClick = async (e) => {
-    e.preventDefault(); // 링크 이동 방지
+    // e.stopPropagation();
+    e.preventDefault(); //링크 이동 방지
     try {
       const response = await axiosInstance.post("product/bookmark", {
-        productId,
+        productId: productId,
       });
       if (response.status === 200) {
         setClickedHeart(!clickedHeart);
-        setShowAlarm(true); // 찜 알림 표시
+        setShowAlarm(true); // 알람 표시
         setTimeout(() => setShowAlarm(false), 1500);
       } else {
         console.error("찜하기 실패", response.data);
       }
     } catch (error) {
-      console.error("찜하기 오류", error);
+      console.error("찜하기 요청 중 오류 발생", error);
     }
   };
 
-  // 상품 수정하기
-  const handleEditProduct = () => {
-    navigate("/update");
-  };
-
-  ///////////////////useEffect들//////////////////////////////
-  // 1. 상품 데이터와 사용자 정보 불러오기
   useEffect(() => {
     axiosInstance
       .get(`/detail?itemId=${productId}`)
@@ -95,42 +97,40 @@ export default function Detail() {
         setProductShippngFee(product.isShippingFee === 0 ? "별도" : "-");
 
         const user = response.data.user;
-        setUserId(user.userId);
-        setUserNickName(user?.nickname || user.userId);
+        setOwnerUserId(user.userId);
+        setUserNickName(user?.nickname === null ? user.userId : user?.nickname);
+
+        const sellerId = user.userId; //상점 이동시 필요
+        setUserId(sellerId);
+
+        console.log("API Response:", response.data); // 데이터 확인
       })
       .catch((error) => {
-        console.log("상품 데이터 불러오기 실패", error);
+        console.log("데이터 가져오기 실패", error);
       });
   }, [productId]);
 
-  // 2. 현재 로그인된 사용자 정보 불러오기
-  const [nowUserId, setNowUserId] = useState("");
-  useEffect(() => {
-    axiosInstance.get("/user-data").then((response) => {
-      const data = response.data;
-      setNowUserId(data.user);
-    });
-  }, []);
-
-  // 3. 찜 상태 동기화
+  //찜돼있는 상태 동기화 하는 useEffect 함수
   useEffect(() => {
     const getBookmarkList = async () => {
       try {
         const response = await axiosInstance.post("product/bookmark/user");
         const bookmarkList = response.data.data;
+        console.log("테스트", bookmarkList.length);
         if (bookmarkList.length > 0) {
-          bookmarkList.forEach((item) => {
+          //내부에 존재할 경우
+          bookmarkList.map((item) => {
             if (productId === item.productId) {
               setClickedHeart(false);
             }
           });
         }
       } catch (error) {
-        console.error("찜 상태 동기화 오류", error);
+        console.error("찜상태 동기화 오류", error);
       }
     };
     getBookmarkList();
-  }, [productId]);
+  }, []);
 
   return (
     <div className="container">
@@ -144,12 +144,10 @@ export default function Detail() {
             />
             <img
               src={clickedHeart ? emptyHeartImg : fillHeartImg}
-              alt="heart"
-              className={`${DetailStyle.emptyHeartImg} ${
-                userId === nowUserId.userId ? productStyle.disabled : ""
-              }`}
+              alt="emptyHeartImg"
+              className={DetailStyle.emptyHeartImg}
               onClick={handleClick}
-            />
+            ></img>
             <div
               className={`${DetailStyle.heartAlarm} ${
                 showAlarm ? DetailStyle.active : ""
@@ -158,7 +156,6 @@ export default function Detail() {
               상품을 찜하였습니다.
             </div>
           </div>
-
           <div className={DetailStyle.productInfoMiddleBox}>
             <div className={DetailStyle.productCategoryBox}>
               {firstCategory} &nbsp;&gt;&nbsp; {secondCategory} &nbsp;&gt;&nbsp;{" "}
@@ -166,7 +163,7 @@ export default function Detail() {
             </div>
             <div className={DetailStyle.productNameBox}>{productName}</div>
             <div className={DetailStyle.productPriceBox}>
-              <div className={DetailStyle.productPrice}>{productPrice}</div>
+              <div className={DetailStyle.productPrice}>{productPrice} </div>
               <div className={DetailStyle.text}>원</div>
             </div>
             <div className={DetailStyle.productDetailBox}>
@@ -194,20 +191,14 @@ export default function Detail() {
               </div>
             </div>
           </div>
-
           <div className={DetailStyle.productInfoRightBox}>
             <div
               className={DetailStyle.productShopEnterBox}
-              onClick={
-                userId === nowUserId.userId
-                  ? handleEnterMyShop
-                  : handleEnterShop
-              }
+              onClick={handleEnterShop}
             >
-              <span className="impact3">{userNickName}</span>님 상점
-              <img src={rightImg} alt="rightImg" className="smallImgSize" />
+              <span className="impact3">{userNickName}</span>님 상점&nbsp;
+              <img src={rightImg} alt="rightImg" className="smallImgSize"></img>
             </div>
-
             <div className={DetailStyle.productInfoTopBox}>
               <div className={DetailStyle.productDetainInfoBox}>
                 <div className={DetailStyle.productDetainInfoBoxes}>
@@ -215,11 +206,11 @@ export default function Detail() {
                     src={emptyHeartImg}
                     alt="emptyHeartImg"
                     className="smallImgSize"
-                  />
+                  ></img>
                   <div>{productWishlistCount}</div>
                 </div>
                 <div className={DetailStyle.productDetainInfoBoxes}>
-                  <img src={eyeImg} alt="eyeImg" className="smallImgSize" />
+                  <img src={eyeImg} alt="eyeImg" className="smallImgSize"></img>
                   <div>{productViews}</div>
                 </div>
                 <div className={DetailStyle.productDetainInfoBoxes}>채팅 5</div>
@@ -230,13 +221,9 @@ export default function Detail() {
             </div>
             <div
               className={DetailStyle.chattingBtnBox}
-              onClick={
-                userId === nowUserId.userId
-                  ? handleEditProduct
-                  : handleEnterChat
-              }
+              onClick={handleEnterChat}
             >
-              {userId === nowUserId.userId ? "수정하기" : "채팅하기"}
+              채팅하기
             </div>
           </div>
         </div>

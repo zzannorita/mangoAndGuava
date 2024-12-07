@@ -101,7 +101,12 @@ const Search = () => {
             <span className="impact">{products.length}</span>건
           </div>
           <div className={shopStyle.mainTopRightBox}>
-            <div className={shopStyle.filterTextBox}>최신순</div>
+            <div
+              className={shopStyle.filterTextBox}
+              onClick={() => setSortOrder("low")}
+            >
+              저가순
+            </div>
             <span>|</span>
             <div
               className={shopStyle.filterTextBox}
@@ -110,13 +115,7 @@ const Search = () => {
               고가순
             </div>
             <span>|</span>
-
-            <div
-              className={shopStyle.filterTextBox}
-              onClick={() => setSortOrder("low")}
-            >
-              저가순
-            </div>
+            <div className={shopStyle.filterTextBox}>거리순</div>
           </div>
         </div>
         <div className={SearchStyle.resultTextBottomBox}>

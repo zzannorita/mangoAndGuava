@@ -19,22 +19,24 @@
   border-bottom: solid 1px #f1f1f1;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   height: 10%;
   flex-shrink: 0; /* 줄어들지 않도록 설정 */
 }
 .chatTitleTextBox {
-  width: 5%;
+  width: 95%;
   height: 90%;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
 }
 .chatTitleText {
   font-size: x-large;
 }
-
+.chatNickNameText {
+  border: 1px solid black;
+}
 .chatBox {
   /* background-color: #f9f9f9; */
   width: 100%;
@@ -55,6 +57,8 @@
 
   overflow-y: auto; /* 세로 스크롤 생성 */
   overflow-x: hidden; /* 가로 스크롤 제거 */
+
+  align-items: center;
 }
 
 /* .chatEach {
@@ -66,9 +70,21 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 100%;
+  width: 99%;
   height: 60px;
   margin-bottom: 3px;
+
+  /*여기 수정*/
+  border: 1px solid transparent; /* 기본 상태에서 투명한 border */
+  cursor: pointer;
+}
+
+.chatEachBox:hover {
+  border: 2px solid #ffe187; /* 마우스 올렸을 때 border */
+}
+
+.selectedChatBox {
+  border: 2px solid #ffe187; /* 선택된 채팅방에 적용될 스타일 */
 }
 
 .chatEachImgBox {
@@ -122,14 +138,23 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  height: 10%;
+  height: 15%;
   padding-left: 10px;
   padding-right: 10px;
   align-items: center;
 }
 
-.chatContentNameBox div {
-  font-size: larger;
+.chatContentNameBox {
+  height: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  border: 1px solid black;
+}
+.chatProductInfoBox {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
 }
 
 .chatFieldBox {
@@ -170,7 +195,7 @@
 }
 
 .myMessage::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   right: -10px;
@@ -195,7 +220,7 @@
 }
 
 .otherMessage::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: -10px;
@@ -216,10 +241,11 @@
   text-align: left; /* 부모에서 상대 메시지 정렬 */
 }
 
-.chatFieldContainer{
+.chatFieldContainer {
   width: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-bottom: 15px;
 }
 
@@ -228,7 +254,7 @@
   height: auto;
   display: flex;
   align-items: center;
-  gap: 8px; 
+  gap: 8px;
   /* input과 버튼 간 간격 */
   padding: 10px;
   background-color: #ffe187;
@@ -237,7 +263,7 @@
 }
 
 .chatInput {
-  flex: 1; 
+  flex: 1;
   /* 입력 필드가 남은 공간을 차지하도록 */
   padding: 10px;
   border: 1px solid #ffe187;
@@ -273,4 +299,35 @@
 .sendIcon {
   width: 20px;
   height: 20px;
+}
+
+.actionButtonsContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px; /* 버튼과 입력 필드 간격 */
+}
+
+.actionButton {
+  background-color: #ffe187; /* 버튼 배경색 */
+  color: white; /* 버튼 글자색 */
+  border: none;
+  border-radius: 50%; /* 동그란 버튼 */
+  width: 50px; /* 버튼 크기 */
+  height: 50px; /* 버튼 크기 */
+  font-size: 12px; /* 버튼 글자 크기 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin: 0 5px; /* 버튼 간격 */
+  transition: background-color 0.3s ease; /* hover 효과 */
+}
+
+.actionButton:hover {
+  background-color: #ffe187; /* 버튼 hover 시 색상 변경 */
+}
+
+.actionButton:active {
+  background-color: #ffe187; /* 버튼 클릭 시 색상 변경 */
 }

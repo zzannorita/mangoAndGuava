@@ -128,6 +128,50 @@ const getUserData = async (req, res) => {
   }
 };
 
+const getOtherUserData = async (req, res) => {
+  const accessToken = req.headers.authorization?.split(" ")[1];
+  const otherUserId = req.query.userId;
+  if (!accessToken) {
+    return res.status(401).json({ message: "No access token provided" });
+  }
+
+  try {
+    const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const userAdditionalResponse = await userDao.getUserById(otherUserId);
+    const userData = userResponse.data;
+    const userAdditionalData = userAdditionalResponse;
+    const userId = userData.id;
+    const nickname = userData.kakao_account.profile.nickname;
+    const nickname2 = userAdditionalData.nickname;
+    const email = userData.kakao_account.email;
+    const address = userAdditionalData.address;
+    const createdAt = userAdditionalData.createdAt;
+    const profileImage = userAdditionalData.profileImage;
+    const account = userAdditionalData.account;
+    const userInfo = {
+      userId,
+      nickname,
+      email,
+      address,
+      createdAt,
+      profileImage,
+      account,
+      nickname2,
+    };
+    return res.json({ code: "SUCCESS_USERDATA", user: userInfo });
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      throw new Error("Token expired");
+    }
+    throw new Error("Failed to fetch user data");
+  }
+};
+
 const kakaoLogout = async (req, res) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
 
@@ -187,4 +231,5 @@ module.exports = {
   kakaoLogout,
   uploadProfileImage,
   uploadImages,
+  getOtherUserData,
 };
