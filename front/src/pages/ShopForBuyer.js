@@ -81,6 +81,7 @@ export default function ShopForBuyer() {
     }
     return null;
   };
+
   return (
     <div className="container">
       <div className={shopStyle.shopForBuyerContainer}>
@@ -133,8 +134,26 @@ export default function ShopForBuyer() {
                   )
                 )}
               </div>
-              <div className={shopStyle.mainProductsBox}>
-                {renderContainer()}
+              <div className={shopStyle.myProductsMainBox}>
+                {!(selectedFilter === "거래후기") ? (
+                  <div className={shopStyle.mainTopBox}>
+                    <div className={shopStyle.mainTopLeftBox}>
+                      <div>
+                        상품 <span className="impact">15</span>
+                      </div>
+                    </div>
+                    <div className={shopStyle.mainTopRightBox}>
+                      <div className={shopStyle.filterTextBox}>최신</div>
+                      <span>|</span>
+                      <div className={shopStyle.filterTextBox}>저가</div>
+                      <span>|</span>
+                      <div className={shopStyle.filterTextBox}>고가</div>
+                    </div>
+                  </div>
+                ) : null}
+                <div className={shopStyle.mainProductsBox}>
+                  {renderContainer()}
+                </div>
               </div>
             </div>
           </div>
