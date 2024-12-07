@@ -64,8 +64,10 @@ const Chat = () => {
         console.log("챗 데이터", chatData.data.data.length);
         if (!(chatData.data.data.length > 0)) {
           socket.current.send(JSON.stringify(newMessage));
+          setSelectedRoomId(roomId);
           fetchChatRoomMessages(roomId, ownerUserId);
         } else {
+          setSelectedRoomId(roomId);
           fetchChatRoomMessages(roomId, ownerUserId);
         }
       } else {
@@ -132,6 +134,7 @@ const Chat = () => {
       const newMessage = {
         roomId: selectedRoomId,
         user_from: userId,
+        user_to: ownerUserId + "test",
         message: message.trim(),
       };
 
@@ -148,6 +151,7 @@ const Chat = () => {
     const addressMessage = {
       roomId: selectedRoomId,
       user_from: userId,
+      user_to: ownerUserId + "test",
       message: "주소 정보 : " + selectedUserData.address,
     };
 
@@ -162,6 +166,7 @@ const Chat = () => {
     const AccountMessage = {
       roomId: selectedRoomId,
       user_from: userId,
+      user_to: ownerUserId + "test",
       message: "계좌 정보 : " + selectedUserData.account,
     };
 
@@ -226,7 +231,9 @@ const Chat = () => {
             <div className={chatStyle.chatTitleTextBox}>
               <div className={chatStyle.chatTitleText}>채팅</div>
               <div className={chatStyle.chatNickNameText}>
-                {selectedOtherUserData.nickname2 + "님 과의 대화"}
+                {selectedRoomId && (
+                  <>{selectedOtherUserData.nickname2} 님 과의 대화</>
+                )}
               </div>
             </div>
           </div>
@@ -272,33 +279,41 @@ const Chat = () => {
             {/* 채팅 내용 */}
             <div className={chatStyle.chattingBox}>
               <div className={chatStyle.chatContentBox}>
-                <div className={chatStyle.chatContentTitleBox}>
-                  <div className={chatStyle.chatContentNameBox}>
-                    <div className={chatStyle.chatProductImg}>
-                      이미지{console.log("이미지", selectedProductData)}
-                      <img
-                        src={selectedProductData.images[0]}
-                        alt="productImg"
-                      />
+                {selectedRoomId && (
+                  <div className={chatStyle.chatContentTitleBox}>
+                    <div className={chatStyle.chatContentNameBox}>
+                      <div className={chatStyle.chatProductImg}>
+                        <img
+                          className={chatStyle.chatProductImgTag}
+                          src={selectedProductData?.images?.[0] || mangoImg}
+                          alt="productImg"
+                        />
+                      </div>
+
+                      <div className={chatStyle.chatProductInfoBox}>
+                        <div className={chatStyle.chatProductName}>
+                          상품명 | {selectedProductData.productName}
+                        </div>
+                        <div className={chatStyle.chatProductPrice}>
+                          상품 가격 | {selectedProductData.productPrice} 원
+                        </div>
+                      </div>
                     </div>
-                    <div className={chatStyle.chatProductInfoBox}>
-                      <div className={chatStyle.chatProductName}>
-                        {selectedProductData.productName}
-                      </div>
-                      <div className={chatStyle.chatProductPrice}>
-                        {selectedProductData.productPrice}
-                      </div>
+
+                    <div className={chatStyle.chatContentDeleteImg}>
+                      <img src={chatRemove} alt="chatRemove" />
                     </div>
                   </div>
-                  <div className={chatStyle.chatContentDeleteImg}>
-                    <img src={chatRemove} alt="chatRemove" />
-                  </div>
-                </div>
-                <div>
-                  {selectedProductData.tradingMethod ? (
-                    <>{selectedProductData.tradingAddress}</>
-                  ) : (
-                    <></>
+                )}
+                <div className={chatStyle.chatContentTradingAressContainer}>
+                  {selectedRoomId && (
+                    <div className={chatStyle.chatContentTradingAressBox}>
+                      {selectedProductData.tradingMethod ? (
+                        <>직거래 장소 | {selectedProductData.tradingAddress}</>
+                      ) : (
+                        <></>
+                      )}
+                    </div>
                   )}
                 </div>
                 <div className={chatStyle.chatContentDetailBox}>
