@@ -80,6 +80,7 @@ export default function Detail() {
       .get(`/detail?itemId=${productId}`)
       .then((response) => {
         const product = response.data.product[0];
+        setOwnerUserId(product.userId);
         setProductCategory(product.productCategory);
         setProductName(product.productName);
         setProductPrice(product.productPrice);
