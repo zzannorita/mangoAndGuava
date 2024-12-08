@@ -65,7 +65,7 @@ export default function Shop() {
   //myshop api호출
   useEffect(() => {
     axiosInstance
-      .get("/myshop")
+      .get("/myShop")
       .then((response) => {
         const data = response.data;
         const shopData = data.shopData[0];

@@ -34,7 +34,7 @@ function App() {
           {/* <Route path="/products?item={search-data}" element={<Search />} /> */}
           <Route path="/chat" element={<Chat />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/myshop" element={<Shop />} />
+          <Route path="/myShop" element={<Shop />} />
           <Route path="/yourShop" element={<ShopForBuyer />} />
           <Route path="/detail" element={<Detail />} />
           <Route path="/update" element={<Update />} />
