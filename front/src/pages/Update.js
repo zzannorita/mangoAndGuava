@@ -140,7 +140,7 @@ export default function Update() {
   const [tradeState, setTradeState] = useState("");
 
   const ExchangeStateHandler = (id) => {
-    setIsTrade(id);
+    setTradeState(id);
   };
   ////////////////////////데이터 전송/////////////////////
   const navigate = useNavigate();
