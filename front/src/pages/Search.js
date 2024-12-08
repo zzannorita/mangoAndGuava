@@ -73,14 +73,19 @@ const Search = () => {
 
     return isCategoryMatch && isLocationMatch && isPriceMatch; // 모든 조건이 일치하는 상품만 반환
   });
-  // 정렬된 상품 리스트
+
+  //정렬
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     if (sortOrder === "low") {
       return a.productPrice - b.productPrice; // 저가순
-    } else {
+    } else if (sortOrder === "high") {
       return b.productPrice - a.productPrice; // 고가순
-    }
+    } else if (sortOrder === "recent") {
+      return new Date(b.createdAt) - new Date(a.createdAt); // 최신순
+    } //최신순이 안됨 ㅠㅠ
+    return 0; // 기본값
   });
+
   useEffect(() => {
     if (!query) return; // 검색어가 없는 경우 API 호출 방지
     axiosInstance
@@ -91,6 +96,7 @@ const Search = () => {
       })
       .catch();
   }, [query]);
+
   return (
     <div className="container">
       <div className={SearchStyle.resultTextBox}>
@@ -101,7 +107,12 @@ const Search = () => {
             <span className="impact">{products.length}</span>건
           </div>
           <div className={shopStyle.mainTopRightBox}>
-            <div className={shopStyle.filterTextBox}>최신순</div>
+            <div
+              className={shopStyle.filterTextBox}
+              onClick={() => setSortOrder("recent")}
+            >
+              최신순
+            </div>
             <span>|</span>
             <div
               className={shopStyle.filterTextBox}
