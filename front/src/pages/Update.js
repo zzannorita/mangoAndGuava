@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import registStyle from "../styles/regist.module.css";
 import cameraImg from "../image/camera.png";
 import removeImg from "../image/x.png";
@@ -8,10 +8,49 @@ import RegistCategory from "./RegistCategory";
 import axiosInstance from "../axios";
 import { useNavigate } from "react-router-dom";
 import LocationList from "../components/LocationList";
+import { useLocation } from "react-router-dom";
+import { getCategoryNames } from "../utils/categoryUtils";
 export default function Update() {
+  ////////////////////수정상품id받아오기/////////////
+  const location = useLocation();
+  const { productId } = location.state || {}; // state가 없을 때를 대비
+
+  useEffect(() => {
+    axiosInstance
+      .get(`/detail?itemId=${productId}`)
+      .then((response) => {
+        const product = response.data.product[0];
+        setProductImg(product.images);
+        setImages(product.images); // 초기 상태에 기존 이미지 포함
+        setProductName(product.productName);
+        setProductPrice(product.productPrice);
+        setShippingFee(product.isShippingFee === 1); // 1이면 true로 설정
+        setProductInfo(product.productInfo);
+        setProductState(product.productState);
+        setIsTrade(product.isTrade === 1);
+        setTradingMethod(product.tradingMethod === 1);
+        setTradingAddress(product.tradingAddress);
+        setTradeState(product.tradeState);
+        // 카테고리 이름 변환
+        const categoryCode = product.productCategory;
+        const { firstCategory, secondCategory, thirdCategory } =
+          getCategoryNames(categoryCode);
+
+        const categoryName = `${firstCategory} > ${secondCategory} > ${thirdCategory}`;
+
+        setProductCategory(categoryCode); // 원본 카테고리 코드 저장
+        setProductCategoryName(categoryName); // 변환된 카테고리 이름 저장
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log("상품 데이터 불러오기 실패", error);
+      });
+  }, [productId]);
+
   ////////////////////이미지 업로드//////////////////
-  const [images, setImages] = useState([]);
-  const [imageFiles, setImageFiles] = useState([]);
+  const [productImg, setProductImg] = useState([]); // 서버에서 가져온 기존 이미지
+  const [images, setImages] = useState([]); // 현재 등록할 이미지 (기존+new)
+  const [imageFiles, setImageFiles] = useState([]); // 새로 업로드된 파일
 
   const imageUploadHandler = (event) => {
     const files = Array.from(event.target.files);
@@ -25,12 +64,26 @@ export default function Update() {
     ]);
   };
 
+  // 이미지 삭제 핸들러
   const removeImageHandler = (indexToRemove) => {
+    const imageToRemove = images[indexToRemove];
+
+    // 기존 이미지인지 확인
+    if (productImg.includes(imageToRemove)) {
+      setProductImg((prevProductImg) =>
+        prevProductImg.filter((img) => img !== imageToRemove)
+      );
+    } else {
+      setImageFiles((prevFiles) =>
+        prevFiles.filter(
+          (_, index) => index !== indexToRemove - productImg.length
+        )
+      );
+    }
+
+    // UI 상태 업데이트
     setImages((prevImages) =>
       prevImages.filter((_, index) => index !== indexToRemove)
-    );
-    setImageFiles((prevFiles) =>
-      prevFiles.filter((_, index) => index !== indexToRemove)
     );
   };
 
@@ -53,14 +106,13 @@ export default function Update() {
   const [isShippingFee, setShippingFee] = useState(false);
 
   const imageCheckHandler = () => {
-    setShippingFee((prevState) => (prevState ? "false" : "true"));
+    setShippingFee((prevState) => !prevState); // 불리언 값 토글
   };
-
   ////////////////////////내용///////////////////////////
   const [productInfo, setProductInfo] = useState("");
 
   /////////////////////상품상태//////////////////////////
-  const [productState, setProductState] = useState(null);
+  const [productState, setProductState] = useState(false);
 
   const statusClickHandler = (id) => {
     setProductState(id);
@@ -84,6 +136,12 @@ export default function Update() {
   const [tradingAddress, setTradingAddress] = useState("");
   const [selectedTradingAddress, setSelectedTradingAddress] = useState("");
 
+  ////////////////////////상태변경///////////////////////
+  const [tradeState, setTradeState] = useState("");
+
+  const ExchangeStateHandler = (id) => {
+    setIsTrade(id);
+  };
   ////////////////////////데이터 전송/////////////////////
   const navigate = useNavigate();
   const handleSubmit = () => {
@@ -124,13 +182,13 @@ export default function Update() {
     }
 
     // 거래 방법이 선택되지 않으면
-    if (tradingMethod === "") {
+    if (tradingMethod === null) {
       alert("거래 방법을 선택해주세요.");
       return;
     }
 
     // 거래 방법이 직거래일 경우 위치를 입력하지 않으면
-    if (tradingMethod === "true" && tradingAddress.trim() === "") {
+    if (tradingMethod === true && tradingAddress.trim() === "") {
       alert("거래 위치를 입력해주세요.");
       return;
     }
@@ -150,20 +208,21 @@ export default function Update() {
     formData.append("productState", productState);
     formData.append("isTrade", isTrade);
     formData.append("tradingMethod", tradingMethod);
+    formData.append("tradeState", tradeState);
     formData.append(
       "tradingAddress",
-      tradingMethod === "false" ? null : tradingAddress
+      tradingMethod === false ? null : tradingAddress
     );
 
     axiosInstance
-      .post("/add-product", formData, {
+      .patch("/update-product", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       })
       .then((response) => {
-        alert("상품이 등록되었습니다.");
-        navigate("/");
+        alert("상품이 수정되었습니다.");
+        navigate(`/detail?itemId=${productId}`);
         setProductName("");
         setProductCategory("");
         setProductPrice("");
@@ -173,11 +232,12 @@ export default function Update() {
         setIsTrade(null);
         setTradingMethod("");
         setTradingAddress("");
+        setTradeState("");
         setImages([]);
         setImageFiles([]);
       })
       .catch((error) => {
-        console.error("상품 등록 실패", error);
+        console.error("상품 수정 실패", error);
       });
   };
 
@@ -254,8 +314,8 @@ export default function Update() {
             <div>배송비포함 </div>
             <img
               className={registStyle.checkImg}
-              src={isShippingFee === "true" ? checkFillImg : checkEmptyImg}
-              alt={isShippingFee === "true" ? "checkFillImg" : "checkEmptyImg"}
+              src={isShippingFee ? checkFillImg : checkEmptyImg}
+              alt={isShippingFee ? "checkFillImg" : "checkEmptyImg"}
               onClick={imageCheckHandler}
             />
           </div>
@@ -296,18 +356,18 @@ export default function Update() {
           <div className={registStyle.productStatusBox}>
             <div
               className={`${registStyle.productStatusText} ${
-                isTrade === "true" ? registStyle.active : ""
+                isTrade === true ? registStyle.active : ""
               }`}
-              onClick={() => ExchangeClickHandler("true")}
+              onClick={() => ExchangeClickHandler(true)}
             >
               가능
             </div>
             <div>|</div>
             <div
               className={`${registStyle.productStatusText} ${
-                isTrade === "false" ? registStyle.active : ""
+                isTrade === false ? registStyle.active : ""
               }`}
-              onClick={() => ExchangeClickHandler("false")}
+              onClick={() => ExchangeClickHandler(false)}
             >
               불가능
             </div>
@@ -318,24 +378,24 @@ export default function Update() {
           <div className={registStyle.productStatusBox}>
             <div
               className={`${registStyle.productStatusText} ${
-                tradingMethod === "false" ? registStyle.active : ""
+                tradingMethod === false ? registStyle.active : ""
               }`}
-              onClick={() => deliveryClickHandler("false")}
+              onClick={() => deliveryClickHandler(false)}
             >
               택배거래
             </div>
             <div>|</div>
             <div
               className={`${registStyle.productStatusText} ${
-                tradingMethod === "true" ? registStyle.active : ""
+                tradingMethod === true ? registStyle.active : ""
               }`}
-              onClick={() => deliveryClickHandler("true")}
+              onClick={() => deliveryClickHandler(true)}
             >
               직거래
             </div>
           </div>
         </div>
-        {tradingMethod === "true" ? (
+        {tradingMethod === true ? (
           <div className={registStyle.commonContainer}>
             <div className={registStyle.registName}>위치</div>
             <div className={registStyle.registNameBox}>
@@ -359,15 +419,39 @@ export default function Update() {
         )}
 
         <div className={registStyle.commonContainer}>
-          <div className={registStyle.registName}>키워드</div>
-          <input
-            className={registStyle.registInputBox}
-            placeholder="키워드를 입력해주세요. (최대 5개)"
-          />
+          <div className={registStyle.registName}>상태 변경</div>
+          <div className={registStyle.productStatusBox}>
+            <div
+              className={`${registStyle.productStatusText} ${
+                tradeState === "판매중" ? registStyle.active : ""
+              }`}
+              onClick={() => ExchangeStateHandler("판매중")}
+            >
+              판매중
+            </div>
+            <div>|</div>
+            <div
+              className={`${registStyle.productStatusText} ${
+                tradeState === "예약중" ? registStyle.active : ""
+              }`}
+              onClick={() => ExchangeStateHandler("예약중")}
+            >
+              예약중
+            </div>
+            <div>|</div>
+            <div
+              className={`${registStyle.productStatusText} ${
+                tradeState === "판매완료" ? registStyle.active : ""
+              }`}
+              onClick={() => ExchangeStateHandler("판매완료")}
+            >
+              판매완료
+            </div>
+          </div>
         </div>
         <div className={registStyle.registButtonBox}>
           <button className={registStyle.registButton} onClick={handleSubmit}>
-            등록
+            수정
           </button>
         </div>
       </div>

@@ -70,7 +70,7 @@ export default function Detail() {
 
   // 상품 수정하기
   const handleEditProduct = () => {
-    navigate("/update");
+    navigate("/update", { state: { productId } });
   };
 
   ///////////////////useEffect들//////////////////////////////
