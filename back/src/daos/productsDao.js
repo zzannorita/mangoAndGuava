@@ -462,6 +462,7 @@ const getProductBookmarkByUserID = async (userId) => {
 };
 
 const updateProductFields = async (updateData, productId, userId) => {
+  console.log("dao -=> ", updateData, productId, userId);
   const setUpdateData = Object.keys(updateData)
     .map((key) => `${key} = ?`) // `key = ?` 형식으로 변환
     .join(", "); // 쉼표로 결합
@@ -469,12 +470,32 @@ const updateProductFields = async (updateData, productId, userId) => {
   const values = [...Object.values(updateData), productId, userId];
 
   const query = `
-  UPDATE products 
+  UPDATE product 
   SET ${setUpdateData}, productUpdatedDate = NOW() 
   WHERE productId = ? AND userId = ?`;
 
   try {
     const [rows] = await db.execute(query, values);
+    return rows;
+  } catch (error) {
+    console.error("Error in update product data:", error.message);
+    throw error; // 에러를 호출한 쪽에서 처리하도록 다시 던지기
+  }
+};
+
+const updateProductFieldsByState = async (tradeState, productId, userId) => {
+  const escapedProductId = mysql.escape(productId);
+  const escapedUserId = mysql.escape(userId);
+  const escapedTradeState = mysql.escape(tradeState);
+
+  const query = `
+  UPDATE product
+  SET tradeState = ${escapedTradeState}
+  WHERE productId = ${escapedProductId} AND userId = ${escapedUserId}
+`;
+
+  try {
+    const [rows] = await db.execute(query);
     return rows;
   } catch (error) {
     console.error("Error in update product data:", error.message);
@@ -494,4 +515,5 @@ module.exports = {
   handleProductBookmark,
   getProductBookmarkByUserID,
   updateProductFields,
+  updateProductFieldsByState,
 };
