@@ -9,8 +9,9 @@ import getRelativeTime from "../utils/getRelativeTime";
 import fillHeartImg from "../image/fillHeart.png";
 import { getCategoryNames } from "../utils/categoryUtils";
 import productStyle from "../styles/productsCard.module.css";
+import Modal from "../components/Modal";
 
-export default function Detail() {
+export default function Detail({ shopOwnerUserId }) {
   // 현재 URL에서 쿼리 파라미터 추출
   const currentUrl = new URL(window.location.href);
   const productId = currentUrl.searchParams.get("itemId");
@@ -28,7 +29,8 @@ export default function Detail() {
   const [productViews, setProductViews] = useState("");
   const [productCreatedDate, setProductCreatedDate] = useState("");
   const [productInfo, setProductInfo] = useState("");
-
+  const [tradeState, setTradeState] = useState("");
+  const [buyerId, setBuyerId] = useState("");
   ///////////////////사용자 상태//////////////////////////////
   const [userNickName, setUserNickName] = useState("");
   const [userId, setUserId] = useState("");
@@ -85,6 +87,8 @@ export default function Detail() {
         setProductName(product.productName);
         setProductPrice(product.productPrice);
         setProductImg(product.images);
+        setTradeState(product.tradeState);
+        setBuyerId(product.buyerUserId);
         setProductTradingAddress(
           product.tradingAddress === "null" ? "-" : product.tradingAddress
         );
@@ -117,6 +121,35 @@ export default function Detail() {
       setNowUserId(data.user);
     });
   }, []);
+
+  ////////////////////후기작성///////////////////////
+  const isTransactionComplete =
+    String(buyerId) === String(nowUserId.userId) && tradeState === "판매완료";
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  // 후기 작성 버튼 클릭 시 모달 열기
+  const handleOpenModal = () => {
+    if (isTransactionComplete) {
+      setIsModalOpen(true);
+    } else {
+      alert("후기는 거래가 완료된 후 작성할 수 있습니다.");
+    }
+  };
+
+  // 모달 닫기
+  const handleCloseModal = () => setIsModalOpen(false);
+  // 후기 작성 후 POST 요청 보내기
+  const handleSubmitReview = (reviewData) => {
+    // reviewData는 { shopOwnerUserId, comment, avg }
+    axiosInstance
+      .post("/shop/comment", reviewData) // 후기 저장
+      .then((response) => {
+        console.log("리뷰 저장 성공:", response.data);
+        navigate(`/review/${productId}`); // 리뷰 페이지로 이동
+      })
+      .catch((error) => {
+        console.error("리뷰 저장 실패:", error);
+      });
+  };
 
   //찜돼있는 상태 동기화 하는 useEffect 함수
   useEffect(() => {
@@ -238,13 +271,24 @@ export default function Detail() {
               onClick={
                 String(userId) === String(nowUserId.userId)
                   ? handleEditProduct
+                  : isTransactionComplete
+                  ? handleOpenModal // 후기 작성 모달 열기
                   : handleEnterChat
               }
             >
               {String(userId) === String(nowUserId.userId)
                 ? "수정하기"
+                : isTransactionComplete
+                ? "후기 작성하기"
                 : "채팅하기"}
             </div>
+            {/* 모달 컴포넌트 */}
+            <Modal
+              isOpen={isModalOpen}
+              onClose={handleCloseModal}
+              onSubmit={handleSubmitReview}
+              shopOwnerUserId={userId} // 상점 주 userId 전달
+            />
           </div>
         </div>
       </div>
