@@ -359,3 +359,73 @@
 .actionButton:active {
   background-color: #ffe187; /* 버튼 클릭 시 색상 변경 */
 }
+
+.tradeStateText {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.tradeStateBox {
+  margin-top: 10px;
+}
+
+.tradeStateButtons {
+  display: flex;
+  gap: 10px;
+}
+
+.tradeStateButton {
+  background-color: white;
+  border: 1px solid #ffe187;
+  padding: 4px 8px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.tradeStateButton:hover {
+  background-color: #f0f0f0;
+}
+
+.tradeStateSelectBox {
+  margin-top: 10px;
+  width: 120px; /* select 박스 크기 조정 */
+}
+
+.tradeStateSelect {
+  width: 100%;
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 1px solid #ffe187;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-align: center; 
+}
+
+.tradeStateSelect::-ms-expand {
+  display: none; /* Internet Explorer에서 화살표 제거.. 이걸 아직쓰나? */
+}
+
+.tradeStateSelect option {
+  padding: 8px;
+  background-color: #fff;
+  color: #333;
+  text-align: center; 
+  display: flex;
+  justify-content: center; 
+}
+
+.tradeStateSelect:hover {
+  border-color: #ffe187;
+}
+
+.tradeStateSelect:focus {
+  border-color: #ffe187;
+  outline: none;
+}

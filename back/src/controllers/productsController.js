@@ -223,7 +223,8 @@ const getBookmarkList = async (req, res) => {
 const updateProduct = async (req, res) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
   const updateData = req.body;
-  const productId = req.query.productId;
+  const productId = req.params.productId;
+  console.log(productId, updateData);
 
   if (!accessToken) {
     return res.status(401).json({ message: "No access token provided" });
@@ -261,6 +262,43 @@ const updateProduct = async (req, res) => {
   }
 };
 
+const updateProductByState = async (req, res) => {
+  const accessToken = req.headers.authorization?.split(" ")[1];
+  const tradeState = req.body.tradeState;
+  const productId = req.params.productId;
+
+  if (!accessToken) {
+    return res.status(401).json({ message: "No access token provided" });
+  }
+
+  try {
+    const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    const userId = userResponse.data.id;
+
+    const updateData = await productsDao.updateProductFieldsByState(
+      tradeState,
+      productId,
+      userId
+    );
+
+    return res.json({
+      code: "SUCCESS_UPDATE_PRODUCT",
+      data: updateData,
+    });
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      return res.status(401).json({ message: "Token expired" });
+    }
+    return res
+      .status(500)
+      .json({ message: "Failed to fetch user data", error: error.message });
+  }
+};
+
 module.exports = {
   handleProducts,
   getProduct,
@@ -268,4 +306,5 @@ module.exports = {
   handleProductBookmark,
   getBookmarkList,
   updateProduct,
+  updateProductByState,
 };

@@ -223,6 +223,24 @@ const Chat = () => {
     }
   }
 
+  // 상품 상태 변경 함수
+  const handleStateChange = async (newState) => {
+    console.log(newState);
+    try {
+      await axiosInstance.patch(
+        `http://localhost:3001/update-product/state/${selectedProductData.productId}`,
+        { tradeState: newState } // 상태 업데이트
+      );
+      // 상태 변경 후, selectedProductData 업데이트
+      setSelectedProductData((prevData) => ({
+        ...prevData,
+        tradeState: newState,
+      }));
+    } catch (error) {
+      console.error("상품 상태 변경 실패:", error);
+    }
+  };
+
   return (
     <div className="container">
       <div className={chatStyle.container}>
@@ -301,7 +319,38 @@ const Chat = () => {
                     </div>
 
                     <div className={chatStyle.chatContentDeleteImg}>
-                      <img src={chatRemove} alt="chatRemove" />
+                      {/* 모든 사용자에게 현재 상태를 보여준다 */}
+                      <div className={chatStyle.tradeStateText}>
+                        거래 상태 | {selectedProductData.tradeState}
+                      </div>
+
+                      {/* 로그인한 사용자와 상품 소유자가 같을 때만 상태 변경 */}
+                      {String(userId) === String(selectedProductData.userId) ? (
+                        <div className={chatStyle.tradeStateBox}>
+                          <div className={chatStyle.tradeStateSelectBox}>
+                            <select
+                              value={selectedProductData.tradeState}
+                              onChange={(e) =>
+                                handleStateChange(e.target.value)
+                              } // select 값 변경 시 처리 함수
+                              className={chatStyle.tradeStateSelect} // 스타일 클래스 추가
+                            >
+                              <option value="none">거래 상태 변경</option>
+                              {/* 현재 상태에 따라 표시할 옵션을 조건부로 렌더링 */}
+                              {selectedProductData.tradeState !== "판매중" && (
+                                <option value="판매중">판매중</option>
+                              )}
+                              {selectedProductData.tradeState !== "예약중" && (
+                                <option value="예약중">예약중</option>
+                              )}
+                              {selectedProductData.tradeState !==
+                                "판매완료" && (
+                                <option value="판매완료">판매완료</option>
+                              )}
+                            </select>
+                          </div>
+                        </div>
+                      ) : null}
                     </div>
                   </div>
                 )}
