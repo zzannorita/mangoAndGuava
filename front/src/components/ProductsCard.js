@@ -13,7 +13,7 @@ const ProductsCard = ({ product, userId }) => {
   const isOwner = product.userId === userId; //찜 방지
 
   const handleClick = async (e) => {
-    if (isOwner) return; // 자신의 제품이라면 return
+    if (isOwner || tradeState !== "판매중") return; // 자신의 제품이거나 "판매중"이 아닌 경우 클릭 방지
 
     e.preventDefault(); //링크 이동 방지
 
@@ -37,6 +37,20 @@ const ProductsCard = ({ product, userId }) => {
     }
   };
 
+  //////////////////////////상태/////////////////////////////////
+  const [tradeState, setTradeState] = useState(product.tradeState || "판매중");
+  const overlayText =
+    tradeState === "예약중"
+      ? "예약중"
+      : tradeState === "판매완료"
+      ? "거래완료"
+      : tradeState === "판매중"
+      ? ""
+      : "";
+  // 클릭이 불가능할 때 배경 스타일 변경
+  const disableClickStyle =
+    tradeState !== "판매중" ? productStyle.disabled : "";
+
   /////////////////////////주소//////////////////////////////////
   const location =
     product.tradingAddress === "null" ? "" : product.tradingAddress;
@@ -49,8 +63,11 @@ const ProductsCard = ({ product, userId }) => {
       <img
         src={product.images[0] || ""}
         alt={product.productName}
-        className={productStyle.productImage}
+        className={`${productStyle.productImage} ${disableClickStyle}`}
       ></img>
+
+      {overlayText && <div className={productStyle.overlay}>{overlayText}</div>}
+
       <img
         src={clickedHeart ? emptyHeartImg : fillHeartImg}
         alt="emptyHeartImg"
