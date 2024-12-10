@@ -461,6 +461,27 @@ const getProductBookmarkByUserID = async (userId) => {
   }
 };
 
+const updateProductFields = async (updateData, productId, userId) => {
+  const setUpdateData = Object.keys(updateData)
+    .map((key) => `${key} = ?`) // `key = ?` 형식으로 변환
+    .join(", "); // 쉼표로 결합
+
+  const values = [...Object.values(updateData), productId, userId];
+
+  const query = `
+  UPDATE products 
+  SET ${setUpdateData}, productUpdatedDate = NOW() 
+  WHERE productId = ? AND userId = ?`;
+
+  try {
+    const [rows] = await db.execute(query, values);
+    return rows;
+  } catch (error) {
+    console.error("Error in update product data:", error.message);
+    throw error; // 에러를 호출한 쪽에서 처리하도록 다시 던지기
+  }
+};
+
 module.exports = {
   getProductsAll,
   getProductsByItemPageLimit,
@@ -472,4 +493,5 @@ module.exports = {
   getProductByProductId,
   handleProductBookmark,
   getProductBookmarkByUserID,
+  updateProductFields,
 };

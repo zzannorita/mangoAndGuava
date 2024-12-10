@@ -9,6 +9,6 @@ router.get("/product", productsController.getProduct);
 router.get("/detail", productsController.getDetailProduct);
 router.post("/product/bookmark", productsController.handleProductBookmark);
 router.post("/product/bookmark/user", productsController.getBookmarkList);
-router.patch("/update-product"); // 상품 업데이트
+router.patch("/update-product", productsController.updateProduct); // 상품 업데이트
 
 module.exports = router;
