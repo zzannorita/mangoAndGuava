@@ -236,12 +236,14 @@ export default function Detail() {
             <div
               className={DetailStyle.chattingBtnBox}
               onClick={
-                userId === nowUserId.userId
+                String(userId) === String(nowUserId.userId)
                   ? handleEditProduct
                   : handleEnterChat
               }
             >
-              {userId === nowUserId.userId ? "수정하기" : "채팅하기"}
+              {String(userId) === String(nowUserId.userId)
+                ? "수정하기"
+                : "채팅하기"}
             </div>
           </div>
         </div>
