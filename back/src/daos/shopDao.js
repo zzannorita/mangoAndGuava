@@ -1,3 +1,4 @@
+const mysql = require("mysql2"); // MySQL2 모듈 불러오기
 const db = require("../config/dbConfig");
 
 const getShopInfo = async (userId) => {
@@ -175,12 +176,19 @@ const addBookmark = async (userId, bookmarkUserId) => {
 };
 
 const addShopComment = async (commentData) => {
-  const query = `INSERT INTO shopcomment (shopOwnerUserId, commentUserId, comment, avg) VALUES (${parseInt(
-    commentData.shopOwnerUserId,
-    10
-  )}, ${parseInt(commentData.commentUserId, 10)}, '${
-    commentData.comment
-  }', ${parseFloat(commentData.avg)})`;
+  console.log("확인", commentData);
+  const escapedShopOwnerUserId = mysql.escape(commentData.shopOwnerUserId);
+  const escapedComment = mysql.escape(commentData.comment);
+  const escapedAvg = mysql.escape(parseFloat(commentData.avg));
+  const escapedCommnetUserId = mysql.escape(commentData.commentUserId);
+  const escapedPurchasedProductId = mysql.escape(
+    commentData.purchasedProductId
+  );
+
+  const query = `
+  INSERT INTO shopcomment (shopOwnerUserId, comment, avg, commentUserId, purchasedProductId) 
+  VALUES (${escapedShopOwnerUserId}, ${escapedComment}, ${escapedAvg}, ${escapedCommnetUserId}, ${escapedPurchasedProductId});
+`;
 
   try {
     const [rows] = await db.execute(query);
