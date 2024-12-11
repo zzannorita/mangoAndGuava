@@ -138,9 +138,22 @@ export default function Regist() {
     const formData = new FormData();
 
     //이미지 전송
+    // imageFiles.forEach((file, index) => {
+    //   formData.append("productImage", file);
+    //   formData.append("imageOrder[]", index);
+    // });
+
+    // 이미지 파일 추가
     imageFiles.forEach((file) => {
       formData.append("productImage", file);
     });
+
+    // 순서를 JSON 문자열로 변환하여 추가
+    formData.append(
+      "imageOrder",
+      JSON.stringify(imageFiles.map((_, index) => index))
+    );
+
     //나머지 데이터들
     formData.append("productName", productName);
     formData.append("productCategory", productCategory);
