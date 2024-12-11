@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import modalStyle from "../styles/modal.module.css";
 import axiosInstance from "../axios";
 import { useNavigate } from "react-router-dom";
-import RatingStars from "../components/RatingStars"; // 별점 컴포넌트 임포트
+import RatingStars from "../components/RatingStars";
+import closedImg from "../image/x.png";
 
 function Modal({ isOpen, onClose, shopOwnerUserId }) {
-  const [reviewText, setReviewText] = useState(""); // 후기 내용
-  const [rating, setRating] = useState(0); // 별점 (avg)
+  const [reviewText, setReviewText] = useState("");
+  const [rating, setRating] = useState(0);
   const navigate = useNavigate();
 
   if (!isOpen) return null;
@@ -14,11 +15,10 @@ function Modal({ isOpen, onClose, shopOwnerUserId }) {
   const handleSubmit = async () => {
     try {
       const reviewData = {
-        shopOwnerUserId, // 상점 주 userId
-        comment: reviewText, // 후기 내용
-        avg: rating, // 별점 (avg)
+        shopOwnerUserId,
+        comment: reviewText,
+        avg: rating,
       };
-      console.log("리뷰", reviewData);
       const response = await axiosInstance.post("/shop/comment", reviewData);
       console.log("리뷰 저장 성공:", response.data);
 
@@ -36,22 +36,28 @@ function Modal({ isOpen, onClose, shopOwnerUserId }) {
   return (
     <div className={modalStyle.modalOverlay}>
       <div className={modalStyle.modalContent}>
-        <h2>후기 작성</h2>
-
+        <div className={modalStyle.modalClosedBox}>
+          <img
+            className={modalStyle.modalClosed}
+            src={closedImg}
+            onClick={onClose}
+            alt={closedImg}
+          />
+        </div>
+        <div className={modalStyle.modalName}>상품은 만족하셨나요?</div>
+        <div className={modalStyle.ratingBox}>
+          <RatingStars rating={rating} setRating={setRating} />
+        </div>
         <textarea
+          className={modalStyle.textArea}
           value={reviewText}
           onChange={(e) => setReviewText(e.target.value)}
           placeholder="후기를 작성해주세요."
         ></textarea>
-
-        <div>
-          <RatingStars rating={rating} setRating={setRating} />{" "}
-          {/* 별점 선택 */}
-        </div>
-
         <div className={modalStyle.buttonGroup}>
-          <button onClick={onClose}>취소</button>
-          <button onClick={handleSubmit}>작성하기</button>
+          <button className={modalStyle.registButton} onClick={handleSubmit}>
+            작성
+          </button>
         </div>
       </div>
     </div>
