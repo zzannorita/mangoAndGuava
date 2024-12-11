@@ -1,8 +1,20 @@
 .ratingStars {
   display: flex;
   cursor: pointer;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
+.filledStar,
+.emptyStar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  font-size: 30px;
+}
 .filledStar {
   color: #ffc107;
 }
