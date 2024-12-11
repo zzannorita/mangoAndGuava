@@ -137,19 +137,6 @@ export default function Detail({ shopOwnerUserId }) {
 
   // 모달 닫기
   const handleCloseModal = () => setIsModalOpen(false);
-  // 후기 작성 후 POST 요청 보내기
-  const handleSubmitReview = (reviewData) => {
-    // reviewData는 { shopOwnerUserId, comment, avg }
-    axiosInstance
-      .post("/shop/comment", reviewData) // 후기 저장
-      .then((response) => {
-        console.log("리뷰 저장 성공:", response.data);
-        navigate(`/review/${productId}`); // 리뷰 페이지로 이동
-      })
-      .catch((error) => {
-        console.error("리뷰 저장 실패:", error);
-      });
-  };
 
   //찜돼있는 상태 동기화 하는 useEffect 함수
   useEffect(() => {
@@ -286,7 +273,6 @@ export default function Detail({ shopOwnerUserId }) {
             <Modal
               isOpen={isModalOpen}
               onClose={handleCloseModal}
-              onSubmit={handleSubmitReview}
               shopOwnerUserId={userId} // 상점 주 userId 전달
             />
           </div>

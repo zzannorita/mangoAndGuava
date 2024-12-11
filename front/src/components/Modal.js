@@ -4,24 +4,33 @@ import axiosInstance from "../axios";
 import { useNavigate } from "react-router-dom";
 import RatingStars from "../components/RatingStars"; // 별점 컴포넌트 임포트
 
-function Modal({ isOpen, onClose, onSubmit, shopOwnerUserId }) {
+function Modal({ isOpen, onClose, shopOwnerUserId }) {
   const [reviewText, setReviewText] = useState(""); // 후기 내용
   const [rating, setRating] = useState(0); // 별점 (avg)
   const navigate = useNavigate();
 
   if (!isOpen) return null;
 
-  const handleSubmit = () => {
-    const reviewData = {
-      shopOwnerUserId, // 상점 주 userId
-      comment: reviewText, // 후기 내용
-      avg: rating, // 별점 (avg)
-    };
-    navigate("/review");
-    onSubmit(reviewData); // 부모 컴포넌트로 데이터 전달
-    setReviewText(""); // 후기 입력 필드 초기화
-    setRating(0); // 별점 초기화
-    onClose(); // 모달 닫기
+  const handleSubmit = async () => {
+    try {
+      const reviewData = {
+        shopOwnerUserId, // 상점 주 userId
+        comment: reviewText, // 후기 내용
+        avg: rating, // 별점 (avg)
+      };
+      console.log("리뷰", reviewData);
+      const response = await axiosInstance.post("/shop/comment", reviewData);
+      console.log("리뷰 저장 성공:", response.data);
+
+      // 초기화 및 네비게이션
+      setReviewText(""); // 후기 입력 필드 초기화
+      setRating(0); // 별점 초기화
+      onClose(); // 모달 닫기
+      navigate("/"); // 메인 페이지로 이동
+    } catch (error) {
+      console.error("리뷰 저장 실패:", error);
+      alert("리뷰 작성 중 문제가 발생했습니다. 다시 시도해주세요.");
+    }
   };
 
   return (
