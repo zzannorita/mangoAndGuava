@@ -4,7 +4,7 @@
 }
 
 .filledStar {
-  color: gold;
+  color: #ffc107;
 }
 
 .emptyStar {
@@ -13,5 +13,5 @@
 
 .filledStar:hover,
 .emptyStar:hover {
-  color: darkorange;
+  color: #ffc107;
 }
