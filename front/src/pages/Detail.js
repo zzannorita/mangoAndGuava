@@ -255,15 +255,24 @@ export default function Detail({ shopOwnerUserId }) {
             </div>
             <div
               className={DetailStyle.chattingBtnBox}
-              onClick={
-                String(userId) === String(nowUserId.userId)
-                  ? handleEditProduct
-                  : isTransactionComplete
-                  ? handleOpenModal // 후기 작성 모달 열기
-                  : handleEnterChat
-              }
+              onClick={() => {
+                if (tradeState === "예약중") {
+                  alert("이미 예약중인 상품입니다.");
+                  return;
+                }
+                // 조건에 따라 다른 함수 실행
+                if (String(userId) === String(nowUserId.userId)) {
+                  handleEditProduct();
+                } else if (isTransactionComplete) {
+                  handleOpenModal(); // 후기 작성 모달 열기
+                } else {
+                  handleEnterChat();
+                }
+              }}
             >
-              {String(userId) === String(nowUserId.userId)
+              {tradeState === "예약중"
+                ? "예약중"
+                : String(userId) === String(nowUserId.userId)
                 ? "수정하기"
                 : isTransactionComplete
                 ? "후기 작성"

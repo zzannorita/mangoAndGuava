@@ -17,5 +17,9 @@
 }
 
 .star {
+  color: #ccc;
+}
+
+.activeStar {
   color: gold;
 }

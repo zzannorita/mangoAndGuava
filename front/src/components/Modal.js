@@ -20,7 +20,12 @@ function Modal({ isOpen, onClose, shopOwnerUserId, purchasedProductId }) {
         comment: reviewText,
         avg: rating,
       };
+      if (!reviewData.comment || !reviewData.avg) {
+        alert("리뷰와 평점을 모두 입력해주세요");
+        return;
+      }
       const response = await axiosInstance.post("/shop/comment", reviewData);
+      alert("리뷰가 작성되었습니다.");
       console.log("리뷰 저장 성공:", response.data);
 
       // 초기화 및 네비게이션
@@ -29,7 +34,6 @@ function Modal({ isOpen, onClose, shopOwnerUserId, purchasedProductId }) {
       onClose(); // 모달 닫기
       navigate("/"); // 메인 페이지로 이동
     } catch (error) {
-      console.error("리뷰 저장 실패:", error);
       alert("리뷰 작성 중 문제가 발생했습니다. 다시 시도해주세요.");
     }
   };

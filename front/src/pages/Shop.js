@@ -61,6 +61,7 @@ export default function Shop() {
   const [reviews, setReviews] = useState([]);
   const [bookmarkedProducts, setBookmarkedProducts] = useState([]);
   const [purchasedProducts, setPurchasedProducts] = useState([]);
+  const [commentCount, setCommentCount] = useState("");
 
   //myshop api호출
   useEffect(() => {
@@ -69,6 +70,8 @@ export default function Shop() {
       .then((response) => {
         const data = response.data;
         const shopData = data.shopData[0];
+        const commentCount = data.commentCount;
+        setCommentCount(commentCount.ratingAvg);
         setShopData(data);
         // shopInfo 값을 description 상태에 반영
         setDescription(shopData.shopInfo || "");
@@ -177,7 +180,7 @@ export default function Shop() {
               <div className={shopStyle.myShopTitleText}>
                 <span className="impact3">{userData?.nickname}</span>님의 상점
               </div>
-              <RatingAvg />
+              <RatingAvg rating={commentCount} />
             </div>
             <div className={shopStyle.myShopInfoBox}>
               <img
