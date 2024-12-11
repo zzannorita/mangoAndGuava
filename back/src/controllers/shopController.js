@@ -257,7 +257,6 @@ const addShopComment = async (req, res) => {
   const comment = req.body.comment;
   const avg = req.body.avg;
   const purchasedProductId = req.body.purchasedProductId;
-  console.log(shopOwnerUserId, comment, avg);
   if (!accessToken) {
     return res.status(401).json({ message: "No access token provided" });
   }
@@ -279,8 +278,6 @@ const addShopComment = async (req, res) => {
     };
 
     const commentStart = await shopDao.addShopComment(commentData);
-
-    console.log("화긴", commentStart);
 
     return res.status(200).json({ code: "SUCCESS_INSERT_SHOP_COMMENT" });
   } catch (error) {
