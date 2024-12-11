@@ -280,6 +280,8 @@ const addShopComment = async (req, res) => {
 
     const commentStart = await shopDao.addShopComment(commentData);
 
+    console.log("화긴", commentStart);
+
     return res.status(200).json({ code: "SUCCESS_INSERT_SHOP_COMMENT" });
   } catch (error) {
     if (error.response && error.response.status === 401) {

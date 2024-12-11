@@ -180,18 +180,19 @@ const addShopComment = async (commentData) => {
   const escapedShopOwnerUserId = mysql.escape(commentData.shopOwnerUserId);
   const escapedComment = mysql.escape(commentData.comment);
   const escapedAvg = mysql.escape(parseFloat(commentData.avg));
-  const escapedCommnetUserId = mysql.escape(commentData.commentUserId);
+  const escapedCommentUserId = mysql.escape(commentData.commentUserId);
   const escapedPurchasedProductId = mysql.escape(
-    commentData.purchasedProductId
+    parseInt(commentData.purchasedProductId)
   );
-
+  console.log("확인2", escapedPurchasedProductId);
   const query = `
   INSERT INTO shopcomment (shopOwnerUserId, comment, avg, commentUserId, purchasedProductId) 
-  VALUES (${escapedShopOwnerUserId}, ${escapedComment}, ${escapedAvg}, ${escapedCommnetUserId}, ${escapedPurchasedProductId});
+  VALUES (${escapedShopOwnerUserId}, ${escapedComment}, ${escapedAvg}, ${escapedCommentUserId}, ${escapedPurchasedProductId});
 `;
 
   try {
     const [rows] = await db.execute(query);
+    console.log("데이터베이스 잘 수행? ", rows);
     return rows;
   } catch (error) {
     throw new Error("Database query error: " + error.message);
