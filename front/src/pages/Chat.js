@@ -356,13 +356,15 @@ const Chat = () => {
                 )}
                 <div className={chatStyle.chatContentTradingAressContainer}>
                   {selectedRoomId && (
-                    <div className={chatStyle.chatContentTradingAressBox}>
+                    <>
                       {selectedProductData.tradingMethod ? (
-                        <>직거래 장소 | {selectedProductData.tradingAddress}</>
+                        <div className={chatStyle.chatContentTradingAressBox}>
+                          직거래 장소 | {selectedProductData.tradingAddress}
+                        </div>
                       ) : (
                         <></>
                       )}
-                    </div>
+                    </>
                   )}
                 </div>
                 <div className={chatStyle.chatContentDetailBox}>

@@ -36,7 +36,7 @@
 }
 .chatNickNameText {
 }
-.chatProductImg{
+.chatProductImg {
   border: 1px solid #ffe187;
   width: 50px;
   height: 50px;
@@ -45,13 +45,13 @@
   justify-content: center;
   align-items: center;
 }
-.chatProductImgTag{
+.chatProductImgTag {
   width: 90%;
   height: 90%;
 }
 .chatBox {
-  /* background-color: #f9f9f9; */
   width: 100%;
+  height: 90%;
   display: flex;
   flex-direction: row;
   flex-grow: 1;
@@ -141,7 +141,7 @@
 }
 
 .chatContentBox {
-  height: 90%;
+  height: 85%;
   display: flex;
   flex-direction: column;
 }
@@ -172,26 +172,86 @@
   flex-direction: column;
 }
 
-.chatContentTradingAressContainer{
+.chatContentTradingAressContainer {
   display: flex;
   flex-direction: row;
   justify-content: center;
 }
 
-.chatContentTradingAressBox{
+.chatContentTradingAressBox {
   margin-top: 3px;
   padding: 3px 10px 3px 10px;
   border: 2px solid #ffe187;
   border-radius: 5px;
 }
 
-.chatFieldBox {
+.chatContentDetailBox {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.chatFieldContainer {
   width: 100%;
-  border-bottom: solid 1px #f1f1f1;
-  height: 10%;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.chatFieldBox {
+  width: 80%;
+  height: auto;
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 8px;
+  /* input과 버튼 간 간격 */
+  border-bottom: solid 1px #f1f1f1;
+  padding: 10px;
+  background-color: #ffe187;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chatInput {
+  flex: 1;
+  /* 입력 필드가 남은 공간을 차지하도록 */
+  padding: 10px;
+  border: 1px solid #ffe187;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none; /* 포커스 시 기본 테두리 제거 */
+}
+
+.chatInput:focus {
+  border-color: #fddb73; /* 포커스 시 강조 색상 */
+  box-shadow: 0 0 4px #fddb73; /* 포커스 시 강조 효과 */
+}
+
+.sendButton {
+  border: none;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+.sendButton:hover {
+  background-color: #ffe187; /* 호버 시 배경 색상 변경 */
+}
+
+.sendButton:active {
+  background-color: #ffe187; /* 클릭 시 배경 색상 변경 */
+}
+
+.sendIcon {
+  width: 20px;
+  height: 20px;
 }
 
 .chatInputContainer {
@@ -269,67 +329,8 @@
   text-align: left; /* 부모에서 상대 메시지 정렬 */
 }
 
-.chatFieldContainer {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.chatFieldBox {
-  width: 95%;
-  height: auto;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  /* input과 버튼 간 간격 */
-  padding: 10px;
-  background-color: #ffe187;
-  border-radius: 12px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.chatInput {
-  flex: 1;
-  /* 입력 필드가 남은 공간을 차지하도록 */
-  padding: 10px;
-  border: 1px solid #ffe187;
-  border-radius: 8px;
-  font-size: 16px;
-  outline: none; /* 포커스 시 기본 테두리 제거 */
-}
-
-.chatInput:focus {
-  border-color: #fddb73; /* 포커스 시 강조 색상 */
-  box-shadow: 0 0 4px #fddb73; /* 포커스 시 강조 효과 */
-}
-
-.sendButton {
-  border: none;
-  padding: 10px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.3s;
-}
-
-.sendButton:hover {
-  background-color: #ffe187; /* 호버 시 배경 색상 변경 */
-}
-
-.sendButton:active {
-  background-color: #ffe187; /* 클릭 시 배경 색상 변경 */
-}
-
-.sendIcon {
-  width: 20px;
-  height: 20px;
-}
-
 .actionButtonsContainer {
+  width: 20%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -405,7 +406,7 @@
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  text-align: center; 
+  text-align: center;
 }
 
 .tradeStateSelect::-ms-expand {
@@ -416,9 +417,9 @@
   padding: 8px;
   background-color: #fff;
   color: #333;
-  text-align: center; 
+  text-align: center;
   display: flex;
-  justify-content: center; 
+  justify-content: center;
 }
 
 .tradeStateSelect:hover {
