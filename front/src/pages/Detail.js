@@ -266,7 +266,7 @@ export default function Detail({ shopOwnerUserId }) {
               {String(userId) === String(nowUserId.userId)
                 ? "수정하기"
                 : isTransactionComplete
-                ? "후기 작성하기"
+                ? "후기 작성"
                 : "채팅하기"}
             </div>
             {/* 모달 컴포넌트 */}
