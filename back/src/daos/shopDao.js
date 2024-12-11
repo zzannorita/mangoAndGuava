@@ -138,6 +138,71 @@ const addProduct = async (productData) => {
   }
 };
 
+const updateProductByProductId = async (
+  productId,
+  updateData,
+  userId,
+  productImage
+) => {
+  delete updateData.imageOrder;
+  delete updateData.images;
+  const setUpdateData = Object.keys(updateData)
+    .map((key) => `${key} = ?`) // `key = ?` 형식으로 변환
+    .join(", "); // 쉼표로 결합
+  console.log(setUpdateData);
+  const values = [
+    ...Object.values(updateData),
+    parseInt(productId),
+    String(userId),
+  ];
+  console.log(values);
+
+  const escapedProductId = mysql.escape(parseInt(productId));
+
+  const query = `
+    UPDATE product 
+    SET ${setUpdateData}, productUpdatedDate = NOW() 
+    WHERE productId = ? AND userId = ?`;
+
+  const query2 = `
+  DELETE FROM productimage
+  WHERE productId = ${escapedProductId};
+`;
+
+  const insertImageQuery = `
+      INSERT INTO productimage (
+        productId,
+        productImage
+      ) VALUES (${escapedProductId}, ?)
+    `;
+
+  console.log(query);
+
+  const connection = await db.getConnection();
+  try {
+    await connection.beginTransaction(); // 아래 쿼리는 하나의 트랜잭션
+
+    const [productResult] = await connection.execute(query, values);
+
+    const [imageDeleteResult] = await connection.execute(query2);
+
+    for (const image of productImage) {
+      //이미지가 여러장이므로 for문을 통해.
+      await connection.execute(insertImageQuery, [image]);
+    }
+
+    await connection.commit(); // 잘 수행 됐으면 커밋
+
+    return { productId };
+  } catch (error) {
+    await connection.rollback(); // 에러나오면 롤백 어떤 과정도 실행 안함
+    console.log(error);
+    throw error;
+  } finally {
+    connection.release();
+  }
+};
+
 const addShopUser = async (userId) => {
   console.log(userId);
   const query = `INSERT INTO shop (userId) VALUES (${parseInt(userId, 10)})`;
@@ -245,4 +310,5 @@ module.exports = {
   getUsersByIds,
   getBookmarkUser,
   getUsersByIds,
+  updateProductByProductId,
 };
