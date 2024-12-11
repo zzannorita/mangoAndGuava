@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import RatingStars from "../components/RatingStars";
 import closedImg from "../image/x.png";
 
-function Modal({ isOpen, onClose, shopOwnerUserId }) {
+function Modal({ isOpen, onClose, shopOwnerUserId, purchasedProductId }) {
   const [reviewText, setReviewText] = useState("");
   const [rating, setRating] = useState(0);
   const navigate = useNavigate();
@@ -16,6 +16,7 @@ function Modal({ isOpen, onClose, shopOwnerUserId }) {
     try {
       const reviewData = {
         shopOwnerUserId,
+        purchasedProductId,
         comment: reviewText,
         avg: rating,
       };

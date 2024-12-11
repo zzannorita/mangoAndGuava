@@ -274,6 +274,7 @@ export default function Detail({ shopOwnerUserId }) {
               isOpen={isModalOpen}
               onClose={handleCloseModal}
               shopOwnerUserId={userId} // 상점 주 userId 전달
+              purchasedProductId={productId}
             />
           </div>
         </div>
