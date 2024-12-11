@@ -1,7 +1,7 @@
 import React from "react";
 import ReviewStyle from "../styles/review.module.css";
 import shopStyle from "../styles/shop.module.css";
-import RatingStars from "../components/RatingStars";
+import RatingAvg from "../components/RatingAvg";
 import exImg from "../image/userImg.png";
 export default function Review() {
   return (
@@ -12,7 +12,7 @@ export default function Review() {
             <div>
               후기 <span className="impact">15 </span>
             </div>
-            <RatingStars />
+            <RatingAvg />
           </div>
           <div className={shopStyle.mainTopRightBox}>
             <div className={shopStyle.filterTextBox}>별점높은순</div>
@@ -31,7 +31,7 @@ export default function Review() {
               <div className={ReviewStyle.reviewTopBox}>
                 <div className={ReviewStyle.reviewWriter}>
                   <div>슈가야음주운전은안돼</div>
-                  <RatingStars />
+                  <RatingAvg />
                 </div>
                 <div className={ReviewStyle.reviewTitle}>
                   슈가 런 미공개 포카
@@ -53,7 +53,7 @@ export default function Review() {
               <div className={ReviewStyle.reviewTopBox}>
                 <div className={ReviewStyle.reviewWriter}>
                   <div>초디야사랑햄구</div>
-                  <RatingStars />
+                  <RatingAvg />
                 </div>
                 <div className={ReviewStyle.reviewTitle}>
                   은평구 신초디 인형

@@ -7,7 +7,7 @@ import ProductList from "../components/ProductList";
 import Review from "./Review";
 import Settings from "./Settings";
 import Favorites from "./Favorites";
-import RatingStars from "../components/RatingStars";
+import RatingAvg from "../components/RatingAvg";
 import axiosInstance from "../axios";
 
 export default function Shop() {
@@ -177,7 +177,7 @@ export default function Shop() {
               <div className={shopStyle.myShopTitleText}>
                 <span className="impact3">{userData?.nickname}</span>님의 상점
               </div>
-              <RatingStars />
+              <RatingAvg />
             </div>
             <div className={shopStyle.myShopInfoBox}>
               <img
