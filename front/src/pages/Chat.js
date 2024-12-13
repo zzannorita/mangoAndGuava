@@ -226,6 +226,36 @@ const Chat = () => {
   // 상품 상태 변경 함수
   const handleStateChange = async (newState) => {
     console.log(newState);
+    if (String(selectedProductData.tradeState) === "판매완료") {
+      alert("판매가 완료된 상품의 상태를 변경할 수 없습니다.");
+      return;
+    }
+    if (String(newState) === "판매완료") {
+      if (
+        alert("정말 거래가 완료됐나요? 다시 거래 상태를 변경할 수 없게 돼요.")
+      ) {
+        console.log("여기");
+        return;
+      } else {
+        try {
+          console.log("상대측 아이디", otherUserId);
+          await axiosInstance.patch(
+            `http://localhost:3001/update-product/state/${selectedProductData.productId}`,
+            { tradeState: newState } // 상태 업데이트
+          );
+          setSelectedProductData((prevData) => ({
+            ...prevData,
+            tradeState: newState,
+          }));
+          await axiosInstance.patch(
+            `http://localhost:3001/update-product/buyer-user-id/${selectedProductData.productId}`,
+            { otherUserId: otherUserId } // 상태 업데이트
+          );
+        } catch (error) {
+          console.error("상품 상태 변경 실패:", error);
+        }
+      }
+    }
     try {
       await axiosInstance.patch(
         `http://localhost:3001/update-product/state/${selectedProductData.productId}`,
