@@ -503,6 +503,29 @@ const updateProductFieldsByState = async (tradeState, productId, userId) => {
   }
 };
 
+const updateProductFieldsByBuyerUserId = async (
+  buyerUserId,
+  productId,
+  userId
+) => {
+  const escapedProductId = mysql.escape(productId);
+  const escapedUserId = mysql.escape(userId);
+  const escapedBuyerUserId = mysql.escape(buyerUserId);
+
+  const query = `
+  UPDATE product
+  SET buyerUserId = ${escapedBuyerUserId}
+  WHERE productId = ${escapedProductId} AND userId = ${escapedUserId}
+`;
+  try {
+    const [rows] = await db.execute(query);
+    return rows;
+  } catch (error) {
+    console.error("Error in update product data:", error.message);
+    throw error; // 에러를 호출한 쪽에서 처리하도록 다시 던지기
+  }
+};
+
 module.exports = {
   getProductsAll,
   getProductsByItemPageLimit,
@@ -516,4 +539,5 @@ module.exports = {
   getProductBookmarkByUserID,
   updateProductFields,
   updateProductFieldsByState,
+  updateProductFieldsByBuyerUserId,
 };

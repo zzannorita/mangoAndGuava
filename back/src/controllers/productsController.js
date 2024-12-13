@@ -299,6 +299,45 @@ const updateProductByState = async (req, res) => {
   }
 };
 
+const updateProductByBuyerUserId = async (req, res) => {
+  const accessToken = req.headers.authorization?.split(" ")[1];
+  const buyerUserId = req.body.otherUserId;
+  const productId = req.params.productId;
+
+  console.log(buyerUserId, productId);
+
+  if (!accessToken) {
+    return res.status(401).json({ message: "No access token provided" });
+  }
+
+  try {
+    const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    const userId = userResponse.data.id;
+
+    const updateData = await productsDao.updateProductFieldsByBuyerUserId(
+      buyerUserId,
+      productId,
+      userId
+    );
+
+    return res.json({
+      code: "SUCCESS_UPDATE_PRODUCT",
+      data: updateData,
+    });
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      return res.status(401).json({ message: "Token expired" });
+    }
+    return res
+      .status(500)
+      .json({ message: "Failed to fetch user data", error: error.message });
+  }
+};
+
 module.exports = {
   handleProducts,
   getProduct,
@@ -307,4 +346,5 @@ module.exports = {
   getBookmarkList,
   updateProduct,
   updateProductByState,
+  updateProductByBuyerUserId,
 };

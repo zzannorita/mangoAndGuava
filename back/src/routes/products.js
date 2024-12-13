@@ -14,4 +14,8 @@ router.patch(
   "/update-product/state/:productId",
   productsController.updateProductByState
 );
+router.patch(
+  "/update-product/buyer-user-id/:productId",
+  productsController.updateProductByBuyerUserId
+);
 module.exports = router;
