@@ -9,9 +9,13 @@ router.get("/product", productsController.getProduct);
 router.get("/detail", productsController.getDetailProduct);
 router.post("/product/bookmark", productsController.handleProductBookmark);
 router.post("/product/bookmark/user", productsController.getBookmarkList);
-router.patch("/update-product/:productId", productsController.updateProduct); // 상품 업데이트
+//router.patch("/update-product/:productId", productsController.updateProduct); // 상품 업데이트
 router.patch(
   "/update-product/state/:productId",
   productsController.updateProductByState
+);
+router.patch(
+  "/update-product/buyer-user-id/:productId",
+  productsController.updateProductByBuyerUserId
 );
 module.exports = router;

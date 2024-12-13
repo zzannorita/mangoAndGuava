@@ -220,47 +220,47 @@ const getBookmarkList = async (req, res) => {
   }
 };
 
-const updateProduct = async (req, res) => {
-  const accessToken = req.headers.authorization?.split(" ")[1];
-  const updateData = req.body;
-  const productId = req.params.productId;
-  console.log(productId, updateData);
+// const updateProduct = async (req, res) => {
+//   const accessToken = req.headers.authorization?.split(" ")[1];
+//   const updateData = req.body;
+//   const productId = req.params.productId;
+//   console.log(productId, updateData);
 
-  if (!accessToken) {
-    return res.status(401).json({ message: "No access token provided" });
-  }
+//   if (!accessToken) {
+//     return res.status(401).json({ message: "No access token provided" });
+//   }
 
-  try {
-    const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    const userId = userResponse.data.id;
+//   try {
+//     const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
+//       headers: {
+//         Authorization: `Bearer ${accessToken}`,
+//       },
+//     });
+//     const userId = userResponse.data.id;
 
-    if (!Object.keys(updateData).length) {
-      return res.status(400).json({ message: "No fields to update" });
-    }
+//     if (!Object.keys(updateData).length) {
+//       return res.status(400).json({ message: "No fields to update" });
+//     }
 
-    const updateData = await productsDao.updateProductFields(
-      updateData,
-      productId,
-      userId
-    );
+//     const updateData = await productsDao.updateProductFields(
+//       updateData,
+//       productId,
+//       userId
+//     );
 
-    return res.json({
-      code: "SUCCESS_UPDATE_PRODUCT",
-      data: null,
-    });
-  } catch (error) {
-    if (error.response && error.response.status === 401) {
-      return res.status(401).json({ message: "Token expired" });
-    }
-    return res
-      .status(500)
-      .json({ message: "Failed to fetch user data", error: error.message });
-  }
-};
+//     return res.json({
+//       code: "SUCCESS_UPDATE_PRODUCT",
+//       data: null,
+//     });
+//   } catch (error) {
+//     if (error.response && error.response.status === 401) {
+//       return res.status(401).json({ message: "Token expired" });
+//     }
+//     return res
+//       .status(500)
+//       .json({ message: "Failed to fetch user data", error: error.message });
+//   }
+// };
 
 const updateProductByState = async (req, res) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
@@ -299,12 +299,52 @@ const updateProductByState = async (req, res) => {
   }
 };
 
+const updateProductByBuyerUserId = async (req, res) => {
+  const accessToken = req.headers.authorization?.split(" ")[1];
+  const buyerUserId = req.body.otherUserId;
+  const productId = req.params.productId;
+
+  console.log(buyerUserId, productId);
+
+  if (!accessToken) {
+    return res.status(401).json({ message: "No access token provided" });
+  }
+
+  try {
+    const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    const userId = userResponse.data.id;
+
+    const updateData = await productsDao.updateProductFieldsByBuyerUserId(
+      buyerUserId,
+      productId,
+      userId
+    );
+
+    return res.json({
+      code: "SUCCESS_UPDATE_PRODUCT",
+      data: updateData,
+    });
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      return res.status(401).json({ message: "Token expired" });
+    }
+    return res
+      .status(500)
+      .json({ message: "Failed to fetch user data", error: error.message });
+  }
+};
+
 module.exports = {
   handleProducts,
   getProduct,
   getDetailProduct,
   handleProductBookmark,
   getBookmarkList,
-  updateProduct,
+  // updateProduct,
   updateProductByState,
+  updateProductByBuyerUserId,
 };

@@ -11,7 +11,21 @@ const storage = multer.diskStorage({
     cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
+    // const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    // cb(null, uniqueSuffix + path.extname(file.originalname));
+    // imageOrder를 JSON으로 파싱 (유효성 검사 추가)
+    let order = [];
+    try {
+      order = req.body.imageOrder ? JSON.parse(req.body.imageOrder) : [];
+    } catch (error) {
+      console.error("Failed to parse imageOrder:", error);
+    }
+
+    const index = req.files ? req.files.length : 0; // 현재 업로드된 파일의 순서
+    const fileOrder = order[index] ?? index; // 순서가 없으면 기본 인덱스 사용
+
+    const uniqueSuffix = `${Date.now()}-${fileOrder}`;
+    cb(null, `${uniqueSuffix}${path.extname(file.originalname)}`);
   },
 });
 
@@ -71,6 +85,50 @@ const uploadProduct = async (req, res) => {
     return res.status(200).json({
       code: "SUCCESS_PRODUCT_UPLOAD",
       productId: addProductResult.productId,
+    });
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      return res.status(401).json({ message: "Token expired" });
+    }
+    return res
+      .status(500)
+      .json({ message: "Failed to fetch user data", error: error.message });
+  }
+};
+
+const updateProduct = async (req, res) => {
+  const accessToken = req.headers.authorization?.split(" ")[1];
+
+  if (!accessToken) {
+    return res.status(401).json({ message: "No access token provided" });
+  }
+
+  try {
+    const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const userData = userResponse.data;
+    const userId = userData.id;
+    const productId = req.params.productId;
+    const updateData = req.body;
+
+    console.log(req.body);
+
+    const productImage = req.files.map((file) => file.filename);
+
+    const update = await shopDao.updateProductByProductId(
+      productId,
+      updateData,
+      userId,
+      productImage
+    );
+
+    return res.status(200).json({
+      code: "SUCCESS_PRODUCT_UPDATE",
+      productId: update.productId,
     });
   } catch (error) {
     if (error.response && error.response.status === 401) {
@@ -175,10 +233,12 @@ const getShopData = async (req, res) => {
   try {
     const shopData = await shopDao.getShopInfo(userId);
     const shopProducts = await productsDao.getProductsByUserId(userId);
+    const shopCommentData = await productsDao.getShopCommentData(userId);
 
     return res.status(200).json({
       shopData,
       shopProducts,
+      shopCommentData,
     });
   } catch (error) {
     if (error.response && error.response.status === 401) {
@@ -297,4 +357,5 @@ module.exports = {
   updateUserInfo,
   addBookmark,
   addShopComment,
+  updateProduct,
 };

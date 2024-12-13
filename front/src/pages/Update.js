@@ -19,7 +19,7 @@ export default function Update() {
   useEffect(() => {
     axiosInstance
       .get(`/detail?itemId=${productId}`)
-      .then((response) => {
+      .then(async (response) => {
         const product = response.data.product[0];
         const categoryCode = product.productCategory;
 
@@ -45,9 +45,23 @@ export default function Update() {
 
         setInitialData(initialProductData); // 초기 데이터 저장
         setProductImg(product.images);
+        // 기존 이미지를 File 객체로 변환
+        const filesFromServer = await Promise.all(
+          product.images.map(async (imageUrl, index) => {
+            const response = await fetch(imageUrl);
+            const blob = await response.blob();
+            const fileName = `existing_image_${index + 1}.jpg`; // 적절한 파일명 설정
+            return new File([blob], fileName, { type: blob.type });
+          })
+        );
+        // 상태 업데이트
         setImages(product.images); // UI 초기화
-        setProductName(product.productName);
+        // setImageFiles((prevFiles) => [...prevFiles, ...filesFromServer]);
+        // 기존 이미지도 업로드된 파일처럼 처리
+        console.log("파프섭", filesFromServer);
+        setImageFiles(filesFromServer);
         setProductPrice(product.productPrice);
+        setProductName(product.productName);
         setShippingFee(product.isShippingFee === 1);
         setProductInfo(product.productInfo);
         setProductState(product.productState);
@@ -78,6 +92,8 @@ export default function Update() {
       ...prevFiles,
       ...files.slice(0, 5 - prevFiles.length),
     ]);
+    console.log("추가된후 images=>", images);
+    console.log("추가된후 imageFiles=>", imageFiles);
   };
 
   // 이미지 삭제 핸들러
@@ -209,8 +225,23 @@ export default function Update() {
     }
 
     const formData = new FormData();
+    // 이미지 파일 추가
+    imageFiles.forEach((file) => {
+      formData.append("productImage", file);
+    });
+
+    // 순서를 JSON 문자열로 변환하여 추가
+    formData.append(
+      "imageOrder",
+      JSON.stringify(imageFiles.map((_, index) => index))
+    );
+
     for (const [key, value] of Object.entries(updatedFields)) {
       formData.append(key, value);
+    }
+
+    for (const [key, value] of formData.entries()) {
+      console.log(key, value);
     }
 
     axiosInstance

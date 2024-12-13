@@ -27,13 +27,11 @@ const ProductList = ({ products }) => {
     const checkLoginStatus = async () => {
       const accessToken = Cookies.get("accessToken");
       if (accessToken) {
-        console.log("로그인 상태입니다.");
         try {
           const response = await axiosInstance.post(
             "http://localhost:3001/product/bookmark/user"
           );
           const productBookmarkList = response.data.data;
-          console.log("Bookmark 리스트 =>", productBookmarkList);
 
           // products와 productBookmarkList를 비교해 isBookmarked 추가
           const mergedProducts = products.map((product) => {
@@ -42,7 +40,6 @@ const ProductList = ({ products }) => {
             );
             return { ...product, isBookmarked }; // isBookmarked 추가
           });
-          console.log("합체된것=>", mergedProducts);
           setUpdatedProducts(mergedProducts); // 업데이트된 배열 설정
         } catch (error) {
           console.error("Bookmark 데이터를 불러오는 중 에러 발생:", error);
