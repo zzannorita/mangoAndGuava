@@ -2,7 +2,8 @@ const mysql = require("mysql2"); // MySQL2 모듈 불러오기
 const db = require("../config/dbConfig");
 
 const getShopInfo = async (userId) => {
-  const query = `SELECT * FROM shop WHERE userId = ${parseInt(userId, 10)}`;
+  const escapeedUserId = mysql.escape(String(userId));
+  const query = `SELECT * FROM shop WHERE userId = ${escapeedUserId}`;
   try {
     const [rows] = await db.execute(query);
     return rows;
