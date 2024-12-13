@@ -31,7 +31,17 @@ export default function ShopForBuyer() {
       .then((response) => {
         const data = response.data;
         const shopData = data.shopData[0];
-        setSellerNickName(shopData.userId); //아직nickname이 없어서 임시로 userId
+        //setSellerNickName(shopData.userId); //아직nickname이 없어서 임시로 userId
+
+        ///촐///
+        axiosInstance
+          .get(`/user-data/other?userId=${shopData.userId}`)
+          .then((response) => {
+            //console.log(response.data.user.nickname2);
+            setSellerNickName(response.data.user.nickname2);
+          });
+        ////////
+
         setDescription(shopData.shopInfo);
         setProducts(data.shopProducts);
         const shopComment = data.shopCommentData;
