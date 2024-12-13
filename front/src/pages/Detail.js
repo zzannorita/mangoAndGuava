@@ -9,8 +9,9 @@ import getRelativeTime from "../utils/getRelativeTime";
 import fillHeartImg from "../image/fillHeart.png";
 import { getCategoryNames } from "../utils/categoryUtils";
 import productStyle from "../styles/productsCard.module.css";
+import Modal from "../components/Modal";
 
-export default function Detail() {
+export default function Detail({ shopOwnerUserId }) {
   // 현재 URL에서 쿼리 파라미터 추출
   const currentUrl = new URL(window.location.href);
   const productId = currentUrl.searchParams.get("itemId");
@@ -28,7 +29,8 @@ export default function Detail() {
   const [productViews, setProductViews] = useState("");
   const [productCreatedDate, setProductCreatedDate] = useState("");
   const [productInfo, setProductInfo] = useState("");
-
+  const [tradeState, setTradeState] = useState("");
+  const [buyerId, setBuyerId] = useState("");
   ///////////////////사용자 상태//////////////////////////////
   const [userNickName, setUserNickName] = useState("");
   const [userId, setUserId] = useState("");
@@ -85,6 +87,8 @@ export default function Detail() {
         setProductName(product.productName);
         setProductPrice(product.productPrice);
         setProductImg(product.images);
+        setTradeState(product.tradeState);
+        setBuyerId(product.buyerUserId);
         setProductTradingAddress(
           product.tradingAddress === "null" ? "-" : product.tradingAddress
         );
@@ -117,6 +121,22 @@ export default function Detail() {
       setNowUserId(data.user);
     });
   }, []);
+
+  ////////////////////후기작성///////////////////////
+  const isTransactionComplete =
+    String(buyerId) === String(nowUserId.userId) && tradeState === "판매완료";
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  // 후기 작성 버튼 클릭 시 모달 열기
+  const handleOpenModal = () => {
+    if (isTransactionComplete) {
+      setIsModalOpen(true);
+    } else {
+      alert("후기는 거래가 완료된 후 작성할 수 있습니다.");
+    }
+  };
+
+  // 모달 닫기
+  const handleCloseModal = () => setIsModalOpen(false);
 
   //찜돼있는 상태 동기화 하는 useEffect 함수
   useEffect(() => {
@@ -235,16 +255,36 @@ export default function Detail() {
             </div>
             <div
               className={DetailStyle.chattingBtnBox}
-              onClick={
-                String(userId) === String(nowUserId.userId)
-                  ? handleEditProduct
-                  : handleEnterChat
-              }
+              onClick={() => {
+                if (tradeState === "예약중") {
+                  alert("이미 예약중인 상품입니다.");
+                  return;
+                }
+                // 조건에 따라 다른 함수 실행
+                if (String(userId) === String(nowUserId.userId)) {
+                  handleEditProduct();
+                } else if (isTransactionComplete) {
+                  handleOpenModal(); // 후기 작성 모달 열기
+                } else {
+                  handleEnterChat();
+                }
+              }}
             >
-              {String(userId) === String(nowUserId.userId)
+              {tradeState === "예약중"
+                ? "예약중"
+                : String(userId) === String(nowUserId.userId)
                 ? "수정하기"
+                : isTransactionComplete
+                ? "후기 작성"
                 : "채팅하기"}
             </div>
+            {/* 모달 컴포넌트 */}
+            <Modal
+              isOpen={isModalOpen}
+              onClose={handleCloseModal}
+              shopOwnerUserId={userId} // 상점 주 userId 전달
+              purchasedProductId={productId}
+            />
           </div>
         </div>
       </div>

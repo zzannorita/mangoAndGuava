@@ -14,5 +14,10 @@ router.get("/shop", shopController.getShopData);
 router.patch("/user-update", shopController.updateUserInfo);
 router.post("/bookmark", shopController.addBookmark);
 router.post("/shop/comment", shopController.addShopComment);
+router.patch(
+  "/update-product/:productId",
+  shopController.uploadImages,
+  shopController.updateProduct
+);
 
 module.exports = router;

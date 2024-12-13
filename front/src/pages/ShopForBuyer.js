@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import shopStyle from "../styles/shop.module.css";
 import axiosInstance from "../axios";
-import RatingStars from "../components/RatingStars";
+import RatingAvg from "../components/RatingAvg";
 import userImg from "../image/userImg.png";
 import { useSearchParams } from "react-router-dom";
 import ProductList from "../components/ProductList";
@@ -94,7 +94,7 @@ export default function ShopForBuyer() {
                   <span className="impact3">{sellerNickName}</span>
                   님의 상점
                 </div>
-                <RatingStars />
+                <RatingAvg />
               </div>
               <div className={shopStyle.myShopInfoBox}>
                 {/* 상점 이미지 및 소개글 */}

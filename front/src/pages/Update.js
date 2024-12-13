@@ -14,33 +14,63 @@ export default function Update() {
   ////////////////////수정상품id받아오기/////////////
   const location = useLocation();
   const { productId } = location.state || {}; // state가 없을 때를 대비
+  const [initialData, setInitialData] = useState({}); // 초기 데이터 저장
 
   useEffect(() => {
     axiosInstance
       .get(`/detail?itemId=${productId}`)
-      .then((response) => {
+      .then(async (response) => {
         const product = response.data.product[0];
+        const categoryCode = product.productCategory;
+
+        const { firstCategory, secondCategory, thirdCategory } =
+          getCategoryNames(categoryCode);
+
+        const categoryName = `${firstCategory} > ${secondCategory} > ${thirdCategory}`;
+
+        const initialProductData = {
+          productName: product.productName,
+          productCategory: categoryCode,
+          productCategoryName: categoryName,
+          productPrice: product.productPrice,
+          isShippingFee: product.isShippingFee === 1,
+          productInfo: product.productInfo,
+          productState: product.productState,
+          isTrade: product.isTrade === 1,
+          tradingMethod: product.tradingMethod === 1,
+          tradingAddress: product.tradingAddress,
+          tradeState: product.tradeState,
+          images: product.images,
+        };
+
+        setInitialData(initialProductData); // 초기 데이터 저장
         setProductImg(product.images);
-        setImages(product.images); // 초기 상태에 기존 이미지 포함
-        setProductName(product.productName);
+        // 기존 이미지를 File 객체로 변환
+        const filesFromServer = await Promise.all(
+          product.images.map(async (imageUrl, index) => {
+            const response = await fetch(imageUrl);
+            const blob = await response.blob();
+            const fileName = `existing_image_${index + 1}.jpg`; // 적절한 파일명 설정
+            return new File([blob], fileName, { type: blob.type });
+          })
+        );
+        // 상태 업데이트
+        setImages(product.images); // UI 초기화
+        // setImageFiles((prevFiles) => [...prevFiles, ...filesFromServer]);
+        // 기존 이미지도 업로드된 파일처럼 처리
+        console.log("파프섭", filesFromServer);
+        setImageFiles(filesFromServer);
         setProductPrice(product.productPrice);
-        setShippingFee(product.isShippingFee === 1); // 1이면 true로 설정
+        setProductName(product.productName);
+        setShippingFee(product.isShippingFee === 1);
         setProductInfo(product.productInfo);
         setProductState(product.productState);
         setIsTrade(product.isTrade === 1);
         setTradingMethod(product.tradingMethod === 1);
         setTradingAddress(product.tradingAddress);
         setTradeState(product.tradeState);
-        // 카테고리 이름 변환
-        const categoryCode = product.productCategory;
-        const { firstCategory, secondCategory, thirdCategory } =
-          getCategoryNames(categoryCode);
-
-        const categoryName = `${firstCategory} > ${secondCategory} > ${thirdCategory}`;
-
-        setProductCategory(categoryCode); // 원본 카테고리 코드 저장
-        setProductCategoryName(categoryName); // 변환된 카테고리 이름 저장
-        console.log(response.data);
+        setProductCategory(categoryCode);
+        setProductCategoryName(categoryName);
       })
       .catch((error) => {
         console.log("상품 데이터 불러오기 실패", error);
@@ -62,6 +92,8 @@ export default function Update() {
       ...prevFiles,
       ...files.slice(0, 5 - prevFiles.length),
     ]);
+    console.log("추가된후 images=>", images);
+    console.log("추가된후 imageFiles=>", imageFiles);
   };
 
   // 이미지 삭제 핸들러
@@ -142,80 +174,78 @@ export default function Update() {
   const ExchangeStateHandler = (id) => {
     setTradeState(id);
   };
-  ////////////////////////데이터 전송/////////////////////
   const navigate = useNavigate();
   const handleSubmit = () => {
-    // 이미지가 등록되지 않으면
-    if (images.length === 0) {
-      alert("이미지를 등록해주세요.");
-      return;
+    const updatedFields = {};
+
+    // 변경된 값만 updatedFields에 추가
+    if (productName !== initialData.productName) {
+      updatedFields.productName = productName;
+    }
+    if (productCategory !== initialData.productCategory) {
+      updatedFields.productCategory = productCategory;
+    }
+    if (productPrice !== initialData.productPrice) {
+      updatedFields.productPrice = parseInt(productPrice, 10);
+    }
+    if (isShippingFee !== initialData.isShippingFee) {
+      updatedFields.isShippingFee = isShippingFee;
+    }
+    if (productInfo !== initialData.productInfo) {
+      updatedFields.productInfo = productInfo;
+    }
+    if (productState !== initialData.productState) {
+      updatedFields.productState = productState;
+    }
+    if (isTrade !== initialData.isTrade) {
+      updatedFields.isTrade = isTrade;
+    }
+    if (tradingMethod !== initialData.tradingMethod) {
+      updatedFields.tradingMethod = tradingMethod;
+    }
+    if (
+      tradingMethod === true &&
+      tradingAddress !== initialData.tradingAddress
+    ) {
+      updatedFields.tradingAddress = tradingAddress;
+    }
+    if (tradeState !== initialData.tradeState) {
+      updatedFields.tradeState = tradeState;
     }
 
-    // 상품명이 입력되지 않으면
-    if (productName.trim() === "") {
-      alert("상품명을 등록해주세요.");
-      return;
+    // 이미지 처리
+    if (images !== initialData.images) {
+      updatedFields.images = imageFiles; // 새로 추가된 이미지
     }
 
-    // 카테고리가 선택되지 않으면
-    if (productCategory.trim() === "") {
-      alert("카테고리를 선택해주세요.");
-      return;
-    }
-
-    // 가격이 입력되지 않으면
-    if (productPrice.trim() === "") {
-      alert("가격을 입력해주세요.");
-      return;
-    }
-
-    // 상품 상태가 선택되지 않으면
-    if (productState === null) {
-      alert("상품 상태를 선택해주세요.");
-      return;
-    }
-
-    // 교환 가능 여부가 선택되지 않으면
-    if (isTrade === null) {
-      alert("교환 가능 여부를 선택해주세요.");
-      return;
-    }
-
-    // 거래 방법이 선택되지 않으면
-    if (tradingMethod === null) {
-      alert("거래 방법을 선택해주세요.");
-      return;
-    }
-
-    // 거래 방법이 직거래일 경우 위치를 입력하지 않으면
-    if (tradingMethod === true && tradingAddress.trim() === "") {
-      alert("거래 위치를 입력해주세요.");
+    // 아무 변경 사항이 없으면 전송하지 않음
+    if (Object.keys(updatedFields).length === 0) {
+      alert("수정된 내용이 없습니다.");
       return;
     }
 
     const formData = new FormData();
-
-    //이미지 전송
+    // 이미지 파일 추가
     imageFiles.forEach((file) => {
       formData.append("productImage", file);
     });
-    //나머지 데이터들
-    formData.append("productName", productName);
-    formData.append("productCategory", productCategory);
-    formData.append("productPrice", parseInt(productPrice, 10));
-    formData.append("isShippingFee", isShippingFee);
-    formData.append("productInfo", productInfo);
-    formData.append("productState", productState);
-    formData.append("isTrade", isTrade);
-    formData.append("tradingMethod", tradingMethod);
-    formData.append("tradeState", tradeState);
+
+    // 순서를 JSON 문자열로 변환하여 추가
     formData.append(
-      "tradingAddress",
-      tradingMethod === false ? null : tradingAddress
+      "imageOrder",
+      JSON.stringify(imageFiles.map((_, index) => index))
     );
 
+    for (const [key, value] of Object.entries(updatedFields)) {
+      formData.append(key, value);
+    }
+
+    for (const [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
     axiosInstance
-      .patch("/update-product", formData, {
+      .patch(`/update-product/${productId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -223,18 +253,7 @@ export default function Update() {
       .then((response) => {
         alert("상품이 수정되었습니다.");
         navigate(`/detail?itemId=${productId}`);
-        setProductName("");
-        setProductCategory("");
-        setProductPrice("");
-        setShippingFee(false);
-        setProductInfo("");
-        setProductState(null);
-        setIsTrade(null);
-        setTradingMethod("");
-        setTradingAddress("");
-        setTradeState("");
-        setImages([]);
-        setImageFiles([]);
+        // 초기화 코드
       })
       .catch((error) => {
         console.error("상품 수정 실패", error);

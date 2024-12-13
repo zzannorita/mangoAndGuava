@@ -1,22 +1,29 @@
-.myShopStarBox {
-  width: 100px;
+.ratingStars {
+  display: flex;
+  cursor: pointer;
+  width: 100%;
   display: flex;
   justify-content: center;
 }
 
-.myShopStars {
+.filledStar,
+.emptyStar {
   display: flex;
+  justify-content: center;
   align-items: center;
-  margin-left: 5px;
+  width: 30px;
+  height: 30px;
+  font-size: 30px;
+}
+.filledStar {
+  color: #ffc107;
 }
 
-.rating {
-  display: inline-block;
-  direction: rtl;
-  unicode-bidi: bidi-override;
+.emptyStar {
+  color: lightgray;
 }
 
-.star {
-  color: gold;
-  /* font-size: 1.2rem; */
+.filledStar:hover,
+.emptyStar:hover {
+  color: #ffc107;
 }
