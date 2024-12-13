@@ -29,7 +29,7 @@ export default function Shop() {
             ...prevShopData,
             shopInfo: description,
           }));
-          console.log("설명 업데이트 성공");
+          alert("수정이 완료되었습니다.");
         })
         .catch((error) => console.error("설명 업데이트 실패", error));
     }
@@ -58,7 +58,6 @@ export default function Shop() {
   //상점 데이터 상태
   const [userData, setUserData] = useState(null);
   const [products, setProducts] = useState([]);
-  const [reviews, setReviews] = useState([]);
   const [bookmarkedProducts, setBookmarkedProducts] = useState([]);
   const [purchasedProducts, setPurchasedProducts] = useState([]);
   const [commentCount, setCommentCount] = useState("");
@@ -77,7 +76,6 @@ export default function Shop() {
         setDescription(shopData.shopInfo || "");
         setUserData(data.userData || { address: "주소 없음" });
         setProducts(data.shopProducts);
-        setReviews(data.comentData);
         setBookmarkedProducts(data.bookmarkProduct);
         setPurchasedProducts(data.purchasedProduct);
         console.log(response.data);
@@ -123,7 +121,7 @@ export default function Shop() {
     } else if (selectedInfo) {
       switch (selectedInfo) {
         case "구매내역":
-          return <div>구매내역 콘텐츠</div>;
+          return <ProductList products={purchasedProducts} />;
         case "찜한상품":
           return (
             <div>

@@ -5,7 +5,7 @@ import RatingAvg from "../components/RatingAvg";
 import userImg from "../image/userImg.png";
 import { useSearchParams } from "react-router-dom";
 import ProductList from "../components/ProductList";
-import Review from "./Review";
+import OthersReview from "./OthersReview";
 
 export default function ShopForBuyer() {
   //쿼리파라미터에서 sellerId가져오기
@@ -34,6 +34,8 @@ export default function ShopForBuyer() {
         setSellerNickName(shopData.userId); //아직nickname이 없어서 임시로 userId
         setDescription(shopData.shopInfo);
         setProducts(data.shopProducts);
+        const shopComment = data.shopCommentData;
+        setReviews(shopComment);
       })
       .catch((error) => console.log("데이터 가져오기 실패", error));
   }, [sellerId]);
@@ -74,7 +76,7 @@ export default function ShopForBuyer() {
             />
           );
         case "거래후기":
-          return <Review />;
+          return <OthersReview shopComment={reviews} />;
         default:
           return <ProductList products={products} />;
       }
