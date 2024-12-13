@@ -12,6 +12,7 @@ const getShopInfo = async (userId) => {
 };
 
 const getShopCommentData = async (userId) => {
+  const escapedUserId = mysql.escape(String(userId));
   const query = `SELECT 
     shopcomment.*, 
     product.productName
@@ -22,10 +23,10 @@ JOIN
 ON 
     shopcomment.purchasedProductId = product.productId
 WHERE 
-    shopcomment.shopOwnerUserId = ?`;
+    shopcomment.shopOwnerUserId = ${escapedUserId}`;
 
   try {
-    const [comments] = await db.execute(query, [parseInt(userId, 10)]);
+    const [comments] = await db.execute(query);
     const commentsWithUserData = await Promise.all(
       comments.map(async (comment) => {
         const userQuery = `SELECT * FROM user WHERE userId = ?`;

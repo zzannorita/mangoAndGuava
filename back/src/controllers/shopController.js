@@ -233,10 +233,12 @@ const getShopData = async (req, res) => {
   try {
     const shopData = await shopDao.getShopInfo(userId);
     const shopProducts = await productsDao.getProductsByUserId(userId);
+    const shopCommentData = await productsDao.getShopCommentData(userId);
 
     return res.status(200).json({
       shopData,
       shopProducts,
+      shopCommentData,
     });
   } catch (error) {
     if (error.response && error.response.status === 401) {
