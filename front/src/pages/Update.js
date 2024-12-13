@@ -244,6 +244,8 @@ export default function Update() {
       console.log(key, value);
     }
 
+    console.log(formData);
+
     axiosInstance
       .patch(`/update-product/${productId}`, formData, {
         headers: {
@@ -377,7 +379,7 @@ export default function Update() {
               className={`${registStyle.productStatusText} ${
                 isTrade === true ? registStyle.active : ""
               }`}
-              onClick={() => ExchangeClickHandler(true)}
+              onClick={() => ExchangeClickHandler(1)}
             >
               가능
             </div>
@@ -386,7 +388,7 @@ export default function Update() {
               className={`${registStyle.productStatusText} ${
                 isTrade === false ? registStyle.active : ""
               }`}
-              onClick={() => ExchangeClickHandler(false)}
+              onClick={() => ExchangeClickHandler(0)}
             >
               불가능
             </div>
@@ -399,7 +401,7 @@ export default function Update() {
               className={`${registStyle.productStatusText} ${
                 tradingMethod === false ? registStyle.active : ""
               }`}
-              onClick={() => deliveryClickHandler(false)}
+              onClick={() => deliveryClickHandler(0)}
             >
               택배거래
             </div>
@@ -408,7 +410,7 @@ export default function Update() {
               className={`${registStyle.productStatusText} ${
                 tradingMethod === true ? registStyle.active : ""
               }`}
-              onClick={() => deliveryClickHandler(true)}
+              onClick={() => deliveryClickHandler(1)}
             >
               직거래
             </div>
