@@ -15,6 +15,7 @@ import AuthCallback from "./pages/AuthCallBack";
 import ShopForBuyer from "./pages/ShopForBuyer";
 import Update from "./pages/Update";
 import Review from "./pages/Review";
+import OthersReview from "./pages/OthersReview";
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
           <Route path="/newMember" element={<NewMember />} />
           <Route path="/authCallBack" element={<AuthCallback />} />
           <Route path="/review" element={<Review />} />
+          <Route path="/othersReview" element={<OthersReview />} />
           {/* <Route path="/detail?itemId={productId}" element={<Detail />} /> */}
         </Routes>
       </div>
