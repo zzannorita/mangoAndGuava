@@ -15,7 +15,8 @@ export default function ShopForBuyer() {
   const [sellerNickName, setSellerNickName] = useState(null);
   const [description, setDescription] = useState("");
   const [products, setProducts] = useState([]);
-  const [reviews, setReviews] = useState([]); //아직 안함
+  const [reviews, setReviews] = useState([]);
+  const [averageRating, setAverageRating] = useState(0);
 
   const [selectedFilter, setSelectedFilter] = useState("전체");
 
@@ -38,7 +39,10 @@ export default function ShopForBuyer() {
           .get(`/user-data/other?userId=${shopData.userId}`)
           .then((response) => {
             //console.log(response.data.user.nickname2);
-            setSellerNickName(response.data.user.nickname2);
+            // setSellerNickName(response.data.user.nickname2);
+            ///율///
+            const nickname = response.data.user.nickname2;
+            setSellerNickName(nickname || shopData.userId);
           });
         ////////
 
@@ -46,6 +50,15 @@ export default function ShopForBuyer() {
         setProducts(data.shopProducts);
         const shopComment = data.shopCommentData;
         setReviews(shopComment);
+
+        // 별점 평균 계산
+        const totalRating = shopComment.reduce(
+          (sum, comment) => sum + comment.avg,
+          0
+        );
+        const avgRating =
+          shopComment.length > 0 ? totalRating / shopComment.length : 0;
+        setAverageRating(avgRating);
       })
       .catch((error) => console.log("데이터 가져오기 실패", error));
   }, [sellerId]);
@@ -106,7 +119,7 @@ export default function ShopForBuyer() {
                   <span className="impact3">{sellerNickName}</span>
                   님의 상점
                 </div>
-                <RatingAvg />
+                <RatingAvg rating={averageRating} />
               </div>
               <div className={shopStyle.myShopInfoBox}>
                 {/* 상점 이미지 및 소개글 */}
