@@ -3,7 +3,6 @@ import ReviewStyle from "../styles/review.module.css";
 import shopStyle from "../styles/shop.module.css";
 import RatingAvg from "../components/RatingAvg";
 import exImg from "../image/userImg.png";
-import axiosInstance from "../axios";
 import getRelativeTime from "../utils/getRelativeTime";
 export default function OthersReview({ shopComment }) {
   return (
@@ -39,19 +38,21 @@ export default function OthersReview({ shopComment }) {
                 <div className={ReviewStyle.reviewTextBox}>
                   <div className={ReviewStyle.reviewTopBox}>
                     <div className={ReviewStyle.reviewWriter}>
-                      <div>{comment.userNickname}</div>
-                      <RatingAvg rating={comment.commentAvg} />
+                      <div>
+                        {comment.userInfo.nickname || comment.userInfo.userId}
+                      </div>
+                      <RatingAvg rating={comment.avg} />
                     </div>
                     <div className={ReviewStyle.reviewTitle}>
                       {comment.productName}
                     </div>
                   </div>
                   <div className={ReviewStyle.reviewContent}>
-                    {comment.commentContent}
+                    {comment.comment}
                   </div>
                 </div>
                 <div className={ReviewStyle.reviewRegistTime}>
-                  {comment.commentDate}
+                  {getRelativeTime(comment.commentDate)}
                 </div>
               </div>
             </div>
