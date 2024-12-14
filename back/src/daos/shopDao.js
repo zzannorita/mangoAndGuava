@@ -229,13 +229,13 @@ const updateShopInfo = async (userId, info) => {
 };
 
 const addBookmark = async (userId, bookmarkUserId) => {
-  // const intUserId = parseInt(userId, 10);
-  // const intBookmarkUserId = parseInt(bookmarkUserId, 10);
-  // 혹시 나중에 인트형으로 변환해서 넣어야하면 .. 아래 쿼리 변수 변경하기
-  const query = `INSERT INTO shopbookmark (userId, bookmarkUserId) VALUES (${userId}, ${bookmarkUserId})`;
+  const escapedUserId = mysql.escape(userId);
+  const escapedBookmarkUserId = mysql.escape(bookmarkUserId);
+  const query = `INSERT INTO shopbookmark (userId, bookmarkUserId) VALUES (${escapedUserId}, ${escapedBookmarkUserId})`;
 
   try {
     const [rows] = await db.execute(query);
+    console.log(rows);
     return rows;
   } catch (error) {
     throw new Error("Database query error: " + error.message);
