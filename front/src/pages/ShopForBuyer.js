@@ -19,10 +19,25 @@ export default function ShopForBuyer() {
   const [averageRating, setAverageRating] = useState(0);
 
   const [selectedFilter, setSelectedFilter] = useState("전체");
+  const [followSeller, setFollowSeller] = useState(false);
 
   //필터 클릭 핸들러
   const handleFilterClick = (filter) => {
     setSelectedFilter(filter);
+  };
+
+  //팔로우 핸들러
+  const handleFollowClick = async () => {
+    try {
+      const response = await axiosInstance.post("bookmark", { sellerId });
+      if (response.status === 200) {
+        setFollowSeller(!followSeller);
+      } else {
+        console.error("팔로우 실패", response.data);
+      }
+    } catch (error) {
+      console.error("팔로우 중 오류 발생", error);
+    }
   };
 
   useEffect(() => {
@@ -114,12 +129,17 @@ export default function ShopForBuyer() {
           {/* 오른쪽 상점 정보 */}
           <div className={shopStyle.rightBox}>
             <div className={shopStyle.myShopBox}>
-              <div className={shopStyle.myShopTitleBox}>
-                <div className={shopStyle.myShopTitleText}>
-                  <span className="impact3">{sellerNickName}</span>
-                  님의 상점
+              <div className={shopStyle.myShopBoxInner}>
+                <div className={shopStyle.myShopTitleBox}>
+                  <div className={shopStyle.myShopTitleText}>
+                    <span className="impact3">{sellerNickName}</span>
+                    님의 상점
+                  </div>
+                  <RatingAvg rating={averageRating} />
                 </div>
-                <RatingAvg rating={averageRating} />
+                <div className={shopStyle.follow} onClick={handleFollowClick}>
+                  {!followSeller ? "+ 팔로우" : "팔로잉"}
+                </div>
               </div>
               <div className={shopStyle.myShopInfoBox}>
                 {/* 상점 이미지 및 소개글 */}

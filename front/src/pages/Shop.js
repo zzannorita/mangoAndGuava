@@ -174,11 +174,13 @@ export default function Shop() {
         </div>
         <div className={shopStyle.rightBox}>
           <div className={shopStyle.myShopBox}>
-            <div className={shopStyle.myShopTitleBox}>
-              <div className={shopStyle.myShopTitleText}>
-                <span className="impact3">{userData?.nickname}</span>님의 상점
+            <div className={shopStyle.myShopBoxInner}>
+              <div className={shopStyle.myShopTitleBox}>
+                <div className={shopStyle.myShopTitleText}>
+                  <span className="impact3">{userData?.nickname}</span>님의 상점
+                </div>
+                <RatingAvg rating={commentCount} />
               </div>
-              <RatingAvg rating={commentCount} />
             </div>
             <div className={shopStyle.myShopInfoBox}>
               <img
