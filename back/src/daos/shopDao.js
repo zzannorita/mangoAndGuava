@@ -264,10 +264,11 @@ const addShopComment = async (commentData) => {
 };
 
 const getBookmarkUser = async (userId) => {
+  const escapedUserId = mysql.escape(userId);
   const query = `
       SELECT bookmarkUserId
       FROM shopbookmark
-      WHERE userId = ${parseInt(userId, 10)};
+      WHERE userId = ${escapedUserId};
     `;
 
   try {

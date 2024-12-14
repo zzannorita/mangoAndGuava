@@ -166,7 +166,7 @@ const getMyShopData = async (req, res) => {
     const bookmarkProduct = await productsDao.getBookmarkProductByUserId(
       userId
     );
-    //const bookmarkUser = getUsersForBookmark(userId);
+    const bookmarkUser = await shopDao.getBookmarkUser(userId);
 
     return res.status(200).json({
       shopData,
@@ -176,27 +176,13 @@ const getMyShopData = async (req, res) => {
       commentCount,
       purchasedProduct,
       bookmarkProduct,
-      // bookmarkUser,
+      bookmarkUser,
     });
   } catch (error) {
-    // if (error.response && error.response.status === 401) {
-    //   throw new Error("Token expired");
-    // }
-    // throw new Error("Failed to fetch user data");
-  }
-};
-
-const getUsersForBookmark = async (userId) => {
-  try {
-    // Step 1: shopbookmark 테이블에서 bookmarkUserId 검색
-    const bookmarkUserIds = await shopDao.getBookmarkUserIds(userId);
-
-    // Step 2: user 테이블에서 bookmarkUserId들로 사용자 정보 검색
-    const users = await shopDao.getUsersByIds(bookmarkUserIds);
-
-    return users;
-  } catch (error) {
-    throw new Error("Error fetching users for bookmarks: " + error.message);
+    if (error.response && error.response.status === 401) {
+      throw new Error("Token expired");
+    }
+    throw new Error("Failed to fetch user data");
   }
 };
 
