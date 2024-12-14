@@ -285,7 +285,7 @@ const updateUserInfo = async (req, res) => {
 
 const addBookmark = async (req, res) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
-  const bookmarkUserId = req.body.userId;
+  const bookmarkUserId = req.body.sellerId;
 
   if (!accessToken) {
     return res.status(401).json({ message: "No access token provided" });
@@ -307,7 +307,8 @@ const addBookmark = async (req, res) => {
     if (error.response && error.response.status === 401) {
       throw new Error("Token expired");
     }
-    throw new Error("Failed to fetch user data");
+    console.log(error, "에러");
+    throw new Error("Failed to fetch user data : ", error);
   }
 };
 
