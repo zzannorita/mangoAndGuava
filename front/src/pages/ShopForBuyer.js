@@ -49,7 +49,7 @@ export default function ShopForBuyer() {
         const data = response.data;
         const shopData = data.shopData[0];
         //setSellerNickName(shopData.userId); //아직nickname이 없어서 임시로 userId
-
+        console.log(shopData);
         ///촐///
         axiosInstance
           .get(`/user-data/other?userId=${shopData.userId}`)
@@ -61,12 +61,10 @@ export default function ShopForBuyer() {
             setSellerNickName(nickname || shopData.userId);
           });
         ////////
-
         setDescription(shopData.shopInfo);
         setProducts(data.shopProducts);
         const shopComment = data.shopCommentData;
         setReviews(shopComment);
-
         // 별점 평균 계산
         const totalRating = shopComment.reduce(
           (sum, comment) => sum + comment.avg,
@@ -185,7 +183,7 @@ export default function ShopForBuyer() {
                   <div className={shopStyle.mainTopBox}>
                     <div className={shopStyle.mainTopLeftBox}>
                       <div>
-                        상품 <span className="impact">15</span>
+                        상품 <span className="impact">{products.length}</span>
                       </div>
                     </div>
                     <div className={shopStyle.mainTopRightBox}>
