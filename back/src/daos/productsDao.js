@@ -1,6 +1,5 @@
 const mysql = require("mysql2"); // MySQL2 모듈 불러오기
 const db = require("../config/dbConfig");
-const { Op } = require("sequelize");
 //userDao.js에서 데이터베이스와의 상호작용을 담당합니다.
 //예를 들어, 유저 정보를 데이터베이스에 저장하거나 검색하는 기능을 구현합니다.
 
