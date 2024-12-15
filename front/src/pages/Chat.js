@@ -50,12 +50,12 @@ const Chat = () => {
 
   useEffect(() => {
     if (!ownerUserId || !productId || !userId) return; // userId가 설정된 이후에만 실행
-    const roomId = userId + "-" + ownerUserId + "test" + "-" + productId; // test 코드는 삭제해야함.(상대없어서 테스트)
+    const roomId = userId + "-" + ownerUserId + "-" + productId;
     const newMessage = {
       roomId: roomId,
       user_from: userId,
-      user_to: ownerUserId + "test", // test 코드는 삭제해야함.(상대없어서 테스트)
-      message: `${ownerUserId + "test"}님 상품 ${productId} 관련 채팅드립니다.`,
+      user_to: ownerUserId,
+      message: `${ownerUserId}님 상품 ${productId} 관련 채팅드립니다.`,
     };
 
     const sendMessage = async () => {
@@ -134,7 +134,7 @@ const Chat = () => {
       const newMessage = {
         roomId: selectedRoomId,
         user_from: userId,
-        user_to: ownerUserId + "test",
+        user_to: ownerUserId,
         message: message.trim(),
       };
 
@@ -151,7 +151,7 @@ const Chat = () => {
     const addressMessage = {
       roomId: selectedRoomId,
       user_from: userId,
-      user_to: ownerUserId + "test",
+      user_to: ownerUserId,
       message: "주소 정보 : " + selectedUserData.address,
     };
 
@@ -166,7 +166,7 @@ const Chat = () => {
     const AccountMessage = {
       roomId: selectedRoomId,
       user_from: userId,
-      user_to: ownerUserId + "test",
+      user_to: ownerUserId,
       message: "계좌 정보 : " + selectedUserData.account,
     };
 

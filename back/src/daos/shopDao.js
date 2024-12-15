@@ -218,7 +218,9 @@ const addShopUser = async (userId) => {
 };
 
 const updateShopInfo = async (userId, info) => {
-  const query = `UPDATE shop SET shopInfo = '${info}' WHERE userId = ${userId}`;
+  const escapedUserId = mysql.escape(String(userId));
+  const escapedInfo = mysql.escape(info);
+  const query = `UPDATE shop SET shopInfo = ${escapedInfo} WHERE userId = ${escapedUserId}`;
 
   try {
     const [rows] = await db.execute(query);
@@ -250,16 +252,37 @@ const addShopComment = async (commentData) => {
   const escapedPurchasedProductId = mysql.escape(
     parseInt(commentData.purchasedProductId)
   );
-  const query = `
+  const insertCommentQuery = `
   INSERT INTO shopcomment (shopOwnerUserId, comment, avg, commentUserId, purchasedProductId) 
   VALUES (${escapedShopOwnerUserId}, ${escapedComment}, ${escapedAvg}, ${escapedCommentUserId}, ${escapedPurchasedProductId});
-`;
+  `;
+
+  const updateShopAvgQuery = `
+  UPDATE shop AS s
+  JOIN (
+    SELECT shopOwnerUserId, AVG(avg) AS avgScore
+    FROM shopComment
+    WHERE shopOwnerUserId = ${escapedShopOwnerUserId}
+    GROUP BY shopOwnerUserId
+  ) AS sc
+  ON s.userId = sc.shopOwnerUserId
+  SET s.shopAvg = sc.avgScore;
+  `;
+
+  const connection = await db.getConnection();
 
   try {
-    const [rows] = await db.execute(query);
-    return rows;
+    await connection.beginTransaction(); // 트랜잭션 시작
+    await connection.execute(insertCommentQuery);
+    await connection.execute(updateShopAvgQuery);
+    await connection.commit();
+    console.log("댓글 추가 및 평점 업데이트 성공");
   } catch (error) {
+    await connection.rollback(); // 오류 발생 시 롤백
+    console.error("댓글 추가 및 평점 업데이트 실패:", error.message);
     throw new Error("Database query error: " + error.message);
+  } finally {
+    connection.release(); // 연결 해제
   }
 };
 
