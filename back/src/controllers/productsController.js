@@ -109,6 +109,28 @@ const handleProducts = async (req, res) => {
       res.status(500).json({ message: "Internal server error" });
     }
   }
+
+  //카테고리만 검색된 경우
+  if (!item && !page && !order && category) {
+    limit = parseInt(req.query.limit, 10) || 15; // 기본값 15
+    page = parseInt(req.query.page, 10) || 1; // 기본값 1
+    offset = (page - 1) * limit;
+
+    try {
+      const searchData = await productsDao.getProductsCategory(
+        limit,
+        offset,
+        order
+      );
+      return res.json({
+        code: "SUCCESS_SEARCH",
+        data: searchData,
+      });
+    } catch (error) {
+      console.error("Error during search products:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
 };
 
 const getProduct = async (req, res) => {
@@ -186,6 +208,43 @@ const handleProductBookmark = async (req, res) => {
       .json({ message: "Failed to fetch user data", error: error.message });
   }
 };
+
+///대수술
+const getProductsByFilter = async (req, res) => {
+  const {
+    q,
+    category,
+    sort,
+    page = 1,
+    per_page = 15,
+    tradeState,
+    priceMin,
+    priceMax,
+    address,
+  } = req.query;
+
+  const filters = {
+    search: q,
+    category,
+    sort,
+    page: parseInt(page, 10),
+    perPage: parseInt(per_page, 10),
+    tradeState,
+    priceMin,
+    priceMax,
+    address,
+  };
+
+  try {
+    const resultProducts = productsDao.getProductsByFilter(filters);
+
+    res.status(200).json(resultProducts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error! get products" });
+  }
+};
+///대수술
 
 const getBookmarkList = async (req, res) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
@@ -347,4 +406,5 @@ module.exports = {
   // updateProduct,
   updateProductByState,
   updateProductByBuyerUserId,
+  getProductsByFilter, //이게 수술후 함수
 };

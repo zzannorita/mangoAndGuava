@@ -1,7 +1,121 @@
 const mysql = require("mysql2"); // MySQL2 모듈 불러오기
+const db = require("../config/dbConfig");
+const { Op } = require("sequelize");
 //userDao.js에서 데이터베이스와의 상호작용을 담당합니다.
 //예를 들어, 유저 정보를 데이터베이스에 저장하거나 검색하는 기능을 구현합니다.
-const db = require("../config/dbConfig");
+
+//대 수술 dao
+const getProductsByFilter = async (filters) => {
+  const {
+    search,
+    category,
+    sort,
+    page,
+    perPage,
+    tradeState,
+    priceMin,
+    priceMax,
+    address,
+  } = filters;
+  const whereConditions = []; // WHERE 절에 들어갈 조건들을 저장
+  const values = []; // 조건문에 들어갈 값들
+  let order = ""; // 정렬 조건
+  let offset = (page - 1) * perPage;
+  let limit = perPage;
+
+  // 1. 검색 필터링 (상품명 또는 상품정보에서 검색)
+  //제목, 내용 필터
+  if (search) {
+    whereConditions.push(`(productName LIKE ? OR productInfo LIKE ?)`);
+    values.push(`%${search}%`, `%${search}%`);
+  }
+
+  // 2. 카테고리 필터링
+  if (category) {
+    whereConditions.push("productCategory = ?");
+    values.push(category);
+  }
+
+  // 3. 거래 상태 필터링
+  //판매 완료 보기/안보기 이런거 필요하다해서...
+  if (tradeState) {
+    whereConditions.push("tradeState = ?");
+    values.push(tradeState);
+  }
+
+  // 3.5. 가격 범위 필터링
+  if (priceMin !== undefined && priceMax !== undefined) {
+    whereConditions.push("productPrice BETWEEN ? AND ?");
+    values.push(priceMin, priceMax);
+  } else {
+    if (priceMin !== undefined) {
+      whereConditions.push("productPrice >= ?");
+      values.push(priceMin);
+    }
+    if (priceMax !== undefined) {
+      whereConditions.push("productPrice <= ?");
+      values.push(priceMax);
+    }
+  }
+
+  // 3.75. 주소 필터링
+  if (address) {
+    whereConditions.push("tradingAddress LIKE ?");
+    values.push(`%${address}%`);
+  }
+
+  // 4. 정렬 조건
+  switch (sort) {
+    case "price_asc":
+      order = "ORDER BY productPrice ASC";
+      break;
+    case "price_desc":
+      order = "ORDER BY productPrice DESC";
+      break;
+    case "newest":
+      order = "ORDER BY productCreatedDate DESC";
+      break;
+    case "oldest":
+      order = "ORDER BY productCreatedDate ASC";
+      break;
+    default:
+      order = "ORDER BY productCreatedDate DESC"; // 기본적으로 최신순 정렬
+      break;
+  }
+
+  // 5. WHERE 조건이 하나도 없다면 WHERE 절을 생략
+  const whereClause = whereConditions.length
+    ? "WHERE " + whereConditions.join(" AND ")
+    : "";
+
+  // 6. 상품 목록 조회 SQL 쿼리
+  const query = `
+  SELECT * FROM products
+  ${whereClause}
+  ${order}
+  LIMIT ? OFFSET ?;
+  `;
+  values.push(limit, offset); // LIMIT과 OFFSET 값을 추가
+
+  // 7. 전체 아이템 수 조회 (count)
+  const countQuery = `
+  SELECT COUNT(*) as totalCount FROM products
+  ${whereClause};
+  `;
+
+  //이미지 때문에 아마 조인 안하고 트랜잭션으로 진행 할 것 같음.
+  try {
+    const [products] = await db.execute(query, values); // 상품 목록
+    const [[countResult]] = await db.execute(
+      countQuery,
+      values.slice(0, values.length - 2)
+    ); // 총 아이템 수
+
+    const totalItems = countResult.totalCount;
+    const totalPages = Math.ceil(totalItems / perPage);
+  } catch (error) {}
+};
+
 const getProductsAll = async (limit, offset) => {
   console.log(limit, offset);
   const query = `
@@ -289,6 +403,7 @@ const getProductsByPurchasedUserId = async (userId) => {
 };
 
 const getBookmarkProductByUserId = async (userId) => {
+  const escapedUserId = mysql.escape(userId);
   try {
     const bookmarkQuery = `
     SELECT productId 
@@ -296,9 +411,7 @@ const getBookmarkProductByUserId = async (userId) => {
     WHERE userId = ?
   `;
     // Step 1: productbookmark 테이블에서 userId가 일치하는 productId들을 가져옴
-    const [bookmarkRows] = await db.execute(bookmarkQuery, [
-      parseInt(userId, 10),
-    ]);
+    const [bookmarkRows] = await db.execute(bookmarkQuery, [escapedUserId]);
 
     // Step 2: 검색 결과가 없을 경우 빈 배열 반환
     if (bookmarkRows.length === 0) {
@@ -540,4 +653,5 @@ module.exports = {
   updateProductFields,
   updateProductFieldsByState,
   updateProductFieldsByBuyerUserId,
+  getProductsByFilter, //대수술중 함수
 };
