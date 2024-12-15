@@ -1,65 +1,99 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import shopStyle from "../styles/shop.module.css";
 import favoritesStyle from "../styles/favorites.module.css";
 import exImg from "../image/userImg.png";
 import RatingAvg from "../components/RatingAvg";
-export default function Favorites() {
+import axiosInstance from "../axios";
+export default function Favorites({ bookmarkUser }) {
+  const [sellerData, setSellerData] = useState([]);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchSellerData = async () => {
+      try {
+        //배열 비동기, 닉네임
+        const responses = await Promise.all(
+          bookmarkUser.map((id) =>
+            axiosInstance.get(`/user-data/other?userId=${id}`)
+          )
+        );
+        //그 외
+        const shopDataResponses = await Promise.all(
+          bookmarkUser.map((id) => axiosInstance.get(`/shop?id=${id}`))
+        );
+        // 데이터를 매핑
+        const data = responses.map((response, index) => {
+          const shopData = shopDataResponses[index].data;
+          const nickname = response.data.user.nickname2;
+          console.log("닉네임", nickname);
+          // 상점 데이터 구조에서 shopAvg와 userId 추출
+          const shopAvg = shopData.shopData?.[0]?.shopAvg ?? 0;
+          const userId = shopData.shopData?.[0]?.userId;
+          console.log(shopAvg);
+          console.log(userId);
+          // 반환되는 데이터 구성
+          return {
+            userId: userId, //상점 userId
+            nickname: nickname,
+            shopRating: shopAvg, // 상점 별점
+          };
+        });
+        setSellerData(data); // 데이터를 상태에 저장
+      } catch (error) {
+        console.error("즐겨찾기 유저 데이터 가져오기 실패:", error);
+      }
+    };
+
+    if (bookmarkUser.length > 0) {
+      fetchSellerData();
+    }
+  }, [bookmarkUser]);
+
+  const handleClickShop = (userId) => {
+    navigate(`/yourShop?userId=${userId}`);
+    console.log("클릭된유저:", userId);
+  };
   return (
     <div className={favoritesStyle.myProductsBox}>
       <div className={shopStyle.myProductsMainBox}>
         <div className={shopStyle.mainTopBox}>
           <div className={shopStyle.mainTopLeftBox}>
             <div>
-              상점 <span className="impact">15 </span>
+              상점 <span className="impact">{bookmarkUser.length} </span>
             </div>
           </div>
         </div>
-        <div className={favoritesStyle.mainContainer}>
-          <div className={favoritesStyle.favoriteList}>
-            <img
-              className={favoritesStyle.shopImg}
-              src={exImg}
-              alt="exImg"
-            ></img>
-            <div className={favoritesStyle.shopInfo}>
-              <div className={favoritesStyle.shopName}>여자친구은하짱</div>
-              <RatingAvg />
-            </div>
+        {bookmarkUser.length === 0 ? (
+          <div className={favoritesStyle.mainContainer}>
+            즐겨찾기된 상점이 없습니다.
           </div>
-          <div className={favoritesStyle.favoriteList}>
-            <img
-              className={favoritesStyle.shopImg}
-              src={exImg}
-              alt="exImg"
-            ></img>
-            <div className={favoritesStyle.shopInfo}>
-              <div className={favoritesStyle.shopName}>지민아사랑해</div>
-              <RatingAvg />
-            </div>
+        ) : (
+          <div className={favoritesStyle.mainContainer}>
+            {sellerData.map((seller) => (
+              <div
+                key={`${seller.id}-${seller.nickname}`}
+                className={favoritesStyle.favoriteList}
+                onClick={() => handleClickShop(seller.userId)} // 클릭 시 해당 상점으로 이동
+              >
+                <img
+                  className={favoritesStyle.shopImg}
+                  src={exImg}
+                  alt="exImg"
+                />
+                <div className={favoritesStyle.shopInfo}>
+                  <div className={favoritesStyle.shopName}>
+                    {seller.nickname}
+                  </div>
+                  <div className={favoritesStyle.shopRating}>
+                    <RatingAvg rating={seller.shopRating} />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-          <div className={favoritesStyle.favoriteList}>
-            <img
-              className={favoritesStyle.shopImg}
-              src={exImg}
-              alt="exImg"
-            ></img>
-            <div className={favoritesStyle.shopInfo}>
-              <div className={favoritesStyle.shopName}>주연여보자기</div>
-              <RatingAvg />
-            </div>
-          </div>
-          <div className={favoritesStyle.favoriteList}>
-            <img
-              className={favoritesStyle.shopImg}
-              src={exImg}
-              alt="exImg"
-            ></img>
-            <div className={favoritesStyle.shopInfo}>
-              <div className={favoritesStyle.shopName}>리셀러입니단</div>
-              <RatingAvg />
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
