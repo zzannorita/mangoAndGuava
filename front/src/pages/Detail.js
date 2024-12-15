@@ -42,7 +42,7 @@ export default function Detail({ shopOwnerUserId }) {
   /////////////////////상점 및 채팅///////////////////////////
   const navigate = useNavigate();
   const handleEnterShop = () => navigate(`/yourShop?userId=${userId}`);
-  const handleEnterMyShop = () => navigate("/myshop");
+  const handleEnterMyShop = () => navigate("/myShop");
   const handleEnterChat = () => {
     navigate("/chat", {
       state: { ownerUserId, productId },
@@ -225,7 +225,7 @@ export default function Detail({ shopOwnerUserId }) {
             <div
               className={DetailStyle.productShopEnterBox}
               onClick={
-                userId === nowUserId.userId
+                String(userId) === String(nowUserId.userId)
                   ? handleEnterMyShop
                   : handleEnterShop
               }

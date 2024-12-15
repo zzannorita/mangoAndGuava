@@ -32,6 +32,7 @@ export default function ShopForBuyer() {
       const response = await axiosInstance.post("bookmark", { sellerId });
       if (response.status === 200) {
         setFollowSeller(!followSeller);
+        alert({ sellerNickName }, "님을 팔로우 하였습니다.");
       } else {
         console.error("팔로우 실패", response.data);
       }
@@ -48,7 +49,7 @@ export default function ShopForBuyer() {
         const data = response.data;
         const shopData = data.shopData[0];
         //setSellerNickName(shopData.userId); //아직nickname이 없어서 임시로 userId
-
+        console.log(shopData);
         ///촐///
         axiosInstance
           .get(`/user-data/other?userId=${shopData.userId}`)
@@ -60,12 +61,10 @@ export default function ShopForBuyer() {
             setSellerNickName(nickname || shopData.userId);
           });
         ////////
-
         setDescription(shopData.shopInfo);
         setProducts(data.shopProducts);
         const shopComment = data.shopCommentData;
         setReviews(shopComment);
-
         // 별점 평균 계산
         const totalRating = shopComment.reduce(
           (sum, comment) => sum + comment.avg,
@@ -184,7 +183,7 @@ export default function ShopForBuyer() {
                   <div className={shopStyle.mainTopBox}>
                     <div className={shopStyle.mainTopLeftBox}>
                       <div>
-                        상품 <span className="impact">15</span>
+                        상품 <span className="impact">{products.length}</span>
                       </div>
                     </div>
                     <div className={shopStyle.mainTopRightBox}>

@@ -135,11 +135,11 @@ function Header() {
             </div>
             <div
               className={HeaderStyle.box}
-              onClick={(e) => protectedHandler(e, "/myshop")}
+              onClick={(e) => protectedHandler(e, "/myShop")}
             >
               <img className="commonImgSize" alt="perosn" src={person} />
               <Link
-                to="/myshop"
+                to="/myShop"
                 className={`${HeaderStyle.overlay} ${HeaderStyle.link}`}
               >
                 마이

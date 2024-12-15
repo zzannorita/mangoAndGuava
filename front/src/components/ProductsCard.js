@@ -43,13 +43,13 @@ const ProductsCard = ({ product, userId }) => {
     tradeState === "예약중"
       ? "예약중"
       : tradeState === "판매완료"
-      ? "거래완료"
+      ? "판매완료"
       : tradeState === "판매중"
       ? ""
       : "";
-  // 클릭이 불가능할 때 배경 스타일 변경
+  // 구매 불가 상품
   const disableClickStyle =
-    tradeState !== "판매중" ? productStyle.disabled : "";
+    tradeState !== "판매중" ? productStyle.disabled2 : "";
 
   /////////////////////////주소//////////////////////////////////
   const location =
@@ -65,9 +65,7 @@ const ProductsCard = ({ product, userId }) => {
         alt={product.productName}
         className={`${productStyle.productImage} ${disableClickStyle}`}
       ></img>
-
       {overlayText && <div className={productStyle.overlay}>{overlayText}</div>}
-
       <img
         src={clickedHeart ? emptyHeartImg : fillHeartImg}
         alt="emptyHeartImg"

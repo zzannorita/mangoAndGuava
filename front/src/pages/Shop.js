@@ -62,6 +62,8 @@ export default function Shop() {
   const [purchasedProducts, setPurchasedProducts] = useState([]);
   const [commentCount, setCommentCount] = useState("");
 
+  //즐겨찾기
+  const [bookmarkUser, setBookmarkUser] = useState([]);
   //myshop api호출
   useEffect(() => {
     axiosInstance
@@ -78,6 +80,7 @@ export default function Shop() {
         setProducts(data.shopProducts);
         setBookmarkedProducts(data.bookmarkProduct);
         setPurchasedProducts(data.purchasedProduct);
+        setBookmarkUser(data.bookmarkUser);
         console.log(response.data);
       })
       .catch((error) => {
@@ -129,7 +132,7 @@ export default function Shop() {
             </div>
           );
         case "즐겨찾기":
-          return <Favorites />;
+          return <Favorites bookmarkUser={bookmarkUser} />;
         case "설정":
           return <Settings />;
         default:
