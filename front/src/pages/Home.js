@@ -9,6 +9,9 @@ export default function Home() {
   const [products, setProducts] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
 
+  /////////////////////페이지네이션/////////////////////
+  const [totalPage, setTotalPage] = useState();
+
   // 슬라이드 변경 함수
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % 3); // 3개의 이미지 순환
@@ -31,7 +34,9 @@ export default function Home() {
     axiosInstance
       .get("http://localhost:3001/products")
       .then((response) => {
-        setProducts(response.data.data || []);
+        setProducts();
+        //setProducts(response.data.products || []); // 상품 배열 저장
+        setTotalPage(response.data.totalPages);
         console.log("API Response:", response.data); // 데이터 확인
       })
       .catch((error) => {
