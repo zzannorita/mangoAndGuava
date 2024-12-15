@@ -218,7 +218,9 @@ const addShopUser = async (userId) => {
 };
 
 const updateShopInfo = async (userId, info) => {
-  const query = `UPDATE shop SET shopInfo = '${info}' WHERE userId = ${userId}`;
+  const escapedUserId = mysql.escape(String(userId));
+  const escapedInfo = mysql.escape(info);
+  const query = `UPDATE shop SET shopInfo = ${escapedInfo} WHERE userId = ${escapedUserId}`;
 
   try {
     const [rows] = await db.execute(query);
