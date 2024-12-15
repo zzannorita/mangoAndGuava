@@ -2,137 +2,6 @@ const axios = require("axios");
 const productsDao = require("../daos/productsDao");
 const userDao = require("../daos/userDao");
 
-const handleProducts = async (req, res) => {
-  const item = req.query.item;
-  let limit = req.query.limit; // 기본값 15
-  let page = req.query.page; // 기본값 1
-  let offset = (page - 1) * limit; // 페이지네이션을 위한 오프셋 계산
-  const order = req.query.order;
-  const category = req.query.category;
-  let results = {};
-  //전체 상품보기
-  if (!item && !page && !order && !category) {
-    limit = parseInt(req.query.limit, 10) || 15; // 기본값 15
-    page = parseInt(req.query.page, 10) || 1; // 기본값 1
-    offset = (page - 1) * limit;
-    try {
-      const searchData = await productsDao.getProductsAll(limit, offset);
-      return res.json({
-        code: "SUCCESS_SEARCH_ALL_PRODUCTS",
-        data: searchData,
-      });
-    } catch (error) {
-      console.error("Error during search products:", error);
-      res.status(500).json({ message: "Internal server error" });
-    }
-  }
-  //전체 상품보기 정렬
-  if (!item && !page && order && !category) {
-    limit = parseInt(req.query.limit, 10) || 15; // 기본값 15
-    page = parseInt(req.query.page, 10) || 1; // 기본값 1
-    offset = (page - 1) * limit;
-    try {
-      const searchData = await productsDao.getProductsAllOrder(
-        limit,
-        offset,
-        order
-      );
-      return res.json({
-        code: "SUCCESS_SEARCH_ALL_PRODUCTS",
-        data: searchData,
-      });
-    } catch (error) {
-      console.error("Error during search products:", error);
-      res.status(500).json({ message: "Internal server error" });
-    }
-  }
-  //item(검색만 된 경우)
-  if (item && !page && !order && !category) {
-    limit = parseInt(req.query.limit, 10) || 15; // 기본값 15
-    page = parseInt(req.query.page, 10) || 1; // 기본값 1
-    offset = (page - 1) * limit;
-    //데이터베이스 쿼리로 변경 할 것.
-    try {
-      const searchData = await productsDao.getProductsByItemPageLimit(
-        item,
-        limit,
-        offset
-      );
-      return res.json({
-        code: "SUCCESS_SEARCH_PRODUCTS",
-        data: searchData,
-      });
-    } catch (error) {
-      console.error("Error during search products:", error);
-      res.status(500).json({ message: "Internal server error" });
-    }
-  }
-  //item 검색후 페이지네이션 이용
-  if (item && page && !order && !category) {
-    limit = parseInt(req.query.limit, 10) || 15; // 기본값 15
-    page = parseInt(req.query.page, 10) || 1; // 기본값 1
-    offset = (page - 1) * limit;
-    try {
-      const searchData = await productsDao.getProductsByItemPageLimit(
-        item,
-        limit,
-        offset
-      );
-      return res.json({
-        code: "SUCCESS_SEARCH",
-        data: searchData,
-      });
-    } catch (error) {
-      console.error("Error during search products:", error);
-      res.status(500).json({ message: "Internal server error" });
-    }
-  }
-  //item 검색후 정렬
-  if (item && page && order && !category) {
-    limit = parseInt(req.query.limit, 10) || 15; // 기본값 15
-    page = parseInt(req.query.page, 10) || 1; // 기본값 1
-    offset = (page - 1) * limit;
-
-    try {
-      const searchData = await productsDao.getProductsByItemPageLimitOrder(
-        item,
-        limit,
-        offset,
-        order
-      );
-      return res.json({
-        code: "SUCCESS_SEARCH",
-        data: searchData,
-      });
-    } catch (error) {
-      console.error("Error during search products:", error);
-      res.status(500).json({ message: "Internal server error" });
-    }
-  }
-
-  //카테고리만 검색된 경우
-  if (!item && !page && !order && category) {
-    limit = parseInt(req.query.limit, 10) || 15; // 기본값 15
-    page = parseInt(req.query.page, 10) || 1; // 기본값 1
-    offset = (page - 1) * limit;
-
-    try {
-      const searchData = await productsDao.getProductsCategory(
-        limit,
-        offset,
-        order
-      );
-      return res.json({
-        code: "SUCCESS_SEARCH",
-        data: searchData,
-      });
-    } catch (error) {
-      console.error("Error during search products:", error);
-      res.status(500).json({ message: "Internal server error" });
-    }
-  }
-};
-
 const getProduct = async (req, res) => {
   const productId = req.query.productId;
 
@@ -211,12 +80,13 @@ const handleProductBookmark = async (req, res) => {
 
 ///대수술
 const getProductsByFilter = async (req, res) => {
+  console.log("입장했습니다.");
   const {
     q,
     category,
     sort,
     page = 1,
-    per_page = 15,
+    perPage = 15,
     tradeState,
     priceMin,
     priceMax,
@@ -228,7 +98,7 @@ const getProductsByFilter = async (req, res) => {
     category,
     sort,
     page: parseInt(page, 10),
-    perPage: parseInt(per_page, 10),
+    perPage: parseInt(perPage, 10),
     tradeState,
     priceMin,
     priceMax,
@@ -236,8 +106,8 @@ const getProductsByFilter = async (req, res) => {
   };
 
   try {
-    const resultProducts = productsDao.getProductsByFilter(filters);
-
+    const resultProducts = await productsDao.getProductsByFilter(filters);
+    console.log(resultProducts);
     res.status(200).json(resultProducts);
   } catch (error) {
     console.error(error);
@@ -394,6 +264,137 @@ const updateProductByBuyerUserId = async (req, res) => {
     return res
       .status(500)
       .json({ message: "Failed to fetch user data", error: error.message });
+  }
+};
+
+const handleProducts = async (req, res) => {
+  const item = req.query.item;
+  let limit = req.query.limit; // 기본값 15
+  let page = req.query.page; // 기본값 1
+  let offset = (page - 1) * limit; // 페이지네이션을 위한 오프셋 계산
+  const order = req.query.order;
+  const category = req.query.category;
+  let results = {};
+  //전체 상품보기
+  if (!item && !page && !order && !category) {
+    limit = parseInt(req.query.limit, 10) || 15; // 기본값 15
+    page = parseInt(req.query.page, 10) || 1; // 기본값 1
+    offset = (page - 1) * limit;
+    try {
+      const searchData = await productsDao.getProductsAll(limit, offset);
+      return res.json({
+        code: "SUCCESS_SEARCH_ALL_PRODUCTS",
+        data: searchData,
+      });
+    } catch (error) {
+      console.error("Error during search products:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+  //전체 상품보기 정렬
+  if (!item && !page && order && !category) {
+    limit = parseInt(req.query.limit, 10) || 15; // 기본값 15
+    page = parseInt(req.query.page, 10) || 1; // 기본값 1
+    offset = (page - 1) * limit;
+    try {
+      const searchData = await productsDao.getProductsAllOrder(
+        limit,
+        offset,
+        order
+      );
+      return res.json({
+        code: "SUCCESS_SEARCH_ALL_PRODUCTS",
+        data: searchData,
+      });
+    } catch (error) {
+      console.error("Error during search products:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+  //item(검색만 된 경우)
+  if (item && !page && !order && !category) {
+    limit = parseInt(req.query.limit, 10) || 15; // 기본값 15
+    page = parseInt(req.query.page, 10) || 1; // 기본값 1
+    offset = (page - 1) * limit;
+    //데이터베이스 쿼리로 변경 할 것.
+    try {
+      const searchData = await productsDao.getProductsByItemPageLimit(
+        item,
+        limit,
+        offset
+      );
+      return res.json({
+        code: "SUCCESS_SEARCH_PRODUCTS",
+        data: searchData,
+      });
+    } catch (error) {
+      console.error("Error during search products:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+  //item 검색후 페이지네이션 이용
+  if (item && page && !order && !category) {
+    limit = parseInt(req.query.limit, 10) || 15; // 기본값 15
+    page = parseInt(req.query.page, 10) || 1; // 기본값 1
+    offset = (page - 1) * limit;
+    try {
+      const searchData = await productsDao.getProductsByItemPageLimit(
+        item,
+        limit,
+        offset
+      );
+      return res.json({
+        code: "SUCCESS_SEARCH",
+        data: searchData,
+      });
+    } catch (error) {
+      console.error("Error during search products:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+  //item 검색후 정렬
+  if (item && page && order && !category) {
+    limit = parseInt(req.query.limit, 10) || 15; // 기본값 15
+    page = parseInt(req.query.page, 10) || 1; // 기본값 1
+    offset = (page - 1) * limit;
+
+    try {
+      const searchData = await productsDao.getProductsByItemPageLimitOrder(
+        item,
+        limit,
+        offset,
+        order
+      );
+      return res.json({
+        code: "SUCCESS_SEARCH",
+        data: searchData,
+      });
+    } catch (error) {
+      console.error("Error during search products:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+
+  //카테고리만 검색된 경우
+  if (!item && !page && !order && category) {
+    limit = parseInt(req.query.limit, 10) || 15; // 기본값 15
+    page = parseInt(req.query.page, 10) || 1; // 기본값 1
+    offset = (page - 1) * limit;
+
+    try {
+      const searchData = await productsDao.getProductsCategory(
+        limit,
+        offset,
+        order
+      );
+      return res.json({
+        code: "SUCCESS_SEARCH",
+        data: searchData,
+      });
+    } catch (error) {
+      console.error("Error during search products:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
   }
 };
 

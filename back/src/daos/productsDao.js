@@ -65,17 +65,17 @@ const getProductsByFilter = async (filters) => {
 
   // 4. 정렬 조건
   switch (sort) {
-    case "price_asc":
-      order = "ORDER BY productPrice ASC";
+    case "priceAsc":
+      order = "ORDER BY productPrice ASC"; //저렴순 (오름차)
       break;
-    case "price_desc":
-      order = "ORDER BY productPrice DESC";
+    case "priceDesc":
+      order = "ORDER BY productPrice DESC"; //비싼순 (내림차)
       break;
     case "newest":
-      order = "ORDER BY productCreatedDate DESC";
+      order = "ORDER BY productCreatedDate DESC"; //최신순
       break;
     case "oldest":
-      order = "ORDER BY productCreatedDate ASC";
+      order = "ORDER BY productCreatedDate ASC"; //오래된순
       break;
     default:
       order = "ORDER BY productCreatedDate DESC"; // 기본적으로 최신순 정렬
@@ -88,31 +88,49 @@ const getProductsByFilter = async (filters) => {
     : "";
 
   // 6. 상품 목록 조회 SQL 쿼리
-  const query = `
-  SELECT * FROM products
-  ${whereClause}
-  ${order}
-  LIMIT ? OFFSET ?;
-  `;
-  values.push(limit, offset); // LIMIT과 OFFSET 값을 추가
+  const query = `SELECT * FROM product ${whereClause} ${order} LIMIT ? OFFSET ?`;
+
+  values.push(limit, offset); // LIMIT과 OFFSET 값을 추가 (맨 마지막에 추가해야함!)
 
   // 7. 전체 아이템 수 조회 (count)
   const countQuery = `
-  SELECT COUNT(*) as totalCount FROM products
+  SELECT COUNT(*) as totalCount FROM product
   ${whereClause};
   `;
 
   //이미지 때문에 아마 조인 안하고 트랜잭션으로 진행 할 것 같음.
   try {
-    const [products] = await db.execute(query, values); // 상품 목록
+    const [products] = await db.query(query, values); // 상품 목록
+
+    // 11. 이미지 정보 조회
+    const productIds = products.map((product) => product.productId);
+    //8.이미지 조회 SQL 쿼리
+    if (productIds.length > 0) {
+      const imageQuery = `
+        SELECT * FROM productImage
+        WHERE productId IN (${productIds.join(",")});
+      `;
+      const [images] = await db.query(imageQuery);
+
+      // 12. 각 상품에 이미지 추가
+      products.forEach((product) => {
+        product.images = images.filter(
+          (image) => image.productId === product.productId
+        );
+      });
+    }
+
     const [[countResult]] = await db.execute(
       countQuery,
       values.slice(0, values.length - 2)
     ); // 총 아이템 수
-
     const totalItems = countResult.totalCount;
     const totalPages = Math.ceil(totalItems / perPage);
-  } catch (error) {}
+    const returnData = { products, totalPages };
+    return returnData;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const getProductsAll = async (limit, offset) => {
@@ -164,141 +182,6 @@ const getProductsAll = async (limit, offset) => {
   } catch (error) {
     throw new Error("Database query error: " + error.message);
   }
-};
-
-const getProductsAllOrder = async (limit, offset, order) => {
-  let orderMethod = "";
-  if (order === "price-asc") {
-    // 낮은 가격순
-    orderMethod = "productPrice ASC";
-  } else if (order === "price-desc") {
-    // 높은 가격순
-    orderMethod = "productPrice DESC";
-  } else if (order === "date") {
-    // 최신순
-    orderMethod = "productCreatedDate DESC";
-  }
-
-  const query = `
-    SELECT 
-      p.*,
-      GROUP_CONCAT(pi.productImage) AS images 
-    FROM 
-      product p 
-    LEFT JOIN 
-      productimage pi 
-    ON 
-      p.productId = pi.productId 
-    GROUP BY 
-      p.productId 
-    ORDER BY 
-      ${orderMethod}
-    LIMIT ${limit} OFFSET ${offset};
-  `;
-
-  try {
-    const [rows] = await db.execute(query);
-
-    // 상품별로 이미지를 묶기 위한 객체
-    const products = rows.map((row) => {
-      const productData = { ...row };
-      productData.images = row.images
-        ? row.images
-            .split(",")
-            .map((image) => `http://localhost:3001/uploads/${image}`)
-        : [];
-      return productData;
-    });
-
-    return products;
-  } catch (error) {
-    throw new Error("Database query error: " + error.message);
-  }
-};
-
-const getProductsByItemPageLimit = async (item, limit, offset) => {
-  const itemSafe = mysql.escape(`%${item}%`); // LIKE 패턴을 위한 값
-  const query = `
-  SELECT
-    p.*,
-    pi.productImage
-  FROM
-    product p
-  LEFT JOIN
-    productimage pi
-  ON
-    p.productId = pi.productId
-  WHERE
-    p.productName LIKE ${itemSafe}
-  ORDER BY
-    p.productId DESC
-  LIMIT ${limit} OFFSET ${offset};
-`;
-
-  try {
-    const [rows] = await db.execute(query);
-
-    // 상품별로 이미지를 묶기 위한 객체
-    const productsMap = {};
-
-    rows.forEach((row) => {
-      const productId = row.productId;
-
-      if (!productsMap[productId]) {
-        // 이미지 정보를 제외한 상품 정보
-        const { productImage, ...productData } = row;
-        productsMap[productId] = {
-          ...productData,
-          images: [],
-        };
-      }
-
-      // 이미지가 있을 경우에만 추가
-      if (row.productImage) {
-        const imageUrl = `http://localhost:3001/uploads/${row.productImage}`;
-        productsMap[productId].images.push(imageUrl);
-      }
-    });
-
-    // 객체를 배열로 변환
-    const products = Object.values(productsMap);
-
-    return products;
-  } catch (error) {
-    throw new Error("Database query error: " + error.message);
-  }
-};
-
-const getProductsByItemPageLimitOrder = async (item, limit, offset, order) => {
-  const itemSafe = mysql.escape(`%${item}%`); // LIKE 패턴을 위한 값
-  let orderMethod = "";
-  if (order === "price-asc") {
-    //높은 가격순
-    orderMethod = "productPrice DESC";
-  } else if (order === "price-desc") {
-    //낮은 가격순
-    orderMethod = "productPrice";
-  } else if (order === "date") {
-    orderMethod = "productCreatedDate";
-  }
-  const query = `
-  SELECT
-    p.*,
-    GROUP_CONCAT(pi.productImage) AS images
-  FROM
-    product p
-  LEFT JOIN
-    productimage pi
-  ON
-    p.productId = pi.productId
-  WHERE
-    p.productName LIKE ${itemSafe}
-  GROUP BY
-    p.productId
-  ORDER BY
-    ${orderMethod}
-  LIMIT ${limit} OFFSET ${offset};
-`;
 };
 
 const getProductsByUserId = async (userId) => {
@@ -640,9 +523,6 @@ const updateProductFieldsByBuyerUserId = async (
 
 module.exports = {
   getProductsAll,
-  getProductsByItemPageLimit,
-  getProductsByItemPageLimitOrder,
-  getProductsAllOrder,
   getProductsByUserId,
   getProductsByPurchasedUserId,
   getBookmarkProductByUserId,
