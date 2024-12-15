@@ -14,6 +14,9 @@ const Search = () => {
 
   const [products, setProducts] = useState([]); // 초기값을 빈 배열로 설정
 
+  /////////////////////페이지네이션/////////////////////
+  const [totalPage, setTotalPage] = useState();
+
   /////////////////////카테고리/////////////////////////
   const [productCategory, setProductCategory] = useState("");
   const [productCategoryName, setProductCategoryName] = useState("");
@@ -89,10 +92,10 @@ const Search = () => {
   useEffect(() => {
     if (!query) return; // 검색어가 없는 경우 API 호출 방지
     axiosInstance
-      .get(`/products?item=${encodeURIComponent(query)}`)
+      .get(`/products?q=${encodeURIComponent(query)}`)
       .then((response) => {
-        console.log(response.data);
-        setProducts(response.data.data || []); // 상품 배열 저장
+        setProducts(response.data.products || []); // 상품 배열 저장
+        setTotalPage(response.data.totalPages);
       })
       .catch();
   }, [query]);
