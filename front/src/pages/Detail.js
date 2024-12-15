@@ -225,7 +225,7 @@ export default function Detail({ shopOwnerUserId }) {
             <div
               className={DetailStyle.productShopEnterBox}
               onClick={
-                userId === nowUserId.userId
+                String(userId) === String(nowUserId.userId)
                   ? handleEnterMyShop
                   : handleEnterShop
               }
