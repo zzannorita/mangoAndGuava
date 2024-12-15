@@ -32,6 +32,7 @@ export default function ShopForBuyer() {
       const response = await axiosInstance.post("bookmark", { sellerId });
       if (response.status === 200) {
         setFollowSeller(!followSeller);
+        alert({ sellerNickName }, "님을 팔로우 하였습니다.");
       } else {
         console.error("팔로우 실패", response.data);
       }
