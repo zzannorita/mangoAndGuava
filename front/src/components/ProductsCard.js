@@ -61,7 +61,7 @@ const ProductsCard = ({ product, userId }) => {
   return (
     <div className={productStyle.productCard}>
       <img
-        src={product.images[0] || ""}
+        src={product.images[0].productImage || ""}
         alt={product.productName}
         className={`${productStyle.productImage} ${disableClickStyle}`}
       ></img>
