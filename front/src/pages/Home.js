@@ -34,10 +34,9 @@ export default function Home() {
     axiosInstance
       .get("http://localhost:3001/products")
       .then((response) => {
-        setProducts();
-        //setProducts(response.data.products || []); // 상품 배열 저장
+        setProducts(response.data.products || []); // 상품 배열 저장
         setTotalPage(response.data.totalPages);
-        console.log("API Response:", response.data); // 데이터 확인
+        console.log("API Response:", response.data.products); // 데이터 확인
       })
       .catch((error) => {
         console.log("데이터 가져오기 실패", error);
