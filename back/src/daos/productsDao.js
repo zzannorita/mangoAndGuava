@@ -114,9 +114,15 @@ const getProductsByFilter = async (filters) => {
 
       // 12. 각 상품에 이미지 추가
       products.forEach((product) => {
-        product.images = images.filter(
-          (image) => image.productId === product.productId
-        );
+        product.images = images
+          .filter((image) => image.productId === product.productId) // 해당 productId에 맞는 이미지 필터링
+          .map((image) => {
+            return {
+              imageId: image.imageId,
+              productId: image.productId,
+              productImage: `http://localhost:3001/uploads/${image.productImage}`, // URL 경로 추가
+            };
+          });
       });
     }
 
