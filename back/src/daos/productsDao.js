@@ -92,9 +92,6 @@ const getProductsByFilter = async (filters) => {
 
   values.push(limit, offset); // LIMIT과 OFFSET 값을 추가 (맨 마지막에 추가해야함!)
 
-  console.log(query);
-  console.log(values);
-
   // 7. 전체 아이템 수 조회 (count)
   const countQuery = `
   SELECT COUNT(*) as totalCount FROM product
