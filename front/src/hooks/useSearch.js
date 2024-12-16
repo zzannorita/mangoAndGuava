@@ -12,7 +12,7 @@ const useSearch = () => {
   const handleSearch = () => {
     if (query.trim()) {
       setSubmitQuery(query); // 입력 값을 최종 전송 상태로 저장
-      navigate(`/search?query=${encodeURIComponent(query)}`);
+      navigate(`/products?q=${encodeURIComponent(query)}`);
     }
   };
 
