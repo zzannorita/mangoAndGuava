@@ -104,10 +104,8 @@ const getProductsByFilter = async (req, res) => {
     priceMax,
     address,
   };
-
   try {
     const resultProducts = await productsDao.getProductsByFilter(filters);
-    console.log(resultProducts);
     res.status(200).json(resultProducts);
   } catch (error) {
     console.error(error);
