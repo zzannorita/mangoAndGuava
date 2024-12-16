@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axiosInstance from "../axios";
 import ProductList from "../components/ProductList";
 import SearchStyle from "../styles/search.module.css";
@@ -9,96 +10,86 @@ import LocationList from "../components/LocationList";
 
 const Search = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
-  const query = queryParams.get("query");
+  const query = queryParams.get("q");
 
   const [products, setProducts] = useState([]); // 초기값을 빈 배열로 설정
 
   /////////////////////페이지네이션/////////////////////
   const [totalPage, setTotalPage] = useState();
 
-  /////////////////////카테고리/////////////////////////
-  const [productCategory, setProductCategory] = useState("");
-  const [productCategoryName, setProductCategoryName] = useState("");
-  const handleCategorySelect = (categoryCode, categoryName) => {
-    setProductCategory(categoryCode);
-    setProductCategoryName(categoryName);
-  };
-
-  const [isCategoryVisible, setIsCategoryVisible] = useState(false);
-  const toggleCategory = () => {
-    setIsCategoryVisible((prevState) => !prevState); // 카테고리 표시 여부 토글
-  };
-
-  ////////////////////////지역/////////////////////////////
-
+  /////////////////// 주소 필터링 함수///////////////////////
   const [isLocationVisible, setIsLocationVisible] = useState(false);
   const [selectedTradingAddress, setSelectedTradingAddress] = useState("");
   const toggleLocation = () => {
     setIsLocationVisible((prevState) => !prevState);
   };
-
-  ////////////////////////가격//////////////////////////////
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
-  const [priceFiltered, setPriceFiltered] = useState(false);
-
-  const handlePriceFiltered = () => {
-    setPriceFiltered(true);
+  const handleLocationFilter = (address) => {
+    const currentQueryParams = new URLSearchParams(location.search);
+    currentQueryParams.set("address", address);
+    navigate(`/products?${currentQueryParams.toString()}`);
   };
 
-  ////////////////////////필터링////////////////////////////
-  const [sortOrder, setSortOrder] = useState("low");
-
-  // 필터링된 상품 리스트
-  const filteredProducts = products.filter((product) => {
-    let isCategoryMatch = true;
-    let isLocationMatch = true;
-    let isPriceMatch = true;
-    const productPrice = Number(product.productPrice);
-
-    if (productCategory) {
-      isCategoryMatch = product.productCategory === productCategory;
+  /////////////////////// 가격 필터링 함수/////////////////////
+  const [priceMin, setPriceMin] = useState();
+  const [priceMax, setPriceMax] = useState();
+  const handlePriceFilter = () => {
+    const currentQueryParams = new URLSearchParams(location.search);
+    if (priceMin !== undefined) {
+      currentQueryParams.set("priceMin", priceMin);
     }
-
-    if (selectedTradingAddress) {
-      isLocationMatch = product.tradingAddress === selectedTradingAddress;
+    if (priceMax !== undefined) {
+      currentQueryParams.set("priceMax", priceMax);
     }
-    // 가격 필터가 적용되었을 때만 가격 비교
-    if (priceFiltered) {
-      if (minPrice && productPrice < Number(minPrice)) {
-        isPriceMatch = false; // 최소 가격보다 낮으면 제외
-      }
-      if (maxPrice && productPrice > Number(maxPrice)) {
-        isPriceMatch = false; // 최대 가격보다 높으면 제외
-      }
+    navigate(`/products?${currentQueryParams.toString()}`);
+  };
+
+  /////////////////////// 카테고리 필터링 함수//////////////////
+  const [productCategory, setProductCategory] = useState("");
+  const [productCategoryName, setProductCategoryName] = useState("");
+  const [isCategoryVisible, setIsCategoryVisible] = useState(false);
+  const toggleCategory = () => {
+    setIsCategoryVisible((prevState) => !prevState); // 카테고리 표시 여부 토글
+  };
+  const handleCategoryFilter = (categoryCode, categoryName) => {
+    const currentQueryParams = new URLSearchParams(location.search);
+    currentQueryParams.set("category", categoryCode);
+    navigate(`/products?${currentQueryParams.toString()}`);
+    setProductCategory(categoryCode);
+    setProductCategoryName(categoryName);
+  };
+
+  /////////////최신, 고가, 저가 필터링 //////////////////////////
+  const [sortOrder, setSortOrder] = useState("");
+  const handleSortChange = (sortType) => {
+    const currentQueryParams = new URLSearchParams(location.search);
+    currentQueryParams.set("sort", sortType); // sort 파라미터 추가
+    setSortOrder(sortType);
+    navigate(`/products?${currentQueryParams.toString()}`); // 새 쿼리로 네비게이션
+  };
+
+  // API 요청 함수 (쿼리 파라미터에 의해)
+  const fetchProducts = async (queryParams) => {
+    try {
+      const response = await axiosInstance.get(`/products?${queryParams}`);
+      setProducts(response.data.products || []);
+      setTotalPage(response.data.totalPages);
+    } catch (error) {
+      console.error("Error fetching products:", error);
     }
+  };
 
-    return isCategoryMatch && isLocationMatch && isPriceMatch; // 모든 조건이 일치하는 상품만 반환
-  });
-
-  //정렬
-  const sortedProducts = [...filteredProducts].sort((a, b) => {
-    if (sortOrder === "low") {
-      return a.productPrice - b.productPrice; // 저가순
-    } else if (sortOrder === "high") {
-      return b.productPrice - a.productPrice; // 고가순
-    } else if (sortOrder === "recent") {
-      return new Date(b.createdAt) - new Date(a.createdAt); // 최신순
-    } //최신순이 안됨 ㅠㅠ
-    return 0; // 기본값
-  });
-
+  // URL 쿼리 파라미터 변경 시 상품 목록 업데이트
   useEffect(() => {
-    if (!query) return; // 검색어가 없는 경우 API 호출 방지
-    axiosInstance
-      .get(`/products?q=${encodeURIComponent(query)}`)
-      .then((response) => {
-        setProducts(response.data.products || []); // 상품 배열 저장
-        setTotalPage(response.data.totalPages);
-      })
-      .catch();
-  }, [query]);
+    const queryParams = new URLSearchParams(location.search);
+    const queryString = queryParams.toString();
+
+    // 검색어(q)가 있으면 API 호출
+    if (queryString) {
+      fetchProducts(queryString);
+    }
+  }, [location.search]); // URL 쿼리 파라미터가 변경될 때마다 호출
 
   return (
     <div className="container">
@@ -112,14 +103,14 @@ const Search = () => {
           <div className={shopStyle.mainTopRightBox}>
             <div
               className={shopStyle.filterTextBox}
-              onClick={() => setSortOrder("recent")}
+              onClick={() => handleSortChange("newest")}
             >
               최신순
             </div>
             <span>|</span>
             <div
               className={shopStyle.filterTextBox}
-              onClick={() => setSortOrder("high")}
+              onClick={() => handleSortChange("priceAsc")}
             >
               고가순
             </div>
@@ -127,7 +118,7 @@ const Search = () => {
 
             <div
               className={shopStyle.filterTextBox}
-              onClick={() => setSortOrder("low")}
+              onClick={() => handleSortChange("priceDesc")}
             >
               저가순
             </div>
@@ -149,7 +140,7 @@ const Search = () => {
               {isCategoryVisible && (
                 <RegistCategory
                   onCategorySelect={(categoryCode, categoryName) => {
-                    handleCategorySelect(categoryCode, categoryName);
+                    handleCategoryFilter(categoryCode, categoryName);
                     setIsCategoryVisible(false);
                   }}
                 />
@@ -171,6 +162,7 @@ const Search = () => {
               {isLocationVisible && (
                 <LocationList
                   onLocationSelect={(address) => {
+                    handleLocationFilter(address);
                     setSelectedTradingAddress(address);
                     setIsLocationVisible(false);
                   }}
@@ -184,20 +176,20 @@ const Search = () => {
               <input
                 className={SearchStyle.priceBox}
                 placeholder="최소"
-                value={minPrice}
-                onChange={(e) => setMinPrice(e.target.value)}
+                value={priceMin}
+                onChange={(e) => setPriceMin(e.target.value)}
               />
               <span className={SearchStyle.priceBoxBetween}>~</span>
               <input
                 className={SearchStyle.priceBox}
                 placeholder="최대"
-                value={maxPrice}
-                onChange={(e) => setMaxPrice(e.target.value)}
+                value={priceMax}
+                onChange={(e) => setPriceMax(e.target.value)}
               />
               <span className={SearchStyle.priceBoxBetween}>원</span>
               <div
                 className={SearchStyle.priceFilteredButton}
-                onClick={handlePriceFiltered}
+                onClick={handlePriceFilter}
               >
                 적용
               </div>
@@ -206,8 +198,8 @@ const Search = () => {
         </div>
       </div>
       <div className={SearchStyle.resultProductsBox}>
-        {sortedProducts && sortedProducts.length > 0 ? (
-          <ProductList products={sortedProducts} />
+        {products && products.length > 0 ? (
+          <ProductList products={products} />
         ) : (
           <p className={SearchStyle.noProductsText}>
             상품 검색 결과가 없습니다.
