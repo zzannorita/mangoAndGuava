@@ -31,8 +31,8 @@ const getProductsByFilter = async (filters) => {
 
   // 2. 카테고리 필터링
   if (category) {
-    whereConditions.push("productCategory = ?");
-    values.push(category);
+    whereConditions.push("productCategory LIKE ?");
+    values.push(`${category}%`);
   }
 
   // 3. 거래 상태 필터링
@@ -91,6 +91,9 @@ const getProductsByFilter = async (filters) => {
   const query = `SELECT * FROM product ${whereClause} ${order} LIMIT ? OFFSET ?`;
 
   values.push(limit, offset); // LIMIT과 OFFSET 값을 추가 (맨 마지막에 추가해야함!)
+
+  console.log(query);
+  console.log(values);
 
   // 7. 전체 아이템 수 조회 (count)
   const countQuery = `
