@@ -1,18 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import productStyle from "../styles/productsCard.module.css";
 import emptyHeartImg from "../image/emptyHeart.png";
 import fillHeartImg from "../image/fillHeart.png";
 import getRelativeTime from "../utils/getRelativeTime";
 import axiosInstance from "../axios";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
 const ProductsCard = ({ product, userId }) => {
+  ////////////////////로그인상태 확인///////////////////////
+  const [isLogin, setIsLogin] = useState(false);
+  useEffect(() => {
+    const checkLoginStatus = () => {
+      const accessToken = Cookies.get("accessToken");
+      setIsLogin(!!accessToken); // 토큰이 있으면 로그인 상태로 설정
+    };
+    console.log("로그인 성공");
+    checkLoginStatus();
+  }, []);
   ////////////////////////찜/////////////////////////////////
   const [clickedHeart, setClickedHeart] = useState(!product.isBookmarked);
   const [showAlarm, setShowAlarm] = useState(false);
 
   const isOwner = product.userId === userId; //찜 방지
-
+  const navigate = useNavigate();
   const handleClick = async (e) => {
+    if (!isLogin) {
+      alert("로그인 후 이용가능합니다.");
+      navigate("/");
+    }
     if (isOwner || tradeState !== "판매중") return; // 자신의 제품이거나 "판매중"이 아닌 경우 클릭 방지
 
     e.preventDefault(); //링크 이동 방지

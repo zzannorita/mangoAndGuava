@@ -11,6 +11,7 @@ import { getCategoryNames } from "../utils/categoryUtils";
 import productStyle from "../styles/productsCard.module.css";
 import Modal from "../components/Modal";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 export default function Detail({ shopOwnerUserId }) {
   // 현재 URL에서 쿼리 파라미터 추출
@@ -40,11 +41,28 @@ export default function Detail({ shopOwnerUserId }) {
   const { firstCategory, secondCategory, thirdCategory } =
     getCategoryNames(productCategory);
 
+  /////////////////////로그인상태//////////////////////////
+  const [isLogin, setIsLogin] = useState(false);
+
+  //컴포넌트 마운트될때 로그인상태 확인
+  useEffect(() => {
+    const checkLoginStatus = () => {
+      const accessToken = Cookies.get("accessToken");
+      setIsLogin(!!accessToken); // 토큰이 있으면 로그인 상태로 설정
+    };
+    console.log("로그인 성공");
+    checkLoginStatus();
+  }, []);
   /////////////////////상점 및 채팅///////////////////////////
   const navigate = useNavigate();
   const handleEnterShop = () => navigate(`/yourShop?userId=${userId}`);
   const handleEnterMyShop = () => navigate("/myShop");
   const handleEnterChat = () => {
+    if (!isLogin) {
+      alert("로그인 후 이용해주세요.");
+      navigate("/");
+      return;
+    }
     navigate("/chat", {
       state: { ownerUserId, productId },
     });
@@ -55,6 +73,11 @@ export default function Detail({ shopOwnerUserId }) {
   const [showAlarm, setShowAlarm] = useState(false);
   const handleClick = async (e) => {
     e.preventDefault(); //링크 이동 방지
+    if (!isLogin) {
+      alert("로그인 후 이용해주세요.");
+      navigate("/");
+      return;
+    }
     try {
       const response = await axiosInstance.post("product/bookmark", {
         productId,
