@@ -202,21 +202,36 @@ export default function Detail({ shopOwnerUserId }) {
     increaseView();
   }, [productId]);
 
+  const overlayText =
+    tradeState === "예약중"
+      ? "예약중"
+      : tradeState === "판매완료"
+      ? "판매완료"
+      : tradeState === "판매중"
+      ? ""
+      : "";
+  // 구매 불가 상품
+  const disableClickStyle = tradeState !== "판매중" ? DetailStyle.disabled : "";
   return (
     <div className="container">
       <div className={DetailStyle.productInfoBox}>
         <div className={DetailStyle.productInfoBottomBox}>
-          <div className={DetailStyle.productInfoLeftBox}>
+          <div
+            className={`${DetailStyle.productInfoLeftBox}  ${disableClickStyle}`}
+          >
             <img
               className={DetailStyle.productImg}
               alt="camera"
               src={productImg}
             />
+
             <img
               src={clickedHeart ? emptyHeartImg : fillHeartImg}
               alt="heart"
               className={`${DetailStyle.emptyHeartImg} ${
-                userId === nowUserId?.userId ? productStyle.disabled : ""
+                String(userId) === String(nowUserId?.userId)
+                  ? DetailStyle.disabled
+                  : ""
               }`}
               onClick={handleClick}
             />
@@ -227,7 +242,11 @@ export default function Detail({ shopOwnerUserId }) {
             >
               상품을 찜하였습니다.
             </div>
+            {overlayText && (
+              <div className={DetailStyle.overlay}>{overlayText}</div>
+            )}
           </div>
+
           <div className={DetailStyle.productInfoMiddleBox}>
             <div className={DetailStyle.productCategoryBox}>
               {firstCategory} &nbsp;&gt;&nbsp; {secondCategory} &nbsp;&gt;&nbsp;{" "}
@@ -296,17 +315,20 @@ export default function Detail({ shopOwnerUserId }) {
               </div>
             </div>
             <div
-              className={DetailStyle.chattingBtnBox}
-              onClick={() => {
-                if (tradeState === "예약중") {
-                  alert("이미 예약중인 상품입니다.");
+              className={`${DetailStyle.chattingBtnBox} ${
+                tradeState === "예약중" || tradeState === "판매완료"
+                  ? DetailStyle.disabled
+                  : ""
+              }`}
+              onClick={(e) => {
+                if (tradeState === "예약중" || tradeState === "판매완료") {
+                  e.preventDefault(); // 클릭 이벤트 차단
                   return;
                 }
+
                 // 조건에 따라 다른 함수 실행
                 if (String(userId) === String(nowUserId?.userId)) {
                   handleEditProduct();
-                } else if (isTransactionComplete) {
-                  handleOpenModal(); // 후기 작성 모달 열기
                 } else {
                   handleEnterChat();
                 }
@@ -316,8 +338,6 @@ export default function Detail({ shopOwnerUserId }) {
                 ? "예약중"
                 : String(userId) === String(nowUserId?.userId)
                 ? "수정하기"
-                : isTransactionComplete
-                ? "후기 작성"
                 : "채팅하기"}
             </div>
             {/* 모달 컴포넌트 */}
