@@ -78,14 +78,21 @@ export default function Detail({ shopOwnerUserId }) {
       navigate("/");
       return;
     }
+    if (String(userId) === String(nowUserId.userId)) {
+      return;
+    }
     try {
       const response = await axiosInstance.post("product/bookmark", {
         productId,
       });
       if (response.status === 200) {
-        setClickedHeart(!clickedHeart);
-        setShowAlarm(true); // 알람 표시
-        setTimeout(() => setShowAlarm(false), 1500);
+        const wasHeartEmpty = clickedHeart; // 하트가 있었는지 확인
+        setClickedHeart(!clickedHeart); // 하트 상태 토글
+
+        if (wasHeartEmpty) {
+          setShowAlarm(true);
+          setTimeout(() => setShowAlarm(false), 1500);
+        }
       } else {
         console.error("찜하기 실패", response.data);
       }
@@ -230,7 +237,7 @@ export default function Detail({ shopOwnerUserId }) {
               alt="heart"
               className={`${DetailStyle.emptyHeartImg} ${
                 String(userId) === String(nowUserId?.userId)
-                  ? DetailStyle.disabled
+                  ? DetailStyle.disabledBtn
                   : ""
               }`}
               onClick={handleClick}
@@ -317,7 +324,7 @@ export default function Detail({ shopOwnerUserId }) {
             <div
               className={`${DetailStyle.chattingBtnBox} ${
                 tradeState === "예약중" || tradeState === "판매완료"
-                  ? DetailStyle.disabled
+                  ? DetailStyle.disabledBtn
                   : ""
               }`}
               onClick={(e) => {
