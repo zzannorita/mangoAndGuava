@@ -1,6 +1,11 @@
 const axios = require("axios");
 const productsDao = require("../daos/productsDao");
 const userDao = require("../daos/userDao");
+const fs = require("fs");
+const path = require("path");
+
+// 조회수 관리 파일 경로
+const viewsFilePath = path.join(__dirname, "..", "viewsData.json");
 
 const getProduct = async (req, res) => {
   const productId = req.query.productId;
@@ -16,6 +21,54 @@ const getProduct = async (req, res) => {
   } catch (error) {
     console.error("Error during search products:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const updateProductByView = async (req, res) => {
+  const productId = req.body.productId;
+  const ip =
+    req.headers["x-forwarded-for"] || req.connection.remoteAddress || req.ip;
+
+  try {
+    // 파일에서 데이터 읽기
+    let data = {};
+
+    // 파일이 존재하고 내용이 있으면 데이터를 파싱
+    if (fs.existsSync(viewsFilePath)) {
+      const fileContent = fs.readFileSync(viewsFilePath, "utf-8");
+
+      // 파일 내용이 비어 있지 않으면 파싱
+      if (fileContent.trim()) {
+        data = JSON.parse(fileContent);
+      }
+    }
+
+    // 해당 productId가 존재하지 않으면 새로 추가
+    if (!data[productId]) {
+      data[productId] = { views: 0, ips: [] };
+    }
+
+    // 이미 해당 IP가 조회한 기록이 있는지 확인
+    if (!data[productId].ips.includes(ip)) {
+      // IP가 없으면 조회수 증가
+      data[productId].views += 1;
+      data[productId].ips.push(ip);
+
+      // 파일에 수정된 데이터 저장
+      fs.writeFileSync(viewsFilePath, JSON.stringify(data, null, 2), "utf-8");
+    }
+    console.log(data[productId].views);
+    // DB에 조회수 반영 로직 (가정)
+    await productsDao.updateProductByView(productId, data[productId].views);
+
+    // 성공적으로 조회수 업데이트
+    res.status(200).json({
+      code: "SUCCESS",
+      views: data[productId].views,
+    });
+  } catch (err) {
+    console.error("Error updating view count:", err);
+    res.status(500).json({ message: "조회수 업데이트 실패" });
   }
 };
 
@@ -406,4 +459,5 @@ module.exports = {
   updateProductByState,
   updateProductByBuyerUserId,
   getProductsByFilter, //이게 수술후 함수
+  updateProductByView,
 };

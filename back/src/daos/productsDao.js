@@ -139,6 +139,26 @@ const getProductsByFilter = async (filters) => {
   }
 };
 
+const updateProductByView = async (productId, views) => {
+  const escapeProductId = db.escape(parseInt(productId, 10));
+  const escapeViews = db.escape(views);
+
+  console.log("여기 실행됐음", escapeProductId, escapeViews);
+
+  const updateQuery = `
+  UPDATE product
+  SET views = ${escapeViews}
+  WHERE productId = ${escapeProductId};
+`;
+
+  try {
+    const result = await db.execute(updateQuery);
+  } catch (error) {
+    console.error("조회수 업데이트 실패:", error);
+    throw new Error("Database query error: " + error.message);
+  }
+};
+
 const getProductsAll = async (limit, offset) => {
   console.log(limit, offset);
   const query = `
@@ -539,4 +559,5 @@ module.exports = {
   updateProductFieldsByState,
   updateProductFieldsByBuyerUserId,
   getProductsByFilter, //대수술중 함수
+  updateProductByView,
 };
