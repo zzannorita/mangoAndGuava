@@ -130,7 +130,11 @@ export default function Regist() {
     }
 
     // 거래 방법이 직거래일 경우 위치를 입력하지 않으면
-    if (tradingMethod === "true" && tradingAddress.trim() === "") {
+    if (
+      tradingMethod === "true" &&
+      !tradingAddress.trim() &&
+      !selectedTradingAddress
+    ) {
       alert("거래 위치를 입력해주세요.");
       return;
     }
