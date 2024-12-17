@@ -114,18 +114,24 @@ export default function Detail({ shopOwnerUserId }) {
       });
   }, [productId]);
 
-  //현재 로그인된 사용자 정보 불러오기
-  const [nowUserId, setNowUserId] = useState("");
+  // 현재 로그인된 사용자 정보 불러오기
+  const [nowUserId, setNowUserId] = useState(null); // 기본값을 null로 설정
   useEffect(() => {
-    axiosInstance.get("/user-data").then((response) => {
-      const data = response.data;
-      setNowUserId(data.user);
-    });
+    axiosInstance
+      .get("/user-data")
+      .then((response) => {
+        const data = response.data;
+        setNowUserId(data.user); // 로그인된 사용자 정보 저장
+      })
+      .catch((error) => {
+        console.log("로그인되지 않은 사용자입니다.");
+        setNowUserId(null); // 로그인되지 않았을 때 null 처리
+      });
   }, []);
 
   ////////////////////후기작성///////////////////////
   const isTransactionComplete =
-    String(buyerId) === String(nowUserId.userId) && tradeState === "판매완료";
+    String(buyerId) === String(nowUserId?.userId) && tradeState === "판매완료";
   const [isModalOpen, setIsModalOpen] = useState(false);
   // 후기 작성 버튼 클릭 시 모달 열기
   const handleOpenModal = () => {
@@ -144,7 +150,7 @@ export default function Detail({ shopOwnerUserId }) {
     const getBookmarkList = async () => {
       try {
         const response = await axiosInstance.post("product/bookmark/user");
-        const bookmarkList = response.data.data;
+        const bookmarkList = response.data?.data || [];
         console.log("테스트", bookmarkList.length);
         if (bookmarkList.length > 0) {
           //내부에 존재할 경우
@@ -187,7 +193,7 @@ export default function Detail({ shopOwnerUserId }) {
               src={clickedHeart ? emptyHeartImg : fillHeartImg}
               alt="heart"
               className={`${DetailStyle.emptyHeartImg} ${
-                userId === nowUserId.userId ? productStyle.disabled : ""
+                userId === nowUserId?.userId ? productStyle.disabled : ""
               }`}
               onClick={handleClick}
             />
@@ -238,7 +244,7 @@ export default function Detail({ shopOwnerUserId }) {
             <div
               className={DetailStyle.productShopEnterBox}
               onClick={
-                String(userId) === String(nowUserId.userId)
+                String(userId) === String(nowUserId?.userId)
                   ? handleEnterMyShop
                   : handleEnterShop
               }
@@ -274,7 +280,7 @@ export default function Detail({ shopOwnerUserId }) {
                   return;
                 }
                 // 조건에 따라 다른 함수 실행
-                if (String(userId) === String(nowUserId.userId)) {
+                if (String(userId) === String(nowUserId?.userId)) {
                   handleEditProduct();
                 } else if (isTransactionComplete) {
                   handleOpenModal(); // 후기 작성 모달 열기
@@ -285,7 +291,7 @@ export default function Detail({ shopOwnerUserId }) {
             >
               {tradeState === "예약중"
                 ? "예약중"
-                : String(userId) === String(nowUserId.userId)
+                : String(userId) === String(nowUserId?.userId)
                 ? "수정하기"
                 : isTransactionComplete
                 ? "후기 작성"
