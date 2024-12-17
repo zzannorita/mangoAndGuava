@@ -10,6 +10,7 @@ import fillHeartImg from "../image/fillHeart.png";
 import { getCategoryNames } from "../utils/categoryUtils";
 import productStyle from "../styles/productsCard.module.css";
 import Modal from "../components/Modal";
+import axios from "axios";
 
 export default function Detail({ shopOwnerUserId }) {
   // 현재 URL에서 쿼리 파라미터 추출
@@ -158,6 +159,18 @@ export default function Detail({ shopOwnerUserId }) {
       }
     };
     getBookmarkList();
+  }, [productId]);
+
+  //조회수 증가를 위한
+  useEffect(() => {
+    const increaseView = async () => {
+      try {
+        await axios.post("http://localhost:3001/detail/view", { productId });
+      } catch (error) {
+        console.log("조회수 증가 실패", error);
+      }
+    };
+    increaseView();
   }, [productId]);
 
   return (
