@@ -143,8 +143,6 @@ const updateProductByView = async (productId, views) => {
   const escapeProductId = db.escape(parseInt(productId, 10));
   const escapeViews = db.escape(views);
 
-  console.log("여기 실행됐음", escapeProductId, escapeViews);
-
   const updateQuery = `
   UPDATE product
   SET views = ${escapeViews}
@@ -160,7 +158,6 @@ const updateProductByView = async (productId, views) => {
 };
 
 const getProductsAll = async (limit, offset) => {
-  console.log(limit, offset);
   const query = `
     SELECT
       p.*,
@@ -483,7 +480,6 @@ const getProductBookmarkByUserID = async (userId) => {
 };
 
 const updateProductFields = async (updateData, productId, userId) => {
-  console.log("dao -=> ", updateData, productId, userId);
   const setUpdateData = Object.keys(updateData)
     .map((key) => `${key} = ?`) // `key = ?` 형식으로 변환
     .join(", "); // 쉼표로 결합
