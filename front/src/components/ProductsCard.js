@@ -22,7 +22,7 @@ const ProductsCard = ({ product, userId }) => {
   const [clickedHeart, setClickedHeart] = useState(!product.isBookmarked);
   const [showAlarm, setShowAlarm] = useState(false);
 
-  const isOwner = product.userId === userId; //찜 방지
+  const isOwner = String(product.userId) === String(userId); //찜 방지
   const navigate = useNavigate();
   const handleClick = async (e) => {
     if (!isLogin) {
