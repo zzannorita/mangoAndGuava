@@ -130,11 +130,7 @@ export default function Regist() {
     }
 
     // 거래 방법이 직거래일 경우 위치를 입력하지 않으면
-    if (
-      tradingMethod === "true" &&
-      !tradingAddress.trim() &&
-      !selectedTradingAddress
-    ) {
+    if (tradingMethod === "true" && tradingAddress.trim() === "") {
       alert("거래 위치를 입력해주세요.");
       return;
     }
@@ -365,9 +361,10 @@ export default function Regist() {
               />
               <LocationList
                 className={registStyle.locationList}
-                onLocationSelect={(address) =>
-                  setSelectedTradingAddress(address)
-                }
+                onLocationSelect={(address) => {
+                  setSelectedTradingAddress(address);
+                  setTradingAddress(address); // 동시에 tradingAddress 설정
+                }}
               />
             </div>
           </div>
