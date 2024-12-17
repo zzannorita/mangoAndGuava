@@ -57,7 +57,6 @@ const updateProductByView = async (req, res) => {
       // 파일에 수정된 데이터 저장
       fs.writeFileSync(viewsFilePath, JSON.stringify(data, null, 2), "utf-8");
     }
-    console.log(data[productId].views);
     // DB에 조회수 반영 로직 (가정)
     await productsDao.updateProductByView(productId, data[productId].views);
 
@@ -133,7 +132,6 @@ const handleProductBookmark = async (req, res) => {
 
 ///대수술
 const getProductsByFilter = async (req, res) => {
-  console.log("입장했습니다.");
   const {
     q,
     category,
@@ -283,8 +281,6 @@ const updateProductByBuyerUserId = async (req, res) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
   const buyerUserId = req.body.otherUserId;
   const productId = req.params.productId;
-
-  console.log(buyerUserId, productId);
 
   if (!accessToken) {
     return res.status(401).json({ message: "No access token provided" });
