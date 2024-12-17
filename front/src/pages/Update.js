@@ -62,12 +62,13 @@ export default function Update() {
         setImageFiles(filesFromServer);
         setProductPrice(product.productPrice);
         setProductName(product.productName);
-        setShippingFee(product.isShippingFee === 1);
+        setShippingFee(product.isShippingFee);
         setProductInfo(product.productInfo);
         setProductState(product.productState);
-        setIsTrade(product.isTrade === 1);
-        setTradingMethod(product.tradingMethod === 1);
+        setIsTrade(product.isTrade);
+        setTradingMethod(product.tradingMethod);
         setTradingAddress(product.tradingAddress);
+        console.log("주소", tradingAddress);
         setTradeState(product.tradeState);
         setProductCategory(categoryCode);
         setProductCategoryName(categoryName);
@@ -162,6 +163,10 @@ export default function Update() {
 
   const deliveryClickHandler = (id) => {
     setTradingMethod(id);
+    if (id === 0) {
+      setTradingAddress("");
+      setSelectedTradingAddress("");
+    }
   };
 
   //////////////////////위치/////////////////////////////
@@ -377,7 +382,7 @@ export default function Update() {
           <div className={registStyle.productStatusBox}>
             <div
               className={`${registStyle.productStatusText} ${
-                isTrade === true ? registStyle.active : ""
+                isTrade === 1 ? registStyle.active : ""
               }`}
               onClick={() => ExchangeClickHandler(1)}
             >
@@ -386,7 +391,7 @@ export default function Update() {
             <div>|</div>
             <div
               className={`${registStyle.productStatusText} ${
-                isTrade === false ? registStyle.active : ""
+                isTrade === 0 ? registStyle.active : ""
               }`}
               onClick={() => ExchangeClickHandler(0)}
             >
@@ -399,7 +404,7 @@ export default function Update() {
           <div className={registStyle.productStatusBox}>
             <div
               className={`${registStyle.productStatusText} ${
-                tradingMethod === false ? registStyle.active : ""
+                tradingMethod === 0 ? registStyle.active : ""
               }`}
               onClick={() => deliveryClickHandler(0)}
             >
@@ -408,7 +413,7 @@ export default function Update() {
             <div>|</div>
             <div
               className={`${registStyle.productStatusText} ${
-                tradingMethod === true ? registStyle.active : ""
+                tradingMethod === 1 ? registStyle.active : ""
               }`}
               onClick={() => deliveryClickHandler(1)}
             >
@@ -416,7 +421,7 @@ export default function Update() {
             </div>
           </div>
         </div>
-        {tradingMethod === true ? (
+        {tradingMethod === 1 ? (
           <div className={registStyle.commonContainer}>
             <div className={registStyle.registName}>위치</div>
             <div className={registStyle.registNameBox}>
