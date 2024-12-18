@@ -91,8 +91,6 @@ export default function Update() {
       ...prevFiles,
       ...files.slice(0, 5 - prevFiles.length),
     ]);
-    console.log("추가된후 images=>", images);
-    console.log("추가된후 imageFiles=>", imageFiles);
   };
 
   // 이미지 삭제 핸들러
@@ -226,8 +224,6 @@ export default function Update() {
     if (images !== initialData.images) {
       updatedFields.images = imageFiles; // 새로 추가된 이미지
     }
-
-    console.log(updatedFields);
     // 아무 변경 사항이 없으면 전송하지 않음
     if (Object.keys(updatedFields).length === 0) {
       alert("수정된 내용이 없습니다.");
@@ -249,12 +245,6 @@ export default function Update() {
     for (const [key, value] of Object.entries(updatedFields)) {
       formData.append(key, value);
     }
-
-    for (const [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
-
-    console.log(formData);
 
     axiosInstance
       .patch(`/update-product/${productId}`, formData, {
