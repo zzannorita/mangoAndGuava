@@ -19,5 +19,6 @@ router.patch(
   shopController.uploadImages,
   shopController.updateProduct
 );
+router.get("/comment/:productId", shopController.getCommentData);
 
 module.exports = router;

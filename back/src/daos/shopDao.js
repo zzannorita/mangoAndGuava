@@ -327,6 +327,23 @@ const getUsersByIds = async (bookmarkUserIds) => {
   }
 };
 
+const getCommentDataByProductId = async (productId) => {
+  const escapedProductId = mysql.escape(productId);
+
+  const query = `
+  SELECT *
+  FROM shopcomment
+  WHERE purchasedProductId = ${escapedProductId}
+  `;
+
+  try {
+    const [rows] = await db.execute(query);
+    return rows;
+  } catch (error) {
+    throw new Error("Database query error: " + error.message);
+  }
+};
+
 module.exports = {
   getShopInfo,
   addProduct,
@@ -341,4 +358,5 @@ module.exports = {
   getBookmarkUser,
   getUsersByIds,
   updateProductByProductId,
+  getCommentDataByProductId,
 };

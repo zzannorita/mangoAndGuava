@@ -330,6 +330,30 @@ const addShopComment = async (req, res) => {
   }
 };
 
+const getCommentData = async (req, res) => {
+  const accessToken = req.headers.authorization?.split(" ")[1];
+  const productId = req.query.productId;
+  try {
+    const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    const userId = userResponse.data.id;
+
+    const commentData = await shopDao.getCommentDataByProductId(productId);
+
+    return res
+      .status(200)
+      .json({ code: "SUCCESS_UPDATE_USERINFO", data: commentData });
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      throw new Error("Token expired");
+    }
+    throw new Error("Failed to fetch user data");
+  }
+};
+
 module.exports = {
   uploadProduct,
   uploadImages,
@@ -340,4 +364,5 @@ module.exports = {
   addBookmark,
   addShopComment,
   updateProduct,
+  getCommentData,
 };
