@@ -96,7 +96,7 @@ const uploadProduct = async (req, res) => {
   }
 };
 
-const updateProduct = async (req, res) => {}
+const updateProduct = async (req, res) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
 
   if (!accessToken) {
