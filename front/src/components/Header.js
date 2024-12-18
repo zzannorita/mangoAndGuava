@@ -14,6 +14,9 @@ import Cookies from "js-cookie";
 function Header() {
   ////////////////////////알림///////////////////////////////
   const [clickedAlarm, setClickedAlarm] = useState(false);
+  const [userId, setUserId] = useState(null); // 사용자 데이터 상태 추가
+  const [newMessage, setNewMessage] = useState(false); // 새로운 메시지 알림 상태
+  const socket = useRef(null); // useRef를 사용하여 socket 객체 저장
 
   const handleClick = () => {
     setClickedAlarm((alarmClick) => !alarmClick);
@@ -28,13 +31,50 @@ function Header() {
 
   //컴포넌트 마운트될때 로그인상태 확인
   useEffect(() => {
-    const checkLoginStatus = () => {
-      const accessToken = Cookies.get("accessToken");
-      setIsLogin(!!accessToken); // 토큰이 있으면 로그인 상태로 설정
-    };
-    console.log("로그인 성공");
-    checkLoginStatus();
-  }, []);
+    if (isLogin && userId) {
+      const connectWebSocket = () => {
+        socket.current = new WebSocket("ws://localhost:3001"); // 웹소켓 서버 주소
+
+        socket.current.onopen = () => {
+          console.log("웹소켓 연결됨");
+          // 사용자 ID로 웹소켓 연결 설정
+          socket.current.send(JSON.stringify({ type: "auth", userId: userId }));
+        };
+
+        socket.current.onmessage = (event) => {
+          const parsedData = JSON.parse(event.data); // 변수명 변경
+          console.log("수신된 메시지:", parsedData);
+
+          // 메시지 타입에 따라 처리
+          if (parsedData.type === "chat") {
+            // chat 타입인 경우, 채팅 메시지를 처리
+            if (parsedData.userTo === userId) {
+              setNewMessage(true); // 새로운 채팅 메시지가 오면 알림 표시
+              console.log("새로운 채팅 메시지 수신:", parsedData);
+            }
+          } else if (parsedData.type === "like") {
+            // like 타입인 경우, 다른 처리
+            console.log("좋아요 메시지 수신:", parsedData);
+            // 예시: 좋아요 알림을 처리하거나 UI 업데이트
+          }
+        };
+
+        socket.current.onclose = () => {
+          console.log("웹소켓 연결 종료");
+          // 연결이 끊어지면 재연결 시도
+          setTimeout(connectWebSocket, 5000); // 5초 후에 재연결 시도
+        };
+      };
+
+      connectWebSocket();
+
+      return () => {
+        if (socket.current) {
+          socket.current.close(); // 컴포넌트 언마운트 시 소켓 종료
+        }
+      };
+    }
+  }, [isLogin, userId]);
 
   ////////////////////////로그아웃///////////////////////////
   const handleLogout = async () => {
@@ -79,6 +119,50 @@ function Header() {
       navigate("/");
     }
   };
+
+  ////////////////////////웹소켓 연결////////////////////////
+  useEffect(() => {
+    if (isLogin && userId) {
+      let ws;
+      const connectWebSocket = () => {
+        ws = new WebSocket("ws://localhost:3001"); // 웹소켓 서버 주소
+
+        ws.onopen = () => {
+          console.log("웹소켓 연결됨");
+          // 사용자 ID로 웹소켓 연결 설정
+          ws.send(JSON.stringify({ type: "auth", userId: userId }));
+        };
+
+        ws.onmessage = (event) => {
+          const messageData = JSON.parse(event.data);
+          // 메시지 수신 시 알림 처리 (백엔드에서 전달된 데이터 구조에 맞게 처리)
+          if (
+            messageData.userTo === userId // userTo가 현재 사용자와 동일한 경우 알림 표시
+          ) {
+            setNewMessage(true); // 새로운 메시지가 오면 알림 표시
+            console.log("새로운 메시지 수신:", messageData);
+          }
+        };
+
+        ws.onclose = () => {
+          console.log("웹소켓 연결 종료");
+          // 연결이 끊어지면 재연결 시도
+          setTimeout(connectWebSocket, 5000); // 5초 후에 재연결 시도
+        };
+
+        setSocket(ws);
+      };
+
+      connectWebSocket();
+
+      return () => {
+        if (ws) {
+          ws.close(); // 컴포넌트 언마운트 시 소켓 종료
+        }
+      };
+    }
+  }, [isLogin, userId]);
+
   return (
     <header className="container">
       <div className={HeaderStyle.headerBox}>
