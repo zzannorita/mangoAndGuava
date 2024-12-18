@@ -207,11 +207,17 @@ export default function Update() {
       updatedFields.tradingMethod = tradingMethod;
     }
     if (
-      tradingMethod === true &&
-      tradingAddress !== initialData.tradingAddress
+      tradingMethod === 1 &&
+      selectedTradingAddress !== initialData.tradingAddress
     ) {
-      updatedFields.tradingAddress = tradingAddress;
+      updatedFields.tradingAddress = selectedTradingAddress;
     }
+
+    if (tradingMethod === 0 && initialData.tradingMethod !== tradingMethod) {
+      updatedFields.tradingMethod = tradingMethod;
+      updatedFields.tradingAddress = "-";
+    }
+
     if (tradeState !== initialData.tradeState) {
       updatedFields.tradeState = tradeState;
     }
@@ -221,6 +227,7 @@ export default function Update() {
       updatedFields.images = imageFiles; // 새로 추가된 이미지
     }
 
+    console.log(updatedFields);
     // 아무 변경 사항이 없으면 전송하지 않음
     if (Object.keys(updatedFields).length === 0) {
       alert("수정된 내용이 없습니다.");
