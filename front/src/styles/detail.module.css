@@ -18,22 +18,53 @@
 }
 
 .productInfoLeftBox {
+  position: relative;
   display: flex;
   background-color: #f1f1f1;
   border-radius: 15px;
 }
 
 .productImg {
+  border-radius: 15px;
   width: 400px;
   height: 400px;
 }
 
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  z-index: 10;
+  background-color: gray;
+}
+.overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  padding: 20px;
+  font-size: 40px;
+  font-weight: bold;
+  border-radius: 15px;
+  z-index: 100;
+  border: 2px solid white;
+}
+.emptyHeartImg {
+  position: absolute;
+  top: 5%;
+  right: 5%;
+  width: 40px;
+  height: 40px;
+  z-index: 10;
+}
+
 .heartAlarm {
   position: absolute;
-  top: 250px;
-  left: 475px;
-  background-color: #ffc107;
+  top: 45%;
+  left: 30%;
+  background-color: #f9f9f9;
   border-radius: 15px;
+  border: 1px solid #f1f1f1;
   width: 170px;
   height: 40px;
   display: flex;
@@ -45,10 +76,6 @@
 
 .heartAlarm.active {
   opacity: 1;
-}
-.emptyHeartImg {
-  width: 40px;
-  height: 40px;
 }
 
 .productInfoMiddleBox {
@@ -151,16 +178,15 @@
   justify-content: center;
   height: 20px;
   padding: 20px;
-  /* background-color: #f9f9f9; */
   border: 1px solid #ffc107;
   cursor: pointer;
   border-radius: 5px;
   color: #333;
 }
-
+/* 
 .chattingBtnBox:hover {
   background-color: #ffc107;
-}
+} */
 .productContentBoxName {
   margin: 70px 0 30px 0;
 }
@@ -171,10 +197,6 @@
   padding: 30px 0;
 }
 
-.emptyHeartImg {
-  position: absolute;
-  top: 65px;
-  left: 700px;
-  width: 40px;
-  height: 40px;
+.disabledBtn {
+  opacity: 0.5;
 }

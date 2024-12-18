@@ -361,9 +361,10 @@ export default function Regist() {
               />
               <LocationList
                 className={registStyle.locationList}
-                onLocationSelect={(address) =>
-                  setSelectedTradingAddress(address)
-                }
+                onLocationSelect={(address) => {
+                  setSelectedTradingAddress(address);
+                  setTradingAddress(address); // 동시에 tradingAddress 설정
+                }}
               />
             </div>
           </div>

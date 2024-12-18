@@ -11,6 +11,7 @@ import { getCategoryNames } from "../utils/categoryUtils";
 import productStyle from "../styles/productsCard.module.css";
 import Modal from "../components/Modal";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 export default function Detail({ shopOwnerUserId }) {
   // 현재 URL에서 쿼리 파라미터 추출
@@ -40,11 +41,28 @@ export default function Detail({ shopOwnerUserId }) {
   const { firstCategory, secondCategory, thirdCategory } =
     getCategoryNames(productCategory);
 
+  /////////////////////로그인상태//////////////////////////
+  const [isLogin, setIsLogin] = useState(false);
+
+  //컴포넌트 마운트될때 로그인상태 확인
+  useEffect(() => {
+    const checkLoginStatus = () => {
+      const accessToken = Cookies.get("accessToken");
+      setIsLogin(!!accessToken); // 토큰이 있으면 로그인 상태로 설정
+    };
+    console.log("로그인 성공");
+    checkLoginStatus();
+  }, []);
   /////////////////////상점 및 채팅///////////////////////////
   const navigate = useNavigate();
   const handleEnterShop = () => navigate(`/yourShop?userId=${userId}`);
   const handleEnterMyShop = () => navigate("/myShop");
   const handleEnterChat = () => {
+    if (!isLogin) {
+      alert("로그인 후 이용해주세요.");
+      navigate("/");
+      return;
+    }
     navigate("/chat", {
       state: { ownerUserId, productId },
     });
@@ -55,14 +73,26 @@ export default function Detail({ shopOwnerUserId }) {
   const [showAlarm, setShowAlarm] = useState(false);
   const handleClick = async (e) => {
     e.preventDefault(); //링크 이동 방지
+    if (!isLogin) {
+      alert("로그인 후 이용해주세요.");
+      navigate("/");
+      return;
+    }
+    if (String(userId) === String(nowUserId.userId)) {
+      return;
+    }
     try {
       const response = await axiosInstance.post("product/bookmark", {
         productId,
       });
       if (response.status === 200) {
-        setClickedHeart(!clickedHeart);
-        setShowAlarm(true); // 알람 표시
-        setTimeout(() => setShowAlarm(false), 1500);
+        const wasHeartEmpty = clickedHeart; // 하트가 있었는지 확인
+        setClickedHeart(!clickedHeart); // 하트 상태 토글
+
+        if (wasHeartEmpty) {
+          setShowAlarm(true);
+          setTimeout(() => setShowAlarm(false), 1500);
+        }
       } else {
         console.error("찜하기 실패", response.data);
       }
@@ -114,18 +144,24 @@ export default function Detail({ shopOwnerUserId }) {
       });
   }, [productId]);
 
-  //현재 로그인된 사용자 정보 불러오기
-  const [nowUserId, setNowUserId] = useState("");
+  // 현재 로그인된 사용자 정보 불러오기
+  const [nowUserId, setNowUserId] = useState(null); // 기본값을 null로 설정
   useEffect(() => {
-    axiosInstance.get("/user-data").then((response) => {
-      const data = response.data;
-      setNowUserId(data.user);
-    });
+    axiosInstance
+      .get("/user-data")
+      .then((response) => {
+        const data = response.data;
+        setNowUserId(data.user); // 로그인된 사용자 정보 저장
+      })
+      .catch((error) => {
+        console.log("로그인되지 않은 사용자입니다.");
+        setNowUserId(null); // 로그인되지 않았을 때 null 처리
+      });
   }, []);
 
   ////////////////////후기작성///////////////////////
   const isTransactionComplete =
-    String(buyerId) === String(nowUserId.userId) && tradeState === "판매완료";
+    String(buyerId) === String(nowUserId?.userId) && tradeState === "판매완료";
   const [isModalOpen, setIsModalOpen] = useState(false);
   // 후기 작성 버튼 클릭 시 모달 열기
   const handleOpenModal = () => {
@@ -144,7 +180,7 @@ export default function Detail({ shopOwnerUserId }) {
     const getBookmarkList = async () => {
       try {
         const response = await axiosInstance.post("product/bookmark/user");
-        const bookmarkList = response.data.data;
+        const bookmarkList = response.data?.data || [];
         console.log("테스트", bookmarkList.length);
         if (bookmarkList.length > 0) {
           //내부에 존재할 경우
@@ -173,21 +209,36 @@ export default function Detail({ shopOwnerUserId }) {
     increaseView();
   }, [productId]);
 
+  const overlayText =
+    tradeState === "예약중"
+      ? "예약중"
+      : tradeState === "판매완료"
+      ? "판매완료"
+      : tradeState === "판매중"
+      ? ""
+      : "";
+  // 구매 불가 상품
+  const disableClickStyle = tradeState !== "판매중" ? DetailStyle.disabled : "";
   return (
     <div className="container">
       <div className={DetailStyle.productInfoBox}>
         <div className={DetailStyle.productInfoBottomBox}>
-          <div className={DetailStyle.productInfoLeftBox}>
+          <div
+            className={`${DetailStyle.productInfoLeftBox}  ${disableClickStyle}`}
+          >
             <img
               className={DetailStyle.productImg}
               alt="camera"
               src={productImg}
             />
+
             <img
               src={clickedHeart ? emptyHeartImg : fillHeartImg}
               alt="heart"
               className={`${DetailStyle.emptyHeartImg} ${
-                userId === nowUserId.userId ? productStyle.disabled : ""
+                String(userId) === String(nowUserId?.userId)
+                  ? DetailStyle.disabledBtn
+                  : ""
               }`}
               onClick={handleClick}
             />
@@ -198,7 +249,11 @@ export default function Detail({ shopOwnerUserId }) {
             >
               상품을 찜하였습니다.
             </div>
+            {overlayText && (
+              <div className={DetailStyle.overlay}>{overlayText}</div>
+            )}
           </div>
+
           <div className={DetailStyle.productInfoMiddleBox}>
             <div className={DetailStyle.productCategoryBox}>
               {firstCategory} &nbsp;&gt;&nbsp; {secondCategory} &nbsp;&gt;&nbsp;{" "}
@@ -238,7 +293,7 @@ export default function Detail({ shopOwnerUserId }) {
             <div
               className={DetailStyle.productShopEnterBox}
               onClick={
-                String(userId) === String(nowUserId.userId)
+                String(userId) === String(nowUserId?.userId)
                   ? handleEnterMyShop
                   : handleEnterShop
               }
@@ -267,17 +322,20 @@ export default function Detail({ shopOwnerUserId }) {
               </div>
             </div>
             <div
-              className={DetailStyle.chattingBtnBox}
-              onClick={() => {
-                if (tradeState === "예약중") {
-                  alert("이미 예약중인 상품입니다.");
+              className={`${DetailStyle.chattingBtnBox} ${
+                tradeState === "예약중" || tradeState === "판매완료"
+                  ? DetailStyle.disabledBtn
+                  : ""
+              }`}
+              onClick={(e) => {
+                if (tradeState === "예약중" || tradeState === "판매완료") {
+                  e.preventDefault(); // 클릭 이벤트 차단
                   return;
                 }
+
                 // 조건에 따라 다른 함수 실행
-                if (String(userId) === String(nowUserId.userId)) {
+                if (String(userId) === String(nowUserId?.userId)) {
                   handleEditProduct();
-                } else if (isTransactionComplete) {
-                  handleOpenModal(); // 후기 작성 모달 열기
                 } else {
                   handleEnterChat();
                 }
@@ -285,10 +343,8 @@ export default function Detail({ shopOwnerUserId }) {
             >
               {tradeState === "예약중"
                 ? "예약중"
-                : String(userId) === String(nowUserId.userId)
+                : String(userId) === String(nowUserId?.userId)
                 ? "수정하기"
-                : isTransactionComplete
-                ? "후기 작성"
                 : "채팅하기"}
             </div>
             {/* 모달 컴포넌트 */}

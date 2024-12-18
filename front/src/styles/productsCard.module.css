@@ -36,8 +36,8 @@
   position: absolute;
   top: 80px;
   right: 15px;
-  background-color: #ffc107;
-
+  background-color: #f9f9f9;
+  border: 1px solid #f1f1f1;
   border-radius: 15px;
   width: 170px;
   height: 40px;
