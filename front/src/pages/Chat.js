@@ -52,6 +52,7 @@ const Chat = () => {
     if (!ownerUserId || !productId || !userId) return; // userId가 설정된 이후에만 실행
     const roomId = userId + "-" + ownerUserId + "-" + productId;
     const newMessage = {
+      type: "chat",
       roomId: roomId,
       user_from: userId,
       user_to: ownerUserId,
@@ -61,7 +62,6 @@ const Chat = () => {
     const sendMessage = async () => {
       if (socket.current && socket.current.readyState === WebSocket.OPEN) {
         const chatData = await axiosInstance.get(`chat-each?roomId=${roomId}`);
-        console.log("챗 데이터", chatData.data.data.length);
         if (!(chatData.data.data.length > 0)) {
           socket.current.send(JSON.stringify(newMessage));
           setSelectedRoomId(roomId);
@@ -132,9 +132,10 @@ const Chat = () => {
   const handleSendMessage = () => {
     if (message.trim() !== "") {
       const newMessage = {
+        type: "chat",
         roomId: selectedRoomId,
         user_from: userId,
-        user_to: ownerUserId,
+        user_to: otherUserId,
         message: message.trim(),
       };
 
@@ -149,9 +150,10 @@ const Chat = () => {
 
   const sendMessageAddress = () => {
     const addressMessage = {
+      type: "chat",
       roomId: selectedRoomId,
       user_from: userId,
-      user_to: ownerUserId,
+      user_to: otherUserId,
       message: "주소 정보 : " + selectedUserData.address,
     };
 
@@ -164,9 +166,10 @@ const Chat = () => {
 
   const sendMessageAccount = () => {
     const AccountMessage = {
+      type: "chat",
       roomId: selectedRoomId,
       user_from: userId,
-      user_to: ownerUserId,
+      user_to: otherUserId,
       message: "계좌 정보 : " + selectedUserData.account,
     };
 
@@ -190,12 +193,10 @@ const Chat = () => {
   useEffect(() => {
     axiosInstance.get("http://localhost:3001/chat-my").then((response) => {
       setChatList(response.data.data);
-      console.log(response.data.data);
     });
 
     axiosInstance.get("http://localhost:3001/user-data").then((response) => {
       setUserId(response.data.user.userId);
-      console.log(response.data.user.userId);
     });
   }, []);
 
@@ -225,7 +226,6 @@ const Chat = () => {
 
   // 상품 상태 변경 함수
   const handleStateChange = async (newState) => {
-    console.log(newState);
     if (String(selectedProductData.tradeState) === "판매완료") {
       alert("판매가 완료된 상품의 상태를 변경할 수 없습니다.");
       return;
@@ -234,11 +234,9 @@ const Chat = () => {
       if (
         alert("정말 거래가 완료됐나요? 다시 거래 상태를 변경할 수 없게 돼요.")
       ) {
-        console.log("여기");
         return;
       } else {
         try {
-          console.log("상대측 아이디", otherUserId);
           await axiosInstance.patch(
             `http://localhost:3001/update-product/state/${selectedProductData.productId}`,
             { tradeState: newState } // 상태 업데이트
