@@ -96,7 +96,7 @@ const uploadProduct = async (req, res) => {
   }
 };
 
-const updateProduct = async (req, res) => {
+const updateProduct = async (req, res) => {}
   const accessToken = req.headers.authorization?.split(" ")[1];
 
   if (!accessToken) {
@@ -115,10 +115,7 @@ const updateProduct = async (req, res) => {
     const productId = req.params.productId;
     const updateData = req.body;
 
-    console.log(req.body);
-
     const productImage = req.files.map((file) => file.filename);
-
     const update = await shopDao.updateProductByProductId(
       productId,
       updateData,
@@ -134,9 +131,7 @@ const updateProduct = async (req, res) => {
     if (error.response && error.response.status === 401) {
       return res.status(401).json({ message: "Token expired" });
     }
-    return res
-      .status(500)
-      .json({ message: "Failed to fetch user data", error: error.message });
+    return res.status(500).json({ message: "error", error });
   }
 };
 
