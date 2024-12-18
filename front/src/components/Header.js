@@ -31,6 +31,16 @@ function Header() {
 
   //컴포넌트 마운트될때 로그인상태 확인
   useEffect(() => {
+    const checkLoginStatus = () => {
+      const accessToken = Cookies.get("accessToken");
+      setIsLogin(!!accessToken); // 토큰이 있으면 로그인 상태로 설정
+    };
+    console.log("로그인 성공");
+    checkLoginStatus();
+  }, []);
+
+  //컴포넌트 마운트될때 로그인상태 확인
+  useEffect(() => {
     if (isLogin && userId) {
       const connectWebSocket = () => {
         socket.current = new WebSocket("ws://localhost:3001"); // 웹소켓 서버 주소
@@ -111,6 +121,7 @@ function Header() {
 
   ///////////////////미로그인시 페이지 접근 방지//////////////
   const protectedHandler = (event, redirect) => {
+    console.log(isLogin);
     event.preventDefault();
     if (isLogin) {
       navigate(redirect);
