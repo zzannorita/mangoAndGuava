@@ -58,7 +58,6 @@ export default function Update() {
         setImages(product.images); // UI 초기화
         // setImageFiles((prevFiles) => [...prevFiles, ...filesFromServer]);
         // 기존 이미지도 업로드된 파일처럼 처리
-        console.log("파프섭", filesFromServer);
         setImageFiles(filesFromServer);
         setProductPrice(product.productPrice);
         setProductName(product.productName);
@@ -68,7 +67,6 @@ export default function Update() {
         setIsTrade(product.isTrade);
         setTradingMethod(product.tradingMethod);
         setTradingAddress(product.tradingAddress);
-        console.log("주소", tradingAddress);
         setTradeState(product.tradeState);
         setProductCategory(categoryCode);
         setProductCategoryName(categoryName);
@@ -193,7 +191,7 @@ export default function Update() {
     if (productPrice !== initialData.productPrice) {
       updatedFields.productPrice = parseInt(productPrice, 10);
     }
-    if (isShippingFee !== initialData.isShippingFee) {
+    if (isShippingFee !== Number(initialData.isShippingFee)) {
       updatedFields.isShippingFee = isShippingFee;
     }
     if (productInfo !== initialData.productInfo) {
@@ -202,10 +200,10 @@ export default function Update() {
     if (productState !== initialData.productState) {
       updatedFields.productState = productState;
     }
-    if (isTrade !== initialData.isTrade) {
+    if (isTrade !== Number(initialData.isTrade)) {
       updatedFields.isTrade = isTrade;
     }
-    if (tradingMethod !== initialData.tradingMethod) {
+    if (tradingMethod !== Number(initialData.tradingMethod)) {
       updatedFields.tradingMethod = tradingMethod;
     }
     if (
