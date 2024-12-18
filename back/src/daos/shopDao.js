@@ -184,7 +184,11 @@ const updateProductByProductId = async (
   try {
     await connection.beginTransaction(); // 아래 쿼리는 하나의 트랜잭션
 
-    const [productResult] = await connection.execute(query, values);
+    if (Object.keys(updateData).length !== 0) {
+      //객체가 비어있지 않으면
+      const [productResult] = await connection.execute(query, values);
+      //비어있으면 이미지만 변경이기때문에.
+    }
 
     const [imageDeleteResult] = await connection.execute(query2);
 
