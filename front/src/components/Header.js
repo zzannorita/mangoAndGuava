@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Alarm from "./Alarm";
 import HeaderStyle from "../styles/header.module.css";
 import logo from "../image/logo.png";
@@ -119,49 +119,6 @@ function Header() {
       navigate("/");
     }
   };
-
-  ////////////////////////웹소켓 연결////////////////////////
-  useEffect(() => {
-    if (isLogin && userId) {
-      let ws;
-      const connectWebSocket = () => {
-        ws = new WebSocket("ws://localhost:3001"); // 웹소켓 서버 주소
-
-        ws.onopen = () => {
-          console.log("웹소켓 연결됨");
-          // 사용자 ID로 웹소켓 연결 설정
-          ws.send(JSON.stringify({ type: "auth", userId: userId }));
-        };
-
-        ws.onmessage = (event) => {
-          const messageData = JSON.parse(event.data);
-          // 메시지 수신 시 알림 처리 (백엔드에서 전달된 데이터 구조에 맞게 처리)
-          if (
-            messageData.userTo === userId // userTo가 현재 사용자와 동일한 경우 알림 표시
-          ) {
-            setNewMessage(true); // 새로운 메시지가 오면 알림 표시
-            console.log("새로운 메시지 수신:", messageData);
-          }
-        };
-
-        ws.onclose = () => {
-          console.log("웹소켓 연결 종료");
-          // 연결이 끊어지면 재연결 시도
-          setTimeout(connectWebSocket, 5000); // 5초 후에 재연결 시도
-        };
-
-        setSocket(ws);
-      };
-
-      connectWebSocket();
-
-      return () => {
-        if (ws) {
-          ws.close(); // 컴포넌트 언마운트 시 소켓 종료
-        }
-      };
-    }
-  }, [isLogin, userId]);
 
   return (
     <header className="container">
