@@ -8,7 +8,7 @@ import rightImg from "../image/right.png";
 import getRelativeTime from "../utils/getRelativeTime";
 import fillHeartImg from "../image/fillHeart.png";
 import { getCategoryNames } from "../utils/categoryUtils";
-import productStyle from "../styles/productsCard.module.css";
+import Carousel from "../components/Carousel";
 import Modal from "../components/Modal";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -22,7 +22,7 @@ export default function Detail({ shopOwnerUserId }) {
   const [productCategory, setProductCategory] = useState("");
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState("");
-  const [productImg, setProductImg] = useState("");
+  const [productImg, setProductImg] = useState([]);
   const [productState, setProductState] = useState("");
   const [productTradingMethod, setProductTradingMethod] = useState("");
   const [productTradingAddress, setProductTradingAddress] = useState("");
@@ -113,6 +113,7 @@ export default function Detail({ shopOwnerUserId }) {
       .get(`/detail?itemId=${productId}`)
       .then((response) => {
         const product = response.data.product[0];
+        console.log(product);
         setOwnerUserId(product.userId);
         setProductCategory(product.productCategory);
         setProductName(product.productName);
@@ -158,6 +159,7 @@ export default function Detail({ shopOwnerUserId }) {
         setNowUserId(null); // 로그인되지 않았을 때 null 처리
       });
   }, []);
+
   // //////////////////////////후기작성///////////////////
   const [comment, setComment] = useState(false);
   useEffect(() => {
@@ -183,8 +185,8 @@ export default function Detail({ shopOwnerUserId }) {
       setIsModalOpen(true); // 후기가 없으면 모달 열기
     }
   };
-
   const handleCloseModal = () => setIsModalOpen(false);
+
   //찜돼있는 상태 동기화 하는 useEffect 함수
   useEffect(() => {
     const getBookmarkList = async () => {
@@ -237,12 +239,7 @@ export default function Detail({ shopOwnerUserId }) {
           <div
             className={`${DetailStyle.productInfoLeftBox}  ${disableClickStyle}`}
           >
-            <img
-              className={DetailStyle.productImg}
-              alt="camera"
-              src={productImg}
-            />
-
+            <Carousel type="detail" images={productImg} />
             <img
               src={clickedHeart ? emptyHeartImg : fillHeartImg}
               alt="heart"
