@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import productStyle from "../styles/productsCard.module.css";
+import HomeStyle from "../styles/home.module.css";
 import emptyHeartImg from "../image/emptyHeart.png";
 import fillHeartImg from "../image/fillHeart.png";
 import getRelativeTime from "../utils/getRelativeTime";
@@ -7,7 +8,7 @@ import axiosInstance from "../axios";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 
-const ProductsCard = ({ product, userId }) => {
+const ProductsCard = ({ product, userId, type }) => {
   ////////////////////로그인상태 확인///////////////////////
   const [isLogin, setIsLogin] = useState(false);
   useEffect(() => {
@@ -74,11 +75,17 @@ const ProductsCard = ({ product, userId }) => {
   const relativeTime = getRelativeTime(product.productCreatedDate);
 
   return (
-    <div className={productStyle.productCard}>
+    <div
+      className={type === "home" ? HomeStyle.product : productStyle.productCard}
+    >
       <img
         src={product.images.length > 0 ? product.images[0].productImage : ""}
         alt={product.productName}
-        className={`${productStyle.productImage} ${disableClickStyle}`}
+        className={
+          type === "home"
+            ? HomeStyle.productImage
+            : `${productStyle.productImage} ${disableClickStyle}`
+        }
       ></img>
       {overlayText && <div className={productStyle.overlay}>{overlayText}</div>}
       <img

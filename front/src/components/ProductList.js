@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import ProductsCard from "./ProductsCard";
 import productListStyle from "../styles/productList.module.css";
+import HomeStyle from "../styles/home.module.css";
 import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
 import axiosInstance from "../axios";
 
-const ProductList = ({ products }) => {
+const ProductList = ({ products, type }) => {
   const [updatedProducts, setUpdatedProducts] = useState([]); // 상태로 관리
 
   //자신의 제품 찜 방지를 위해 userId 가져오기
@@ -52,14 +53,18 @@ const ProductList = ({ products }) => {
     checkLoginStatus();
   }, [products]); // products 변경 시 useEffect 재실행
   return (
-    <div className={productListStyle.product}>
+    <div
+      className={
+        type === "home" ? HomeStyle.productList : productListStyle.product
+      }
+    >
       {updatedProducts.map((product) => (
         <Link
           key={product.productId}
           to={`/detail?itemId=${product.productId}`}
           className={productListStyle.link}
         >
-          <ProductsCard product={product} userId={userId} />
+          <ProductsCard product={product} userId={userId} type={type} />
         </Link>
       ))}
     </div>
