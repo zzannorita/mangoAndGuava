@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import shopStyle from "../styles/shop.module.css";
-import userImg from "../image/userImg.png";
+import userImage from "../image/userImg.png";
 import editImg from "../image/edit.png";
 import checkImg from "../image/checkbox.png";
 import ProductList from "../components/ProductList";
@@ -9,8 +9,50 @@ import Settings from "./Settings";
 import Favorites from "./Favorites";
 import RatingAvg from "../components/RatingAvg";
 import axiosInstance from "../axios";
+import Cookies from "js-cookie";
 
 export default function Shop() {
+  ////////////////////이미지 업로드//////////////////
+  const [userImg, setUserImg] = useState(""); // 업로드된 이미지 저장
+  const [userExImg, setUserExImg] = useState(""); // 기본 이미지
+
+  const imageUploadHandler = async (event) => {
+    const file = event.target.files[0]; // 파일 선택
+    if (file) {
+      const imageUrl = URL.createObjectURL(file); // 이미지 미리보기
+      setUserImg(imageUrl); // 미리보기 이미지 상태 업데이트
+
+      // FormData 객체 생성 (이미지 파일과 함께 다른 데이터도 보낼 수 있음)
+      const formData = new FormData();
+      formData.append("image", file);
+
+      try {
+        // API 호출하여 이미지 업로드
+        const response = await axiosInstance.patch(
+          "/profile-image", // API 경로
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data", // 파일 업로드 시 필수
+              Authorization: `Bearer ${Cookies.get("accessToken")}`, // 토큰 포함
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          const uploadedImageUrl = response.data.imageUrl;
+          setUserImg(uploadedImageUrl); // 서버에서 받은 이미지 URL로 업데이트
+          alert("이미지가 성공적으로 업로드되었습니다.");
+        } else {
+          console.error("이미지 업로드 실패", response.data);
+        }
+      } catch (error) {
+        console.error("이미지 업로드 중 오류 발생", error);
+        alert("이미지 업로드에 실패했습니다.");
+      }
+    }
+  };
+
   /////////////////////소개글 수정//////////////////////
   const [isEditing, setIsEditing] = useState(false);
   const [description, setDescription] = useState("");
@@ -72,6 +114,8 @@ export default function Shop() {
         const data = response.data;
         const shopData = data.shopData[0];
         const commentCount = data.commentCount;
+        const userData = data.userData;
+        setUserExImg(userData.profileImage || userImage);
         setCommentCount(commentCount.ratingAvg);
         setShopData(data);
         // shopInfo 값을 description 상태에 반영
@@ -188,9 +232,17 @@ export default function Shop() {
             <div className={shopStyle.myShopInfoBox}>
               <img
                 className={shopStyle.myShopImg}
-                src={userImg}
+                src={userImg || userImage}
                 alt="userImg"
-              ></img>
+                onClick={() => document.getElementById("imageInput").click()}
+              />
+              <input
+                id="imageInput"
+                type="file"
+                style={{ display: "none" }}
+                accept="image/*"
+                onChange={imageUploadHandler}
+              />
               <div className={shopStyle.myShopInfoText}>
                 <textarea
                   className={`${shopStyle.textArea} ${
