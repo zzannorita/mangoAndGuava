@@ -5,6 +5,7 @@ import RatingAvg from "../components/RatingAvg";
 import exImg from "../image/userImg.png";
 import axiosInstance from "../axios";
 import getRelativeTime from "../utils/getRelativeTime";
+import sortComments from "../utils/sortUtils";
 export default function Review() {
   const [comments, setComments] = useState([]);
   const [commentCount, setCommentCount] = useState("");
@@ -32,29 +33,13 @@ export default function Review() {
           };
         });
         // 정렬 처리
-        const sortedComments = sortComments(arrangeComments);
+        const sortedComments = sortComments(arrangeComments, sortType);
         setComments(sortedComments);
       })
       .catch((error) => {
         console.error("데이터 가져오기 실패", error);
       });
   }, [sortType]);
-
-  // 정렬 함수
-  const sortComments = (comments) => {
-    switch (sortType) {
-      case "newest":
-        return comments.sort(
-          (a, b) => new Date(b.originalDate) - new Date(a.originalDate)
-        ); // 최신순
-      case "highest":
-        return comments.sort((a, b) => b.commentAvg - a.commentAvg); // 별점 높은 순
-      case "lowest":
-        return comments.sort((a, b) => a.commentAvg - b.commentAvg); // 별점 낮은 순
-      default:
-        return comments;
-    }
-  };
 
   return (
     <div className={ReviewStyle.myProductsBox}>
