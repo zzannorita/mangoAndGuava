@@ -10,21 +10,6 @@ export default function Home() {
   const [products, setProducts] = useState([]);
   const [totalPage, setTotalPage] = useState();
 
-  // // 슬라이드 변경 함수
-  // const nextSlide = () => {
-  //   setCurrentSlide((prev) => (prev + 1) % 3); // 3개의 이미지 순환
-  // };
-
-  // const prevSlide = () => {
-  //   setCurrentSlide((prev) => (prev - 1 + 3) % 3); // 3개의 이미지 순환
-  // };
-
-  // // 자동 슬라이드 설정 (3초마다 넘어가도록)
-  // useEffect(() => {
-  //   const interval = setInterval(nextSlide, 3000); // 3초마다 nextSlide 호출
-  //   return () => clearInterval(interval); // 컴포넌트가 언마운트될 때 interval 클리어
-  // }, []);
-
   // 이미지 배열
   const sliderImages = [slide1, slide2, slide3];
 
@@ -42,26 +27,12 @@ export default function Home() {
   }, []);
   return (
     <div className="container">
-      {/* 슬라이드 배너 */}
-      {/* <div className={HomeStyle.sliderContainer}>
-        <img
-          src={sliderImages[currentSlide]} // 현재 슬라이드 이미지 표시
-          alt={`slide-${currentSlide}`}
-          className={HomeStyle.sliderImage}
-        />
-        <button onClick={prevSlide} className={HomeStyle.prevButton}>
-          &lt;
-        </button>
-        <button onClick={nextSlide} className={HomeStyle.nextButton}>
-          &gt;
-        </button>
-      </div> */}
       <Carousel type="home" images={sliderImages} />
       <div className={HomeStyle.recommendBox}>
         <div className={HomeStyle.userRecommendBox}>
           <div className={HomeStyle.userRecommendName}>최신 상품 목록</div>
           <div className={HomeStyle.productList}>
-            <ProductList products={products} />
+            <ProductList type="home" products={products} />
           </div>
         </div>
       </div>

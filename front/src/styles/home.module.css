@@ -5,10 +5,27 @@
 }
 .productList {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   justify-content: flex-start;
 }
-
+.product {
+  width: 225px;
+  height: 360px;
+  margin: 16px 6px 16px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.productImage {
+  width: 225px;
+  height: 260px;
+  background-color: #f1f1f1;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
 .userRecommendName {
   /* color: #333; */
   margin: 20px 0 10px 0;
