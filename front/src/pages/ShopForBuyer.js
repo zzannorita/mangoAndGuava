@@ -3,15 +3,16 @@ import shopStyle from "../styles/shop.module.css";
 import axiosInstance from "../axios";
 import RatingAvg from "../components/RatingAvg";
 import userImg from "../image/userImg.png";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import ProductList from "../components/ProductList";
 import OthersReview from "./OthersReview";
+import Cookies from "js-cookie";
 
 export default function ShopForBuyer() {
   //쿼리파라미터에서 sellerId가져오기
   const [searchParams] = useSearchParams();
   const sellerId = searchParams.get("userId");
-
+  const navigate = useNavigate();
   const [sellerNickName, setSellerNickName] = useState(null);
   const [description, setDescription] = useState("");
   const [products, setProducts] = useState([]);
@@ -26,13 +27,35 @@ export default function ShopForBuyer() {
     setSelectedFilter(filter);
   };
 
+  //이미 팔로우 되어있을 시
+  useEffect(() => {
+    axiosInstance
+      .get("/myShop")
+      .then((response) => {
+        const data = response.data.bookmarkUser;
+        console.log(data);
+        if (data.includes(sellerId)) {
+          setFollowSeller(true);
+        }
+      })
+      .catch((error) => {
+        console.error("팔로우 상태 확인 중 오류 발생:", error);
+      });
+  }, [sellerId]);
+
   //팔로우 핸들러
   const handleFollowClick = async () => {
+    const token = Cookies.get("accessToken"); // 로그인 여부 확인
+    if (!token) {
+      alert("로그인 후 이용해주세요.");
+      navigate("/");
+      return;
+    }
     try {
       const response = await axiosInstance.post("bookmark", { sellerId });
       if (response.status === 200) {
         setFollowSeller(!followSeller);
-        alert({ sellerNickName }, "님을 팔로우 하였습니다.");
+        alert(`${sellerNickName}님을 팔로우 하였습니다.`);
       } else {
         console.error("팔로우 실패", response.data);
       }
