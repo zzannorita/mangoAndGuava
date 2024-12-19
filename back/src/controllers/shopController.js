@@ -129,9 +129,13 @@ const updateProduct = async (req, res) => {
     });
   } catch (error) {
     if (error.response && error.response.status === 401) {
+      // 액세스 토큰 만료 처리
       return res.status(401).json({ message: "Token expired" });
     }
-    return res.status(500).json({ message: "error", error });
+
+    // 다른 에러 처리
+    console.error(error);
+    return res.status(500).json({ message: "Failed to fetch user data" });
   }
 };
 
@@ -175,9 +179,13 @@ const getMyShopData = async (req, res) => {
     });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      throw new Error("Token expired");
+      // 액세스 토큰 만료 처리
+      return res.status(401).json({ message: "Token expired" });
     }
-    throw new Error("Failed to fetch user data");
+
+    // 다른 에러 처리
+    console.error(error);
+    return res.status(500).json({ message: "Failed to fetch user data" });
   }
 };
 
@@ -203,9 +211,13 @@ const updateShopInfo = async (req, res) => {
     return res.status(200).json({ code: "SUCCESS_UPDATE_SHOPINFO" });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      throw new Error("Token expired");
+      // 액세스 토큰 만료 처리
+      return res.status(401).json({ message: "Token expired" });
     }
-    throw new Error("Failed to fetch user data");
+
+    // 다른 에러 처리
+    console.error(error);
+    return res.status(500).json({ message: "Failed to fetch user data" });
   }
 };
 
@@ -223,9 +235,13 @@ const getShopData = async (req, res) => {
     });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      throw new Error("Token expired");
+      // 액세스 토큰 만료 처리
+      return res.status(401).json({ message: "Token expired" });
     }
-    throw new Error("Failed to fetch user data");
+
+    // 다른 에러 처리
+    console.error(error);
+    return res.status(500).json({ message: "Failed to fetch user data" });
   }
 };
 
@@ -258,9 +274,13 @@ const updateUserInfo = async (req, res) => {
     return res.status(200).json({ code: "SUCCESS_UPDATE_USERINFO" });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      throw new Error("Token expired");
+      // 액세스 토큰 만료 처리
+      return res.status(401).json({ message: "Token expired" });
     }
-    throw new Error("Failed to fetch user data");
+
+    // 다른 에러 처리
+    console.error(error);
+    return res.status(500).json({ message: "Failed to fetch user data" });
   }
 };
 
@@ -286,10 +306,13 @@ const addBookmark = async (req, res) => {
     return res.status(200).json({ code: "SUCCESS_INSERT_BOOKMARK" });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      throw new Error("Token expired");
+      // 액세스 토큰 만료 처리
+      return res.status(401).json({ message: "Token expired" });
     }
-    console.log(error, "에러");
-    throw new Error("Failed to fetch user data : ", error);
+
+    // 다른 에러 처리
+    console.error(error);
+    return res.status(500).json({ message: "Failed to fetch user data" });
   }
 };
 
@@ -324,9 +347,13 @@ const addShopComment = async (req, res) => {
     return res.status(200).json({ code: "SUCCESS_INSERT_SHOP_COMMENT" });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      throw new Error("Token expired");
+      // 액세스 토큰 만료 처리
+      return res.status(401).json({ message: "Token expired" });
     }
-    throw new Error("Failed to fetch user data");
+
+    // 다른 에러 처리
+    console.error(error);
+    return res.status(500).json({ message: "Failed to fetch user data" });
   }
 };
 
@@ -348,9 +375,13 @@ const getCommentData = async (req, res) => {
       .json({ code: "SUCCESS_UPDATE_USERINFO", data: commentData });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      throw new Error("Token expired");
+      // 액세스 토큰 만료 처리
+      return res.status(401).json({ message: "Token expired" });
     }
-    throw new Error("Failed to fetch user data");
+
+    // 다른 에러 처리
+    console.error(error);
+    return res.status(500).json({ message: "Failed to fetch user data" });
   }
 };
 
@@ -368,9 +399,13 @@ const deleteBookmark = async (req, res) => {
     const deleteBookmark = await shopDao.deleteBookmark(userId, deluserId);
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      throw new Error("Token expired");
+      // 액세스 토큰 만료 처리
+      return res.status(401).json({ message: "Token expired" });
     }
-    throw new Error("Failed to fetch user data");
+
+    // 다른 에러 처리
+    console.error(error);
+    return res.status(500).json({ message: "Failed to fetch user data" });
   }
 };
 

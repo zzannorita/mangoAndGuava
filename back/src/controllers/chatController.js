@@ -23,11 +23,13 @@ const handleChatAndProduct = async (req, res) => {
     const sellerId = req.body.userId;
   } catch (error) {
     if (error.response && error.response.status === 401) {
+      // 액세스 토큰 만료 처리
       return res.status(401).json({ message: "Token expired" });
     }
-    return res
-      .status(500)
-      .json({ message: "Failed to fetch user data", error: error.message });
+
+    // 다른 에러 처리
+    console.error(error);
+    return res.status(500).json({ message: "Failed to fetch user data" });
   }
 };
 
@@ -75,13 +77,14 @@ const getMyChatList = async (req, res) => {
       data: updatedChatList,
     });
   } catch (error) {
-    console.log(error);
     if (error.response && error.response.status === 401) {
+      // 액세스 토큰 만료 처리
       return res.status(401).json({ message: "Token expired" });
     }
-    return res
-      .status(500)
-      .json({ message: "Failed to fetch user data", error: error.message });
+
+    // 다른 에러 처리
+    console.error(error);
+    return res.status(500).json({ message: "Failed to fetch user data" });
   }
 };
 
@@ -111,13 +114,14 @@ const getChatEach = async (req, res) => {
       data: chatEach,
     });
   } catch (error) {
-    console.log(error);
     if (error.response && error.response.status === 401) {
+      // 액세스 토큰 만료 처리
       return res.status(401).json({ message: "Token expired" });
     }
-    return res
-      .status(500)
-      .json({ message: "Failed to fetch user data", error: error.message });
+
+    // 다른 에러 처리
+    console.error(error);
+    return res.status(500).json({ message: "Failed to fetch user data" });
   }
 };
 
