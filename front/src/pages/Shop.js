@@ -24,7 +24,7 @@ export default function Shop() {
 
       // FormData 객체 생성 (이미지 파일과 함께 다른 데이터도 보낼 수 있음)
       const formData = new FormData();
-      formData.append("image", file);
+      formData.append("profileImage", file);
 
       try {
         // API 호출하여 이미지 업로드
