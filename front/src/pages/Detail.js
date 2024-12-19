@@ -158,23 +158,33 @@ export default function Detail({ shopOwnerUserId }) {
         setNowUserId(null); // 로그인되지 않았을 때 null 처리
       });
   }, []);
+  // //////////////////////////후기작성///////////////////
+  const [comment, setComment] = useState(false);
+  useEffect(() => {
+    axiosInstance.get(`/comment/${productId}`).then((response) => {
+      const data = response.data.data;
+      if (data.length > 0) {
+        setComment(true);
+      } else {
+        setComment(false);
+      }
+    });
+  }, [productId]);
 
-  ////////////////////후기작성///////////////////////
-  const isTransactionComplete =
-    String(buyerId) === String(nowUserId?.userId) && tradeState === "판매완료";
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // 후기 작성 버튼 클릭 시 모달 열기
+  const isTransactionComplete =
+    String(buyerId) === String(nowUserId?.userId) &&
+    tradeState === "판매완료" &&
+    !comment; // 후기가 작성되지 않았을 때만 true
   const handleOpenModal = () => {
-    if (isTransactionComplete) {
-      setIsModalOpen(true);
+    if (comment) {
+      alert("이미 후기가 작성되었습니다."); // 후기가 있으면 알림
     } else {
-      alert("후기는 거래가 완료된 후 작성할 수 있습니다.");
+      setIsModalOpen(true); // 후기가 없으면 모달 열기
     }
   };
 
-  // 모달 닫기
   const handleCloseModal = () => setIsModalOpen(false);
-
   //찜돼있는 상태 동기화 하는 useEffect 함수
   useEffect(() => {
     const getBookmarkList = async () => {
@@ -219,6 +229,7 @@ export default function Detail({ shopOwnerUserId }) {
       : "";
   // 구매 불가 상품
   const disableClickStyle = tradeState !== "판매중" ? DetailStyle.disabled : "";
+
   return (
     <div className="container">
       <div className={DetailStyle.productInfoBox}>
@@ -323,12 +334,16 @@ export default function Detail({ shopOwnerUserId }) {
             </div>
             <div
               className={`${DetailStyle.chattingBtnBox} ${
-                tradeState === "예약중" || tradeState === "판매완료"
+                tradeState === "예약중" ||
+                (tradeState === "판매완료" && comment)
                   ? DetailStyle.disabledBtn
                   : ""
               }`}
               onClick={(e) => {
-                if (tradeState === "예약중" || tradeState === "판매완료") {
+                if (
+                  tradeState === "예약중" ||
+                  (tradeState === "판매완료" && comment)
+                ) {
                   e.preventDefault(); // 클릭 이벤트 차단
                   return;
                 }
@@ -336,16 +351,28 @@ export default function Detail({ shopOwnerUserId }) {
                 // 조건에 따라 다른 함수 실행
                 if (String(userId) === String(nowUserId?.userId)) {
                   handleEditProduct();
+                } else if (isTransactionComplete) {
+                  handleOpenModal();
                 } else {
                   handleEnterChat();
                 }
               }}
             >
               {tradeState === "예약중"
-                ? "예약중"
+                ? "예약중" // 예약중 상태일 때
+                : tradeState === "판매완료" &&
+                  !comment &&
+                  String(buyerId) === String(nowUserId?.userId)
+                ? "후기작성" // 판매완료이고 후기 없을 때
+                : tradeState === "판매완료" &&
+                  comment &&
+                  String(buyerId) === String(nowUserId?.userId)
+                ? "후기작성완료" // 후기 작성 완료 상태일 때
                 : String(userId) === String(nowUserId?.userId)
-                ? "수정하기"
-                : "채팅하기"}
+                ? "수정하기" // userId가 현재 사용자와 같으면 수정하기
+                : tradeState === "판매중"
+                ? "채팅하기"
+                : ""}
             </div>
             {/* 모달 컴포넌트 */}
             <Modal
