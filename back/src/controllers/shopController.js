@@ -386,6 +386,7 @@ const getCommentData = async (req, res) => {
 };
 
 const deleteBookmark = async (req, res) => {
+  const accessToken = req.headers.authorization?.split(" ")[1];
   const deluserId = req.query.deluserId;
 
   try {

@@ -29,6 +29,19 @@ const getUserById = async (userId) => {
   // return rows[0];
 };
 
+const getRefreshToken = async (userId) => {
+  const escapedUserId = mysql.escape(userId);
+  const query = `SELECT refreshToken FROM user WHERE userId = ${escapedUserId}`;
+
+  try {
+    const [rows] = await db.execute(query);
+    const refreshToken = rows[0].refreshToken;
+    return refreshToken;
+  } catch (error) {
+    throw new Error("Database query error: " + error.message);
+  }
+};
+
 const addUser = async (user) => {
   const query = `INSERT INTO user (userId, nickname, email, createdAt, refreshToken) VALUES 
   (${user.userId}, '${user.nickname}', '${user.email}', '${user.createdAt}', '${user.refreshToken}')`;
@@ -125,4 +138,5 @@ module.exports = {
   updateUserInfo,
   updateProfileImage,
   addRefreshToken,
+  getRefreshToken,
 };
