@@ -83,7 +83,7 @@ const ProductsCard = ({ product, userId, type }) => {
         alt={product.productName}
         className={
           type === "home"
-            ? HomeStyle.productImage
+            ? `${HomeStyle.productImage}  ${disableClickStyle}`
             : `${productStyle.productImage} ${disableClickStyle}`
         }
       ></img>
