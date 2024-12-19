@@ -30,10 +30,8 @@ const getUserById = async (userId) => {
 };
 
 const addUser = async (user) => {
-  const query = `INSERT INTO user (userId, nickname, email, createdAt) VALUES (${parseInt(
-    user.userId,
-    10
-  )}, '${user.nickname}', '${user.email}', '${user.createdAt}')`;
+  const query = `INSERT INTO user (userId, nickname, email, createdAt, refreshToken) VALUES 
+  (${user.userId}, '${user.nickname}', '${user.email}', '${user.createdAt}', '${user.refreshToken}')`;
 
   try {
     await db.execute(query);
@@ -88,9 +86,43 @@ WHERE userId = ?`;
   }
 };
 
+const addRefreshToken = async (userId, refreshToken) => {
+  const escapedUserId = mysql.escape(String(userId));
+  const escapedRefreshToken = mysql.escape(refreshToken);
+  const checkRefreshTokenQuery = `
+  SELECT refreshToken 
+  FROM user 
+  WHERE userId = ${escapedUserId}
+  `;
+
+  const updateRefreshTokenQuery = `
+  UPDATE user SET refreshToken = ${escapedRefreshToken} 
+  WHERE userId = ${escapedUserId}
+  `;
+
+  try {
+    const [checkRefreshToken] = await db.execute(checkRefreshTokenQuery);
+    console.log(checkRefreshToken);
+    if (checkRefreshToken[0].refreshToken === null) {
+      //리프레시 토큰에 값이 없는 경우
+      await db.execute(updateRefreshTokenQuery);
+    } else {
+      if (checkRefreshToken[0].refreshToken === refreshToken) {
+        //리프레시 토큰 기존에 존재했지만 새 리프레시 토큰과 같은경우
+      } else {
+        //리프레시 토큰 기존에 존재했지만 새 리프레시 토큰과 다른경우
+        await db.execute(updateRefreshTokenQuery);
+      }
+    }
+  } catch (error) {
+    throw new Error("Database query error: " + error.message);
+  }
+};
+
 module.exports = {
   getUserById,
   addUser,
   updateUserInfo,
   updateProfileImage,
+  addRefreshToken,
 };
