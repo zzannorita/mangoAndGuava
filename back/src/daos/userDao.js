@@ -7,7 +7,7 @@ const mysql = require("mysql2");
 
 const getUserById = async (userId) => {
   const escapedUserId = mysql.escape(userId);
-  const query = `SELECT * FROM user WHERE userId = ${escapedUserId}`;
+  const query = `SELECT userId, nickname, email, address, createdAt, profileImage, account FROM user WHERE userId = ${escapedUserId}`;
   try {
     const [rows] = await db.execute(query);
     if (rows.length > 0) {
