@@ -13,6 +13,7 @@ router.patch("/update-info", shopController.updateShopInfo);
 router.get("/shop", shopController.getShopData);
 router.patch("/user-update", shopController.updateUserInfo);
 router.post("/bookmark", shopController.addBookmark);
+router.delete("/bookmark", shopController.deleteBookmark);
 router.post("/shop/comment", shopController.addShopComment);
 router.patch(
   "/update-product/:productId",
