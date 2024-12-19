@@ -21,10 +21,6 @@ export default function CombinedCarousel({ type, images }) {
     setCurrentIndex(index);
   };
 
-  // 각 슬라이드 스타일 설정
-  const sliderClass =
-    type === "home" ? HomeStyle.sliderImage : carouselStyle.carouselImage;
-
   return (
     <div
       className={
@@ -36,7 +32,9 @@ export default function CombinedCarousel({ type, images }) {
       <img
         src={images[currentIndex]} // 현재 슬라이드 이미지 표시
         alt={`carousel-slide-${currentIndex}`}
-        className={sliderClass}
+        className={
+          type === "home" ? HomeStyle.sliderImage : carouselStyle.carouselImage
+        }
       />
 
       {/* 이미지 갯수만큼 점을 생성 */}
