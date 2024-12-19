@@ -6,6 +6,7 @@ import userImg from "../image/userImg.png";
 import { useSearchParams } from "react-router-dom";
 import ProductList from "../components/ProductList";
 import OthersReview from "./OthersReview";
+import sortProducts from "../utils/sortUtils";
 
 export default function ShopForBuyer() {
   //쿼리파라미터에서 sellerId가져오기
@@ -117,6 +118,10 @@ export default function ShopForBuyer() {
     }
   }, [selectedFilter]);
 
+  // 정렬
+  const [sortType, setSortType] = useState("newest");
+  const sortedProducts = sortProducts(products, sortType);
+
   //필터에 따른 컨테이너
   const renderContainer = () => {
     if (selectedFilter) {
@@ -124,7 +129,7 @@ export default function ShopForBuyer() {
         case "판매중":
           return (
             <ProductList
-              products={products.filter(
+              products={sortedProducts.filter(
                 (product) => product.tradeState === "판매중"
               )}
             />
@@ -132,7 +137,7 @@ export default function ShopForBuyer() {
         case "예약중":
           return (
             <ProductList
-              products={products.filter(
+              products={sortedProducts.filter(
                 (product) => product.tradeState === "예약중"
               )}
             />
@@ -140,7 +145,7 @@ export default function ShopForBuyer() {
         case "판매완료":
           return (
             <ProductList
-              products={products.filter(
+              products={sortedProducts.filter(
                 (product) => product.tradeState === "판매완료"
               )}
             />
@@ -148,7 +153,7 @@ export default function ShopForBuyer() {
         case "거래후기":
           return <OthersReview shopComment={reviews} />;
         default:
-          return <ProductList products={products} />;
+          return <ProductList products={sortedProducts} />;
       }
     }
     return null;
@@ -220,11 +225,26 @@ export default function ShopForBuyer() {
                       </div>
                     </div>
                     <div className={shopStyle.mainTopRightBox}>
-                      <div className={shopStyle.filterTextBox}>최신</div>
+                      <div
+                        className={shopStyle.filterTextBox}
+                        onClick={() => setSortType("newest")}
+                      >
+                        최신
+                      </div>
                       <span>|</span>
-                      <div className={shopStyle.filterTextBox}>저가</div>
+                      <div
+                        className={shopStyle.filterTextBox}
+                        onClick={() => setSortType("lowPrice")}
+                      >
+                        저가
+                      </div>
                       <span>|</span>
-                      <div className={shopStyle.filterTextBox}>고가</div>
+                      <div
+                        className={shopStyle.filterTextBox}
+                        onClick={() => setSortType("highPrice")}
+                      >
+                        고가
+                      </div>
                     </div>
                   </div>
                 ) : null}
