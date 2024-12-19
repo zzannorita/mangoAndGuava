@@ -398,6 +398,7 @@ const deleteBookmark = async (req, res) => {
     const userId = userResponse.data.id;
 
     const deleteBookmark = await shopDao.deleteBookmark(userId, deluserId);
+    res.status(200).json({ code: "SUCCESS_DELETE_BOOKMARK" });
   } catch (error) {
     if (error.response && error.response.status === 401) {
       // 액세스 토큰 만료 처리
