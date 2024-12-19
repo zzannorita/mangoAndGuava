@@ -7,6 +7,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import ProductList from "../components/ProductList";
 import OthersReview from "./OthersReview";
 import Cookies from "js-cookie";
+import axios from "axios";
 
 export default function ShopForBuyer() {
   //쿼리파라미터에서 sellerId가져오기
@@ -45,24 +46,38 @@ export default function ShopForBuyer() {
 
   //팔로우 핸들러
   const handleFollowClick = async () => {
-    const token = Cookies.get("accessToken"); // 로그인 여부 확인
-    if (!token) {
-      alert("로그인 후 이용해주세요.");
-      navigate("/");
-      return;
-    }
+    // const token = Cookies.get("accessToken"); // 로그인 여부 확인
+    // if (!token) {
+    //   alert("로그인 후 이용해주세요.");
+    //   navigate("/");
+    //   return;
+    // }
     try {
-      const response = await axiosInstance.post("bookmark", { sellerId });
-      if (response.status === 200) {
-        setFollowSeller(!followSeller);
-        alert(`${sellerNickName}님을 팔로우 하였습니다.`);
+      if (followSeller) {
+        const response = await axiosInstance.delete(
+          `/bookmark?deluserId=${sellerId}`
+        );
+        if (response.status === 200) {
+          setFollowSeller(false);
+          alert(`${sellerNickName}님을 팔로우 취소하였습니다.`);
+        } else {
+          console.error("팔취실패패");
+        }
       } else {
-        console.error("팔로우 실패", response.data);
+        const response = await axiosInstance.post("bookmark", { sellerId });
+        if (response.status === 200) {
+          setFollowSeller(true);
+          alert(`${sellerNickName}님을 팔로우 하였습니다.`);
+        } else {
+          console.error("팔로우 실패", response.data);
+        }
       }
     } catch (error) {
       console.error("팔로우 중 오류 발생", error);
     }
   };
+
+  //팔로우취소
 
   useEffect(() => {
     // 상점 정보 가져오기
