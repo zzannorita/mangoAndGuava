@@ -2,6 +2,7 @@ import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Header from "./components/Header";
 import MainLayout from "./components/MainLayout";
+import Carousel from "./components/Carousel";
 import Home from "./pages/Home";
 import Regist from "./pages/Regist";
 import Profile from "./pages/Profile";
@@ -44,6 +45,7 @@ function App() {
           <Route path="/authCallBack" element={<AuthCallback />} />
           <Route path="/review" element={<Review />} />
           <Route path="/othersReview" element={<OthersReview />} />
+          <Route path="/carousel" element={<Carousel />} />
           {/* <Route path="/detail?itemId={productId}" element={<Detail />} /> */}
         </Routes>
       </div>
