@@ -116,6 +116,7 @@ export default function Shop() {
         const commentCount = data.commentCount;
         const userData = data.userData;
         setUserExImg(userData.profileImage || userImage);
+        console.log(userExImg);
         setCommentCount(commentCount.ratingAvg);
         setShopData(data);
         // shopInfo 값을 description 상태에 반영
@@ -232,7 +233,7 @@ export default function Shop() {
             <div className={shopStyle.myShopInfoBox}>
               <img
                 className={shopStyle.myShopImg}
-                src={userImg || userImage}
+                src={userExImg || userImage}
                 alt="userImg"
                 onClick={() => document.getElementById("imageInput").click()}
               />
