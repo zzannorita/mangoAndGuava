@@ -344,6 +344,24 @@ const getCommentDataByProductId = async (productId) => {
   }
 };
 
+const deleteBookmark = async (userId, deluserId) => {
+  const escapedUserId = mysql.escape(userId);
+  const escapedDeluserId = mysql.escape(deluserId);
+
+  const query = `
+  DELETE FROM shopbookmark 
+  WHERE userId = ${escapedUserId} 
+    AND bookmarkUserId = ${escapedDeluserId};
+`;
+
+  try {
+    const [rows] = await db.execute(query);
+    return rows;
+  } catch (error) {
+    throw new Error("Database query error: " + error.message);
+  }
+};
+
 module.exports = {
   getShopInfo,
   addProduct,
@@ -359,4 +377,5 @@ module.exports = {
   getUsersByIds,
   updateProductByProductId,
   getCommentDataByProductId,
+  deleteBookmark,
 };

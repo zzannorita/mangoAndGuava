@@ -354,6 +354,26 @@ const getCommentData = async (req, res) => {
   }
 };
 
+const deleteBookmark = async (req, res) => {
+  const deluserId = req.query.deluserId;
+
+  try {
+    const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    const userId = userResponse.data.id;
+
+    const deleteBookmark = await shopDao.deleteBookmark(userId, deluserId);
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      throw new Error("Token expired");
+    }
+    throw new Error("Failed to fetch user data");
+  }
+};
+
 module.exports = {
   uploadProduct,
   uploadImages,
@@ -365,4 +385,5 @@ module.exports = {
   addShopComment,
   updateProduct,
   getCommentData,
+  deleteBookmark,
 };
