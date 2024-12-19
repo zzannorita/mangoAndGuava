@@ -42,11 +42,6 @@ const kakaoLogin = async (req, res) => {
     const accessToken = tokenResponse.data.access_token; //액세스 토큰
     const refreshToken = tokenResponse.data.refresh_token; //리프레시 토큰
 
-    res.cookie("accessToken", accessToken, {
-      // httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // HTTPS 사용 시 true
-      sameSite: "Strict", // CSRF 방지
-    });
     const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -61,6 +56,7 @@ const kakaoLogin = async (req, res) => {
       nickname,
       email,
       createdAt,
+      refreshToken,
     };
 
     // 데이터베이스에서 사용자 정보 조회
@@ -69,9 +65,33 @@ const kakaoLogin = async (req, res) => {
       //새 사용자
       const addUser = await userDao.addUser(user);
       const addShopUser = await shopDao.addShopUser(userId);
+      res.cookie("accessToken", accessToken, {
+        // httpOnly: true,
+        secure: process.env.NODE_ENV === "production", // HTTPS 사용 시 true
+        sameSite: "Strict", // CSRF 방지
+      });
+      res.cookie("userId", userId, {
+        // httpOnly: true, // 자바스크립트에서 쿠키 접근 방지
+        secure: process.env.NODE_ENV === "production", // HTTPS에서만 전송
+        sameSite: "Strict", // CSRF 방지
+      });
       //이후 메인페이지가 아닌 설정페이지로 유도
       return res.redirect("http://localhost:3000/authCallBack?code=NEW_MEMBER");
     } else {
+      const addRefreshToken = await userDao.addRefreshToken(
+        userId,
+        refreshToken
+      );
+      res.cookie("accessToken", accessToken, {
+        // httpOnly: true,
+        secure: process.env.NODE_ENV === "production", // HTTPS 사용 시 true
+        sameSite: "Strict", // CSRF 방지
+      });
+      res.cookie("userId", userId, {
+        // httpOnly: true, // 자바스크립트에서 쿠키 접근 방지
+        secure: process.env.NODE_ENV === "production", // HTTPS에서만 전송
+        sameSite: "Strict", // CSRF 방지
+      });
       return res.redirect(
         "http://localhost:3000/authCallBack?code=EXISTING_MEMBER"
       );
@@ -122,9 +142,13 @@ const getUserData = async (req, res) => {
     return res.json({ code: "SUCCESS_USERDATA", user: userInfo });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      throw new Error("Token expired");
+      // 액세스 토큰 만료 처리
+      return res.status(401).json({ message: "Token expired" });
     }
-    throw new Error("Failed to fetch user data");
+
+    // 다른 에러 처리
+    console.error(error);
+    return res.status(500).json({ message: "Failed to fetch user data" });
   }
 };
 
@@ -166,9 +190,13 @@ const getOtherUserData = async (req, res) => {
     return res.json({ code: "SUCCESS_USERDATA", user: userInfo });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      throw new Error("Token expired");
+      // 액세스 토큰 만료 처리
+      return res.status(401).json({ message: "Token expired" });
     }
-    throw new Error("Failed to fetch user data");
+
+    // 다른 에러 처리
+    console.error(error);
+    return res.status(500).json({ message: "Failed to fetch user data" });
   }
 };
 
@@ -217,11 +245,13 @@ const uploadProfileImage = async (req, res) => {
     const updateProfileImage = await userDao.updateProfileImage(userData);
   } catch (error) {
     if (error.response && error.response.status === 401) {
+      // 액세스 토큰 만료 처리
       return res.status(401).json({ message: "Token expired" });
     }
-    return res
-      .status(500)
-      .json({ message: "Failed to fetch user data", error: error.message });
+
+    // 다른 에러 처리
+    console.error(error);
+    return res.status(500).json({ message: "Failed to fetch user data" });
   }
 };
 
