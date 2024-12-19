@@ -15,7 +15,6 @@ const ProductsCard = ({ product, userId }) => {
       const accessToken = Cookies.get("accessToken");
       setIsLogin(!!accessToken); // 토큰이 있으면 로그인 상태로 설정
     };
-    console.log("로그인 성공");
     checkLoginStatus();
   }, []);
   ////////////////////////찜/////////////////////////////////
