@@ -3,17 +3,15 @@ import shopStyle from "../styles/shop.module.css";
 import axiosInstance from "../axios";
 import RatingAvg from "../components/RatingAvg";
 import userImg from "../image/userImg.png";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import ProductList from "../components/ProductList";
 import OthersReview from "./OthersReview";
-import Cookies from "js-cookie";
-import axios from "axios";
 
 export default function ShopForBuyer() {
   //쿼리파라미터에서 sellerId가져오기
   const [searchParams] = useSearchParams();
   const sellerId = searchParams.get("userId");
-  const navigate = useNavigate();
+  const [profileImg, setProfileImg] = useState("");
   const [sellerNickName, setSellerNickName] = useState(null);
   const [description, setDescription] = useState("");
   const [products, setProducts] = useState([]);
@@ -22,7 +20,6 @@ export default function ShopForBuyer() {
 
   const [selectedFilter, setSelectedFilter] = useState("전체");
   const [followSeller, setFollowSeller] = useState(false);
-
   //필터 클릭 핸들러
   const handleFilterClick = (filter) => {
     setSelectedFilter(filter);
@@ -34,7 +31,6 @@ export default function ShopForBuyer() {
       .get("/myShop")
       .then((response) => {
         const data = response.data.bookmarkUser;
-        console.log(data);
         if (data.includes(sellerId)) {
           setFollowSeller(true);
         }
@@ -77,8 +73,6 @@ export default function ShopForBuyer() {
     }
   };
 
-  //팔로우취소
-
   useEffect(() => {
     // 상점 정보 가져오기
     axiosInstance
@@ -86,7 +80,6 @@ export default function ShopForBuyer() {
       .then((response) => {
         const data = response.data;
         const shopData = data.shopData[0];
-        //setSellerNickName(shopData.userId); //아직nickname이 없어서 임시로 userId
         console.log(shopData);
         ///촐///
         axiosInstance
@@ -97,6 +90,8 @@ export default function ShopForBuyer() {
             ///율///
             const nickname = response.data.user.nickname2;
             setSellerNickName(nickname || shopData.userId);
+            const profileImg = response.data.user.profileImage;
+            setProfileImg(profileImg);
           });
         ////////
         setDescription(shopData.shopInfo);
@@ -182,7 +177,7 @@ export default function ShopForBuyer() {
                 {/* 상점 이미지 및 소개글 */}
                 <img
                   className={shopStyle.myShopImg}
-                  src={userImg}
+                  src={profileImg || userImg}
                   alt="userImg"
                 ></img>
                 <div className={shopStyle.myShopInfoText}>

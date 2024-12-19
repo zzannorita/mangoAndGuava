@@ -7,7 +7,7 @@ import RatingAvg from "../components/RatingAvg";
 import axiosInstance from "../axios";
 export default function Favorites({ bookmarkUser }) {
   const [sellerData, setSellerData] = useState([]);
-
+  const [profileImg, setProfileImg] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function Favorites({ bookmarkUser }) {
         const data = responses.map((response, index) => {
           const shopData = shopDataResponses[index].data;
           const nickname = response.data.user.nickname2;
-          console.log("닉네임", nickname);
+          const profileImage = response.data.user.profileImage;
           // 상점 데이터 구조에서 shopAvg와 userId 추출
           const shopAvg = shopData.shopData?.[0]?.shopAvg ?? 0;
           const userId = shopData.shopData?.[0]?.userId;
@@ -38,6 +38,7 @@ export default function Favorites({ bookmarkUser }) {
             userId: userId, //상점 userId
             nickname: nickname,
             shopRating: shopAvg, // 상점 별점
+            profileImg: profileImage,
           };
         });
         setSellerData(data); // 데이터를 상태에 저장
@@ -79,7 +80,7 @@ export default function Favorites({ bookmarkUser }) {
               >
                 <img
                   className={favoritesStyle.shopImg}
-                  src={exImg}
+                  src={seller.profileImg || exImg}
                   alt="exImg"
                 />
                 <div className={favoritesStyle.shopInfo}>

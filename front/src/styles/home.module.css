@@ -29,31 +29,3 @@
   height: 400px;
   display: block;
 }
-
-.prevButton,
-.nextButton {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
-  border: none;
-  padding: 15px 20px;
-  font-size: 18px;
-  cursor: pointer;
-  z-index: 1;
-}
-
-.prevButton {
-  left: 10px;
-}
-
-.nextButton {
-  right: 10px;
-}
-
-/* 버튼에 hover 효과 추가 (선택 사항) */
-.prevButton:hover,
-.nextButton:hover {
-  background-color: rgba(0, 0, 0, 0.7);
-}
