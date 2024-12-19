@@ -332,7 +332,7 @@ const addShopComment = async (req, res) => {
 
 const getCommentData = async (req, res) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
-  const productId = req.query.productId;
+  const productId = req.params.productId;
   try {
     const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
       headers: {

@@ -329,7 +329,6 @@ const getUsersByIds = async (bookmarkUserIds) => {
 
 const getCommentDataByProductId = async (productId) => {
   const escapedProductId = mysql.escape(productId);
-
   const query = `
   SELECT *
   FROM shopcomment
