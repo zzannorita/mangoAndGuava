@@ -16,7 +16,7 @@ const getUserById = async (userId) => {
       if (user.profileImage !== null) {
         const imageUrl = `http://localhost:3001/profileImage/${user.profileImage}`;
         // user 객체에 imageUrl 추가
-        user.imageUrl = imageUrl;
+        user.profileImage = imageUrl;
       }
       return user;
     } else {
@@ -73,7 +73,7 @@ const updateUserInfo = async (userId, nickname, address, account) => {
 };
 
 const updateProfileImage = async (userData) => {
-  const userId = userData.userId;
+  const userId = String(userData.userId);
   const profileImage = userData.profileImage;
   const query = `UPDATE user
 SET profileImage = ?
