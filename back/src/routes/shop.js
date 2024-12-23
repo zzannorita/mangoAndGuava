@@ -21,5 +21,7 @@ router.patch(
   shopController.updateProduct
 );
 router.get("/comment/:productId", shopController.getCommentData);
+router.post("/recent-view", shopController.addOrUpdateRecentView);
+router.get("/recent-view", shopController.getRecentView);
 
 module.exports = router;

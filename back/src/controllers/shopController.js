@@ -411,6 +411,60 @@ const deleteBookmark = async (req, res) => {
   }
 };
 
+const addOrUpdateRecentView = async (req, res) => {
+  const productId = req.body.productId;
+
+  const accessToken = req.headers.authorization?.split(" ")[1];
+
+  try {
+    const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    const userId = userResponse.data.id;
+
+    await shopDao.insertAndDeleteRecentView(userId, productId);
+
+    res.status(200).json({ code: "SUCCESS_ADDORUPDATE_RECENT_VIEW" });
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      // 액세스 토큰 만료 처리
+      return res.status(401).json({ message: "Token expired" });
+    }
+    // 다른 에러 처리
+    console.error(error);
+    return res.status(500).json({ message: "Failed to fetch user data" });
+  }
+};
+
+const getRecentView = async (req, res) => {
+  const accessToken = req.headers.authorization?.split(" ")[1];
+
+  try {
+    const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    const userId = userResponse.data.id;
+
+    const recentViewsData = shopDao.getRecentView(userId);
+
+    res
+      .status(200)
+      .json({ code: "SUCCESS_GET_RECENT_VIEW", data: recentViewsData });
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      // 액세스 토큰 만료 처리
+      return res.status(401).json({ message: "Token expired" });
+    }
+    // 다른 에러 처리
+    console.error(error);
+    return res.status(500).json({ message: "Failed to fetch user data" });
+  }
+};
+
 module.exports = {
   uploadProduct,
   uploadImages,
@@ -423,4 +477,6 @@ module.exports = {
   updateProduct,
   getCommentData,
   deleteBookmark,
+  addOrUpdateRecentView,
+  getRecentView,
 };

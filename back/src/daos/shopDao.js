@@ -361,6 +361,67 @@ const deleteBookmark = async (userId, deluserId) => {
   }
 };
 
+const insertAndDeleteRecentView = async (userId, productId) => {
+  const escapedUserId = mysql.escape(String(userId));
+  const escapedProductId = mysql.escape(productId);
+
+  const deleteQuery = `
+      DELETE FROM recentviews
+      WHERE userId = ${escapedUserId}
+      AND id NOT IN (
+          SELECT id FROM (
+              SELECT id 
+              FROM recentviews 
+              WHERE userId = ${escapedUserId} 
+              ORDER BY viewedAt DESC 
+              LIMIT 10
+          ) AS temp
+      )
+    `;
+
+  const insertQuery = `
+      INSERT INTO recentviews (userId, productId)
+      VALUES (${escapedUserId}, ${escapedProductId})
+      ON DUPLICATE KEY UPDATE viewedAt = CURRENT_TIMESTAMP
+    `;
+  //중복 (유니크키)발생시 에러처리를 업데이트문으로..
+
+  try {
+    const connection = await db.getConnection();
+
+    await connection.beginTransaction();
+
+    await connection.execute(deleteQuery);
+
+    await connection.execute(insertQuery);
+
+    await connection.commit(); //커밋
+  } catch (error) {
+    console.error("최근 본 상품 업데이트 중 오류 발생:", error);
+    await connection.rollback(); // 롤백
+    throw error;
+  } finally {
+    if (connection) connection.release(); // 연결 해제
+  }
+};
+
+const getRecentView = (userId) => {
+  const escapedUserId = mysql.escape(String(userId));
+
+  const query = `
+  SELECT *
+  FROM recentviews
+  WHERE userId = ${escapedUserId}
+  `;
+
+  try {
+    const [rows] = db.execute(query);
+    return rows;
+  } catch (error) {
+    throw new Error("Database query error: " + error.message);
+  }
+};
+
 module.exports = {
   getShopInfo,
   addProduct,
@@ -377,4 +438,6 @@ module.exports = {
   updateProductByProductId,
   getCommentDataByProductId,
   deleteBookmark,
+  insertAndDeleteRecentView,
+  getRecentView,
 };
