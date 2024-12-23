@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import shopStyle from "../styles/shop.module.css";
 import userImage from "../image/userImg.png";
 import editImg from "../image/edit.png";
@@ -10,7 +11,7 @@ import Favorites from "./Favorites";
 import RatingAvg from "../components/RatingAvg";
 import axiosInstance from "../axios";
 import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
+import sortProducts from "../utils/sortUtils";
 
 export default function Shop() {
   ////////////////////이미지 업로드//////////////////
@@ -126,16 +127,24 @@ export default function Shop() {
       .catch((error) => {
         console.log("데이터 가져오기 실패", error);
       });
-  }, [userExImg]);
+  }, []);
+
+  // 정렬
+  const [sortType, setSortType] = useState("newest");
+  const sortedProducts = sortProducts(products, sortType);
+  const sortedPurchasedProducts = sortProducts(purchasedProducts, sortType);
+  const sortedBookmarkedProducts = sortProducts(bookmarkedProducts, sortType);
 
   //필터에 따른 컨테이너
   const renderContainer = () => {
     if (selectedFilter) {
       switch (selectedFilter) {
+        case "전체":
+          return <ProductList products={sortedProducts} />;
         case "판매중":
           return (
             <ProductList
-              products={products.filter(
+              products={sortedProducts.filter(
                 (product) => product.tradeState === "판매중"
               )}
             />
@@ -143,7 +152,7 @@ export default function Shop() {
         case "예약중":
           return (
             <ProductList
-              products={products.filter(
+              products={sortedProducts.filter(
                 (product) => product.tradeState === "예약중"
               )}
             />
@@ -151,7 +160,7 @@ export default function Shop() {
         case "판매완료":
           return (
             <ProductList
-              products={products.filter(
+              products={sortedProducts.filter(
                 (product) => product.tradeState === "판매완료"
               )}
             />
@@ -159,16 +168,16 @@ export default function Shop() {
         case "거래후기":
           return <Review />;
         default:
-          return <ProductList products={products} />;
+          return <ProductList products={sortedProducts} />;
       }
     } else if (selectedInfo) {
       switch (selectedInfo) {
         case "구매내역":
-          return <ProductList products={purchasedProducts} />;
+          return <ProductList products={sortedPurchasedProducts} />;
         case "찜한상품":
           return (
             <div>
-              <ProductList products={bookmarkedProducts} />
+              <ProductList products={sortedBookmarkedProducts} />
             </div>
           );
         case "즐겨찾기":
@@ -299,15 +308,66 @@ export default function Shop() {
                 <div className={shopStyle.mainTopBox}>
                   <div className={shopStyle.mainTopLeftBox}>
                     <div>
-                      상품 <span className="impact">15</span>
+                      상품 &nbsp;
+                      <span className="impact">
+                        {(() => {
+                          if (selectedFilter) {
+                            switch (selectedFilter) {
+                              case "전체":
+                                return sortedProducts.length;
+                              case "판매중":
+                                return sortedProducts.filter(
+                                  (product) => product.tradeState === "판매중"
+                                ).length;
+                              case "예약중":
+                                return sortedProducts.filter(
+                                  (product) => product.tradeState === "예약중"
+                                ).length;
+                              case "판매완료":
+                                return sortedProducts.filter(
+                                  (product) => product.tradeState === "판매완료"
+                                ).length;
+                              default:
+                                return sortedProducts.length;
+                            }
+                          } else if (selectedInfo) {
+                            switch (selectedInfo) {
+                              case "구매내역":
+                                return sortedPurchasedProducts.length;
+                              case "찜한상품":
+                                return sortedBookmarkedProducts.length;
+                              case "즐겨찾기":
+                                return bookmarkUser.length;
+                              default:
+                                return 0;
+                            }
+                          }
+                          return 0;
+                        })()}
+                      </span>
                     </div>
                   </div>
                   <div className={shopStyle.mainTopRightBox}>
-                    <div className={shopStyle.filterTextBox}>최신</div>
+                    <div
+                      className={shopStyle.filterTextBox}
+                      onClick={() => setSortType("newest")}
+                    >
+                      최신
+                    </div>
                     <span>|</span>
-                    <div className={shopStyle.filterTextBox}>저가</div>
+                    <div
+                      className={shopStyle.filterTextBox}
+                      onClick={() => setSortType("lowPrice")}
+                    >
+                      저가
+                    </div>
                     <span>|</span>
-                    <div className={shopStyle.filterTextBox}>고가</div>
+                    <div
+                      className={shopStyle.filterTextBox}
+                      onClick={() => setSortType("highPrice")}
+                    >
+                      고가
+                    </div>
                   </div>
                 </div>
               ) : null}
