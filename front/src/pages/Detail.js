@@ -232,6 +232,10 @@ export default function Detail({ shopOwnerUserId }) {
   // 구매 불가 상품
   const disableClickStyle = tradeState !== "판매중" ? DetailStyle.disabled : "";
 
+  //최근본 상품
+  useEffect(() => {
+    axiosInstance.post("recent-view", { productId });
+  });
   return (
     <div className="container">
       <div className={DetailStyle.productInfoBox}>
