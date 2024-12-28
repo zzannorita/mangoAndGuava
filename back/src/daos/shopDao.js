@@ -386,9 +386,9 @@ const insertAndDeleteRecentView = async (userId, productId) => {
     `;
   //중복 (유니크키)발생시 에러처리를 업데이트문으로..
 
-  try {
-    const connection = await db.getConnection();
+  const connection = await db.getConnection();
 
+  try {
     await connection.beginTransaction();
 
     await connection.execute(deleteQuery);
@@ -416,7 +416,6 @@ const getRecentView = async (userId) => {
 
   try {
     const [rows] = await db.execute(query);
-    console.log(rows);
     return rows;
   } catch (error) {
     throw new Error("Database query error: " + error.message);
