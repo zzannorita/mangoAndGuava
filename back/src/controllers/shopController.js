@@ -449,7 +449,7 @@ const getRecentView = async (req, res) => {
     });
     const userId = userResponse.data.id;
 
-    const recentViewsData = shopDao.getRecentView(userId);
+    const recentViewsData = await shopDao.getRecentView(userId);
 
     res
       .status(200)

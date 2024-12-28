@@ -380,8 +380,8 @@ const insertAndDeleteRecentView = async (userId, productId) => {
     `;
 
   const insertQuery = `
-      INSERT INTO recentviews (userId, productId)
-      VALUES (${escapedUserId}, ${escapedProductId})
+      INSERT INTO recentviews (userId, productId) 
+      VALUES (${escapedUserId}, ${escapedProductId}) 
       ON DUPLICATE KEY UPDATE viewedAt = CURRENT_TIMESTAMP
     `;
   //중복 (유니크키)발생시 에러처리를 업데이트문으로..
@@ -405,17 +405,18 @@ const insertAndDeleteRecentView = async (userId, productId) => {
   }
 };
 
-const getRecentView = (userId) => {
+const getRecentView = async (userId) => {
   const escapedUserId = mysql.escape(String(userId));
 
   const query = `
-  SELECT *
-  FROM recentviews
+  SELECT * 
+  FROM recentviews 
   WHERE userId = ${escapedUserId}
   `;
 
   try {
-    const [rows] = db.execute(query);
+    const [rows] = await db.execute(query);
+    console.log(rows);
     return rows;
   } catch (error) {
     throw new Error("Database query error: " + error.message);
