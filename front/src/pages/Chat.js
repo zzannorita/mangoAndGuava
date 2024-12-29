@@ -5,6 +5,7 @@ import chatTestImg from "../image/userImg.png";
 import mangoImg from "../image/logo.png";
 import chatRemove from "../image/x.png";
 import axiosInstance from "../axios";
+import Modal from "../components/Modal";
 
 const Chat = () => {
   const [message, setMessage] = useState(""); // 입력 메시지
@@ -128,6 +129,32 @@ const Chat = () => {
       console.error("채팅 내역 가져오기 실패:", error);
     }
   };
+
+  // //////////////////////////후기작성///////////////////
+  const [comment, setComment] = useState(false);
+  useEffect(() => {
+    axiosInstance
+      .get(`/comment/${selectedProductData.productId}`)
+      .then((response) => {
+        const data = response.data.data;
+        if (data.length > 0) {
+          setComment(true);
+        } else {
+          setComment(false);
+        }
+      });
+  }, [selectedProductData]);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleOpenModal = () => {
+    if (comment) {
+      alert("이미 후기가 작성되었습니다."); // 후기가 있으면 알림
+    } else {
+      setIsModalOpen(true); // 후기가 없으면 모달 열기
+      console.log("오픈 모달");
+    }
+  };
+  const handleCloseModal = () => setIsModalOpen(false);
 
   const handleSendMessage = () => {
     if (message.trim() !== "") {
@@ -324,7 +351,13 @@ const Chat = () => {
 
             {/* 채팅 내용 */}
             <div className={chatStyle.chattingBox}>
-              <div className={chatStyle.chatContentBox}>
+              <div
+                className={`${chatStyle.chatContentBox} ${
+                  selectedProductData.tradeState === "판매완료"
+                    ? chatStyle.disabledBox
+                    : ""
+                }`}
+              >
                 {selectedRoomId && (
                   <div className={chatStyle.chatContentTitleBox}>
                     <div className={chatStyle.chatContentNameBox}>
@@ -395,6 +428,7 @@ const Chat = () => {
                     </>
                   )}
                 </div>
+
                 <div className={chatStyle.chatContentDetailBox}>
                   {chatEach.length > 0 ? (
                     chatEach.map((message, index) => (
@@ -430,12 +464,14 @@ const Chat = () => {
                     <button
                       className={chatStyle.actionButton}
                       onClick={sendMessageAccount} // 계좌 전달 버튼 클릭 시
+                      disabled={selectedProductData.tradeState === "판매완료"}
                     >
                       계좌 전달
                     </button>
                     <button
                       className={chatStyle.actionButton}
                       onClick={sendMessageAddress} // 주소 전달 버튼 클릭 시
+                      disabled={selectedProductData.tradeState === "판매완료"}
                     >
                       주소 전달
                     </button>
@@ -446,12 +482,18 @@ const Chat = () => {
                       value={message}
                       onChange={handleChange}
                       onKeyDown={sendMessage}
-                      placeholder="메시지를 입력하세요..."
+                      placeholder={
+                        selectedProductData.tradeState === "판매완료"
+                          ? "판매가 완료되어 채팅이 비활성화 되었습니다."
+                          : "메시지를 입력하세요.."
+                      }
                       className={chatStyle.chatInput} // 스타일 클래스 추가
+                      disabled={selectedProductData.tradeState === "판매완료"}
                     />
                     <button
                       onClick={() => handleSendMessage()} // 버튼 클릭 시 메시지 전송
                       className={chatStyle.sendButton} // 스타일 클래스 추가
+                      disabled={selectedProductData.tradeState === "판매완료"}
                     >
                       <img
                         src={mangoImg} // 전송 버튼의 이미지 경로
@@ -462,6 +504,42 @@ const Chat = () => {
                   </div>
                 </div>
               )}
+              {/* 판매완료 메시지 */}
+              {selectedProductData.tradeState === "판매완료" && (
+                <div className={chatStyle.tradeCompleteOverlay}>
+                  {String(selectedProductData.buyerUserId) ===
+                  String(userId) ? (
+                    <div className={chatStyle.buyerMessage}>
+                      상품 판매가 완료되었습니다. <br />
+                      {comment ? (
+                        <button
+                          className={chatStyle.reviewButton}
+                          disabled={true}
+                        >
+                          이미 후기를 작성했어요.
+                        </button>
+                      ) : (
+                        <button
+                          className={chatStyle.reviewButton}
+                          onClick={() => handleOpenModal()}
+                        >
+                          후기 작성
+                        </button>
+                      )}
+                    </div>
+                  ) : (
+                    <div className={chatStyle.sellerMessage}>
+                      상품 판매가 완료되었습니다.
+                    </div>
+                  )}
+                </div>
+              )}
+              <Modal
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+                shopOwnerUserId={selectedProductData.userId} // 상점 주 userId 전달
+                purchasedProductId={selectedProductData.productId}
+              />
             </div>
           </div>
         </div>

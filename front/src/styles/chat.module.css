@@ -138,6 +138,46 @@
   display: flex;
   flex-direction: column;
   border-left: 1px solid #f1f1f1;
+
+  position: relative; /* 거래 완료 오버레이를 위해 */
+}
+
+.tradeCompleteOverlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.7); /* 반투명 배경 */
+  color: white;
+  text-align: center;
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 50; /* 블러 처리된 요소 위에 표시되도록 설정 */
+}
+
+.buyerMessage,
+.sellerMessage {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.reviewButton {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #ffe187;
+  /* color: white; */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.reviewButton:hover {
+  transform: scale(1.1); /* 호버시 버튼 살짝 커지게 */
+}
+
+.chatContentBox.disabledBox {
+  filter: blur(2px); /* 블러 처리 */
+  pointer-events: none; /* 클릭 금지 */
 }
 
 .chatContentBox {
