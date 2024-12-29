@@ -48,11 +48,12 @@ export default function Detail({ shopOwnerUserId }) {
   useEffect(() => {
     const checkLoginStatus = () => {
       const accessToken = Cookies.get("accessToken");
-      setIsLogin(!!accessToken); // 토큰이 있으면 로그인 상태로 설정
+      const loginStatus = !!accessToken;
+      setIsLogin(loginStatus);
     };
-    console.log("로그인 성공");
     checkLoginStatus();
   }, []);
+
   /////////////////////상점 및 채팅///////////////////////////
   const navigate = useNavigate();
   const handleEnterShop = () => navigate(`/yourShop?userId=${userId}`);

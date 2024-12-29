@@ -35,9 +35,6 @@ function Header() {
       const accessToken = Cookies.get("accessToken");
       const loginStatus = !!accessToken;
       setIsLogin(loginStatus);
-      if (loginStatus) {
-        console.log("로그인 성공"); //추후에 지울 예정
-      }
     };
     checkLoginStatus();
   }, []);
