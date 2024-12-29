@@ -2,12 +2,27 @@ import React, { useEffect, useState } from "react";
 import Category from "./Category";
 import RealTime from "./RealTime";
 import MainLayoutStyle from "../styles/mainLayout.module.css";
-import exImg from "../image/exImg.png";
+import exImg from "../image/camera.png";
 import eyeImg from "../image/eye.png";
 import axiosInstance from "../axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function MainLayout() {
+  // 현재 로그인된 사용자 정보 불러오기
+  const [nowUserId, setNowUserId] = useState(null);
+  useEffect(() => {
+    axiosInstance
+      .get("/user-data")
+      .then((response) => {
+        const data = response.data;
+        setNowUserId(data.user);
+      })
+      .catch((error) => {
+        console.log("로그인되지 않은 사용자입니다.");
+        setNowUserId(null);
+      });
+  }, []);
+
   //경로 변경시마다 렌더링
   const location = useLocation();
   const [productId, setProductId] = useState([]);
@@ -34,12 +49,12 @@ export default function MainLayout() {
           return axiosInstance.get(`/detail?itemId=${id}`).then((response) => {
             const images = response.data.product[0].images || [];
             const image = images[0] || exImg;
-            return image;
+            return { id, image };
           });
         });
 
         const images = await Promise.all(imageArray);
-        setProductImage(images);
+        setProductImage(images.reverse());
       } catch (error) {
         console.error("이미지 로드 에러:", error);
       }
@@ -47,6 +62,12 @@ export default function MainLayout() {
 
     fetchProductImages();
   }, [productId]);
+
+  const navigate = useNavigate();
+  const handleImgClick = (id) => {
+    navigate(`/detail?itemId=${id}`);
+  };
+
   return (
     <div className="container">
       <div className={MainLayoutStyle.container}>
@@ -63,14 +84,19 @@ export default function MainLayout() {
             ></img>
           </div>
           <div className={MainLayoutStyle.recentImgBox}>
-            {productImage.length > 0 ? (
-              productImage.map((image, index) => (
+            {!nowUserId ? (
+              <div className={MainLayoutStyle.noRecentView}>
+                로그인 후 <div>이용해주세요.</div>
+              </div>
+            ) : productImage.length > 0 ? (
+              productImage.map((item, index) => (
                 <img
                   key={index}
                   className={MainLayoutStyle.imageImg}
-                  src={image}
-                  alt="imageImg"
-                ></img>
+                  src={item.image}
+                  alt={`imageImg-${index}`}
+                  onClick={() => handleImgClick(item.id)}
+                />
               ))
             ) : (
               <div className={MainLayoutStyle.noRecentView}>
