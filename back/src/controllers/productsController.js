@@ -97,7 +97,9 @@ const handleProductBookmark = async (req, res) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
 
   if (!accessToken) {
-    return res.status(401).json({ message: "No access token provided" });
+    return res
+      .status(401)
+      .json({ message: "No access token provided", errorType: "NO_TOKEN" });
   }
 
   try {
@@ -122,8 +124,11 @@ const handleProductBookmark = async (req, res) => {
     });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      // 액세스 토큰 만료 처리
-      return res.status(401).json({ message: "Token expired" });
+      const errorMessage =
+        error.response.data.error === "invalid_token"
+          ? { message: "Invalid access token", errorType: "INVALID_TOKEN" }
+          : { message: "Token expired", errorType: "TOKEN_EXPIRED" };
+      return res.status(401).json(errorMessage);
     }
 
     // 다른 에러 처리
@@ -171,7 +176,9 @@ const getBookmarkList = async (req, res) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
 
   if (!accessToken) {
-    return res.status(401).json({ message: "No access token provided" });
+    return res
+      .status(401)
+      .json({ message: "No access token provided", errorType: "NO_TOKEN" });
   }
 
   try {
@@ -192,8 +199,13 @@ const getBookmarkList = async (req, res) => {
     });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      return res.status(401).json({ message: "Token expired" });
+      const errorMessage =
+        error.response.data.error === "invalid_token"
+          ? { message: "Invalid access token", errorType: "INVALID_TOKEN" }
+          : { message: "Token expired", errorType: "TOKEN_EXPIRED" };
+      return res.status(401).json(errorMessage);
     }
+
     return res
       .status(500)
       .json({ message: "Failed to fetch user data", error: error.message });
@@ -248,7 +260,9 @@ const updateProductByState = async (req, res) => {
   const productId = req.params.productId;
 
   if (!accessToken) {
-    return res.status(401).json({ message: "No access token provided" });
+    return res
+      .status(401)
+      .json({ message: "No access token provided", errorType: "NO_TOKEN" });
   }
 
   try {
@@ -271,10 +285,12 @@ const updateProductByState = async (req, res) => {
     });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      // 액세스 토큰 만료 처리
-      return res.status(401).json({ message: "Token expired" });
+      const errorMessage =
+        error.response.data.error === "invalid_token"
+          ? { message: "Invalid access token", errorType: "INVALID_TOKEN" }
+          : { message: "Token expired", errorType: "TOKEN_EXPIRED" };
+      return res.status(401).json(errorMessage);
     }
-
     // 다른 에러 처리
     console.error(error);
     return res.status(500).json({ message: "Failed to fetch user data" });
@@ -287,7 +303,9 @@ const updateProductByBuyerUserId = async (req, res) => {
   const productId = req.params.productId;
 
   if (!accessToken) {
-    return res.status(401).json({ message: "No access token provided" });
+    return res
+      .status(401)
+      .json({ message: "No access token provided", errorType: "NO_TOKEN" });
   }
 
   try {
@@ -310,8 +328,11 @@ const updateProductByBuyerUserId = async (req, res) => {
     });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      // 액세스 토큰 만료 처리
-      return res.status(401).json({ message: "Token expired" });
+      const errorMessage =
+        error.response.data.error === "invalid_token"
+          ? { message: "Invalid access token", errorType: "INVALID_TOKEN" }
+          : { message: "Token expired", errorType: "TOKEN_EXPIRED" };
+      return res.status(401).json(errorMessage);
     }
 
     // 다른 에러 처리

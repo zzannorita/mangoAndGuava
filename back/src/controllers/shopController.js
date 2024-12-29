@@ -38,7 +38,9 @@ const uploadProduct = async (req, res) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
 
   if (!accessToken) {
-    return res.status(401).json({ message: "No access token provided" });
+    return res
+      .status(401)
+      .json({ message: "No access token provided", errorType: "NO_TOKEN" });
   }
 
   try {
@@ -88,7 +90,11 @@ const uploadProduct = async (req, res) => {
     });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      return res.status(401).json({ message: "Token expired" });
+      const errorMessage =
+        error.response.data.error === "invalid_token"
+          ? { message: "Invalid access token", errorType: "INVALID_TOKEN" }
+          : { message: "Token expired", errorType: "TOKEN_EXPIRED" };
+      return res.status(401).json(errorMessage);
     }
     return res
       .status(500)
@@ -100,7 +106,9 @@ const updateProduct = async (req, res) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
 
   if (!accessToken) {
-    return res.status(401).json({ message: "No access token provided" });
+    return res
+      .status(401)
+      .json({ message: "No access token provided", errorType: "NO_TOKEN" });
   }
 
   try {
@@ -129,8 +137,11 @@ const updateProduct = async (req, res) => {
     });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      // 액세스 토큰 만료 처리
-      return res.status(401).json({ message: "Token expired" });
+      const errorMessage =
+        error.response.data.error === "invalid_token"
+          ? { message: "Invalid access token", errorType: "INVALID_TOKEN" }
+          : { message: "Token expired", errorType: "TOKEN_EXPIRED" };
+      return res.status(401).json(errorMessage);
     }
 
     // 다른 에러 처리
@@ -142,7 +153,9 @@ const updateProduct = async (req, res) => {
 const getMyShopData = async (req, res) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
   if (!accessToken) {
-    return res.status(401).json({ message: "No access token provided" });
+    return res
+      .status(401)
+      .json({ message: "No access token provided", errorType: "NO_TOKEN" });
   }
   try {
     const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
@@ -179,8 +192,11 @@ const getMyShopData = async (req, res) => {
     });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      // 액세스 토큰 만료 처리
-      return res.status(401).json({ message: "Token expired" });
+      const errorMessage =
+        error.response.data.error === "invalid_token"
+          ? { message: "Invalid access token", errorType: "INVALID_TOKEN" }
+          : { message: "Token expired", errorType: "TOKEN_EXPIRED" };
+      return res.status(401).json(errorMessage);
     }
 
     // 다른 에러 처리
@@ -194,7 +210,9 @@ const updateShopInfo = async (req, res) => {
   const shopInfo = req.body.shopInfo;
 
   if (!accessToken) {
-    return res.status(401).json({ message: "No access token provided" });
+    return res
+      .status(401)
+      .json({ message: "No access token provided", errorType: "NO_TOKEN" });
   }
 
   try {
@@ -211,10 +229,12 @@ const updateShopInfo = async (req, res) => {
     return res.status(200).json({ code: "SUCCESS_UPDATE_SHOPINFO" });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      // 액세스 토큰 만료 처리
-      return res.status(401).json({ message: "Token expired" });
+      const errorMessage =
+        error.response.data.error === "invalid_token"
+          ? { message: "Invalid access token", errorType: "INVALID_TOKEN" }
+          : { message: "Token expired", errorType: "TOKEN_EXPIRED" };
+      return res.status(401).json(errorMessage);
     }
-
     // 다른 에러 처리
     console.error(error);
     return res.status(500).json({ message: "Failed to fetch user data" });
@@ -234,11 +254,6 @@ const getShopData = async (req, res) => {
       shopCommentData,
     });
   } catch (error) {
-    if (error.response && error.response.status === 401) {
-      // 액세스 토큰 만료 처리
-      return res.status(401).json({ message: "Token expired" });
-    }
-
     // 다른 에러 처리
     console.error(error);
     return res.status(500).json({ message: "Failed to fetch user data" });
@@ -252,7 +267,9 @@ const updateUserInfo = async (req, res) => {
   const account = req.body.account;
 
   if (!accessToken) {
-    return res.status(401).json({ message: "No access token provided" });
+    return res
+      .status(401)
+      .json({ message: "No access token provided", errorType: "NO_TOKEN" });
   }
 
   try {
@@ -274,8 +291,11 @@ const updateUserInfo = async (req, res) => {
     return res.status(200).json({ code: "SUCCESS_UPDATE_USERINFO" });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      // 액세스 토큰 만료 처리
-      return res.status(401).json({ message: "Token expired" });
+      const errorMessage =
+        error.response.data.error === "invalid_token"
+          ? { message: "Invalid access token", errorType: "INVALID_TOKEN" }
+          : { message: "Token expired", errorType: "TOKEN_EXPIRED" };
+      return res.status(401).json(errorMessage);
     }
 
     // 다른 에러 처리
@@ -289,7 +309,9 @@ const addBookmark = async (req, res) => {
   const bookmarkUserId = req.body.sellerId;
 
   if (!accessToken) {
-    return res.status(401).json({ message: "No access token provided" });
+    return res
+      .status(401)
+      .json({ message: "No access token provided", errorType: "NO_TOKEN" });
   }
 
   try {
@@ -306,8 +328,11 @@ const addBookmark = async (req, res) => {
     return res.status(200).json({ code: "SUCCESS_INSERT_BOOKMARK" });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      // 액세스 토큰 만료 처리
-      return res.status(401).json({ message: "Token expired" });
+      const errorMessage =
+        error.response.data.error === "invalid_token"
+          ? { message: "Invalid access token", errorType: "INVALID_TOKEN" }
+          : { message: "Token expired", errorType: "TOKEN_EXPIRED" };
+      return res.status(401).json(errorMessage);
     }
 
     // 다른 에러 처리
@@ -323,7 +348,9 @@ const addShopComment = async (req, res) => {
   const avg = req.body.avg;
   const purchasedProductId = req.body.purchasedProductId;
   if (!accessToken) {
-    return res.status(401).json({ message: "No access token provided" });
+    return res
+      .status(401)
+      .json({ message: "No access token provided", errorType: "NO_TOKEN" });
   }
 
   try {
@@ -347,8 +374,11 @@ const addShopComment = async (req, res) => {
     return res.status(200).json({ code: "SUCCESS_INSERT_SHOP_COMMENT" });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      // 액세스 토큰 만료 처리
-      return res.status(401).json({ message: "Token expired" });
+      const errorMessage =
+        error.response.data.error === "invalid_token"
+          ? { message: "Invalid access token", errorType: "INVALID_TOKEN" }
+          : { message: "Token expired", errorType: "TOKEN_EXPIRED" };
+      return res.status(401).json(errorMessage);
     }
 
     // 다른 에러 처리
@@ -359,6 +389,11 @@ const addShopComment = async (req, res) => {
 
 const getCommentData = async (req, res) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
+  if (!accessToken) {
+    return res
+      .status(401)
+      .json({ message: "No access token provided", errorType: "NO_TOKEN" });
+  }
   const productId = req.params.productId;
   try {
     const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
@@ -375,8 +410,11 @@ const getCommentData = async (req, res) => {
       .json({ code: "SUCCESS_UPDATE_USERINFO", data: commentData });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      // 액세스 토큰 만료 처리
-      return res.status(401).json({ message: "Token expired" });
+      const errorMessage =
+        error.response.data.error === "invalid_token"
+          ? { message: "Invalid access token", errorType: "INVALID_TOKEN" }
+          : { message: "Token expired", errorType: "TOKEN_EXPIRED" };
+      return res.status(401).json(errorMessage);
     }
 
     // 다른 에러 처리
@@ -387,6 +425,11 @@ const getCommentData = async (req, res) => {
 
 const deleteBookmark = async (req, res) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
+  if (!accessToken) {
+    return res
+      .status(401)
+      .json({ message: "No access token provided", errorType: "NO_TOKEN" });
+  }
   const deluserId = req.query.deluserId;
 
   try {
@@ -401,8 +444,11 @@ const deleteBookmark = async (req, res) => {
     res.status(200).json({ code: "SUCCESS_DELETE_BOOKMARK" });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      // 액세스 토큰 만료 처리
-      return res.status(401).json({ message: "Token expired" });
+      const errorMessage =
+        error.response.data.error === "invalid_token"
+          ? { message: "Invalid access token", errorType: "INVALID_TOKEN" }
+          : { message: "Token expired", errorType: "TOKEN_EXPIRED" };
+      return res.status(401).json(errorMessage);
     }
 
     // 다른 에러 처리
@@ -415,6 +461,12 @@ const addOrUpdateRecentView = async (req, res) => {
   const productId = req.body.productId;
 
   const accessToken = req.headers.authorization?.split(" ")[1];
+
+  if (!accessToken) {
+    return res
+      .status(401)
+      .json({ message: "No access token provided", errorType: "NO_TOKEN" });
+  }
 
   try {
     const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
@@ -429,8 +481,11 @@ const addOrUpdateRecentView = async (req, res) => {
     res.status(200).json({ code: "SUCCESS_ADDORUPDATE_RECENT_VIEW" });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      // 액세스 토큰 만료 처리
-      return res.status(401).json({ message: "Token expired" });
+      const errorMessage =
+        error.response.data.error === "invalid_token"
+          ? { message: "Invalid access token", errorType: "INVALID_TOKEN" }
+          : { message: "Token expired", errorType: "TOKEN_EXPIRED" };
+      return res.status(401).json(errorMessage);
     }
     // 다른 에러 처리
     console.error(error);
@@ -440,6 +495,12 @@ const addOrUpdateRecentView = async (req, res) => {
 
 const getRecentView = async (req, res) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
+
+  if (!accessToken) {
+    return res
+      .status(401)
+      .json({ message: "No access token provided", errorType: "NO_TOKEN" });
+  }
 
   try {
     const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
@@ -456,8 +517,11 @@ const getRecentView = async (req, res) => {
       .json({ code: "SUCCESS_GET_RECENT_VIEW", data: recentViewsData });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      // 액세스 토큰 만료 처리
-      return res.status(401).json({ message: "Token expired" });
+      const errorMessage =
+        error.response.data.error === "invalid_token"
+          ? { message: "Invalid access token", errorType: "INVALID_TOKEN" }
+          : { message: "Token expired", errorType: "TOKEN_EXPIRED" };
+      return res.status(401).json(errorMessage);
     }
     // 다른 에러 처리
     console.error(error);
