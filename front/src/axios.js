@@ -29,6 +29,7 @@ axiosInstance.interceptors.response.use(
     if (
       error.response &&
       error.response.status === 401 &&
+      error.response.data.errorType === "TOKEN_EXPIRED" &&
       !originalRequest._retry // 재시도 플래그 추가로 무한 루프 방지
     ) {
       originalRequest._retry = true; // 재시도 여부 설정
