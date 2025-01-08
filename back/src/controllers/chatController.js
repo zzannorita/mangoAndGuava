@@ -7,7 +7,9 @@ const handleChatAndProduct = async (req, res) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
 
   if (!accessToken) {
-    return res.status(401).json({ message: "No access token provided" });
+    return res
+      .status(401)
+      .json({ message: "No access token provided", errorType: "NO_TOKEN" });
   }
 
   try {
@@ -23,8 +25,11 @@ const handleChatAndProduct = async (req, res) => {
     const sellerId = req.body.userId;
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      // 액세스 토큰 만료 처리
-      return res.status(401).json({ message: "Token expired" });
+      const errorMessage =
+        error.response.data.error === "invalid_token"
+          ? { message: "Invalid access token", errorType: "INVALID_TOKEN" }
+          : { message: "Token expired", errorType: "TOKEN_EXPIRED" };
+      return res.status(401).json(errorMessage);
     }
 
     // 다른 에러 처리
@@ -37,7 +42,9 @@ const getMyChatList = async (req, res) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
 
   if (!accessToken) {
-    return res.status(401).json({ message: "No access token provided" });
+    return res
+      .status(401)
+      .json({ message: "No access token provided", errorType: "NO_TOKEN" });
   }
 
   try {
@@ -78,8 +85,11 @@ const getMyChatList = async (req, res) => {
     });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      // 액세스 토큰 만료 처리
-      return res.status(401).json({ message: "Token expired" });
+      const errorMessage =
+        error.response.data.error === "invalid_token"
+          ? { message: "Invalid access token", errorType: "INVALID_TOKEN" }
+          : { message: "Token expired", errorType: "TOKEN_EXPIRED" };
+      return res.status(401).json(errorMessage);
     }
 
     // 다른 에러 처리
@@ -92,7 +102,9 @@ const getChatEach = async (req, res) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
 
   if (!accessToken) {
-    return res.status(401).json({ message: "No access token provided" });
+    return res
+      .status(401)
+      .json({ message: "No access token provided", errorType: "NO_TOKEN" });
   }
 
   try {
@@ -115,8 +127,11 @@ const getChatEach = async (req, res) => {
     });
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      // 액세스 토큰 만료 처리
-      return res.status(401).json({ message: "Token expired" });
+      const errorMessage =
+        error.response.data.error === "invalid_token"
+          ? { message: "Invalid access token", errorType: "INVALID_TOKEN" }
+          : { message: "Token expired", errorType: "TOKEN_EXPIRED" };
+      return res.status(401).json(errorMessage);
     }
 
     // 다른 에러 처리

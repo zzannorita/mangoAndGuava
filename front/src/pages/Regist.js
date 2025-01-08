@@ -257,20 +257,25 @@ export default function Regist() {
         </div>
         <div className={registStyle.commonContainer}>
           <div className={registStyle.registName}>가격</div>
-          <input
-            value={productPrice}
-            onChange={(e) => setProductPrice(e.target.value)}
-            className={registStyle.registInputBox}
-            placeholder="가격을 입력해주세요.(원)"
-          />
-          <div className={registStyle.deliveryFeeBox}>
-            <div>배송비포함 </div>
-            <img
-              className={registStyle.checkImg}
-              src={isShippingFee === "true" ? checkFillImg : checkEmptyImg}
-              alt={isShippingFee === "true" ? "checkFillImg" : "checkEmptyImg"}
-              onClick={imageCheckHandler}
+          <div className={registStyle.registPriceBox}>
+            <input
+              type="number"
+              value={productPrice}
+              onChange={(e) => setProductPrice(e.target.value)}
+              className={registStyle.registPriceInputBox}
+              placeholder="가격을 입력해주세요.(원)"
             />
+            <div className={registStyle.deliveryFeeBox}>
+              <div>배송비포함 </div>
+              <img
+                className={registStyle.checkImg}
+                src={isShippingFee === "true" ? checkFillImg : checkEmptyImg}
+                alt={
+                  isShippingFee === "true" ? "checkFillImg" : "checkEmptyImg"
+                }
+                onClick={imageCheckHandler}
+              />
+            </div>
           </div>
         </div>
         <div className={registStyle.commonContainer}>

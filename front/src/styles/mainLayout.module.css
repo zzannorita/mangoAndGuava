@@ -41,11 +41,21 @@
 }
 
 .imageImg {
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
   margin-bottom: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  padding: 20px;
+  padding: 15px;
   background-color: #f1f1f1;
+}
+
+.noRecentView {
+  padding: 10px;
+  color: #555;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

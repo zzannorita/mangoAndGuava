@@ -34,8 +34,9 @@
 
 .heartAlarm {
   position: absolute;
-  top: 80px;
-  right: 15px;
+  top: 32%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background-color: #f9f9f9;
   border: 1px solid #f1f1f1;
   border-radius: 15px;
@@ -86,7 +87,7 @@
 
 .overlay {
   position: absolute;
-  top: 35%;
+  top: 32%;
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: rgba(0, 0, 0, 0.3);
