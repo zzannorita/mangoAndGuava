@@ -62,7 +62,7 @@ export default function Settings() {
 
   useEffect(() => {
     axiosInstance
-      .get("/myshop")
+      .get("/myShop")
       .then((response) => {
         const shopData = response.data;
         const { userData } = shopData;
@@ -135,19 +135,18 @@ export default function Settings() {
               >
                 주소 찾기
               </button>
-              {!isOpen &&
-                ReactDOM.createPortal(
-                  <div className={settingsStyle.postCodeBox}>
-                    <PostCode
-                      onComplete={completeHandler}
-                      onClose={closeHandler}
-                    />
-                  </div>,
-                  document.body
-                )}
+              {!isOpen && (
+                <div className={settingsStyle.postCodeBox}>
+                  <PostCode
+                    onComplete={completeHandler}
+                    onClose={closeHandler}
+                    className={settingsStyle.postCodeInner}
+                  />
+                </div>
+              )}
             </div>
             <div
-              className={settingsStyle.commonInputBox}
+              className={settingsStyle.commonDivBox}
               onChange={handleAddressChange}
             >
               {address}
