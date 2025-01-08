@@ -5,22 +5,28 @@ import MainLayoutStyle from "../styles/mainLayout.module.css";
 import exImg from "../image/camera.png";
 import eyeImg from "../image/eye.png";
 import axiosInstance from "../axios";
+import Cookies from "js-cookie";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export default function MainLayout() {
   // 현재 로그인된 사용자 정보 불러오기
   const [nowUserId, setNowUserId] = useState(null);
   useEffect(() => {
-    axiosInstance
-      .get("/user-data")
-      .then((response) => {
-        const data = response.data;
-        setNowUserId(data.user);
-      })
-      .catch((error) => {
-        console.log("로그인되지 않은 사용자입니다.");
-        setNowUserId(null);
-      });
+    const accessToken = Cookies.get("accessToken");
+    if (accessToken) {
+      axiosInstance
+        .get("/user-data")
+        .then((response) => {
+          const data = response.data;
+          setNowUserId(data.user);
+        })
+        .catch((error) => {
+          console.log("로그인되지 않은 사용자입니다.");
+          setNowUserId(null);
+        });
+    } else {
+      setNowUserId("test");
+    }
   }, []);
 
   //경로 변경시마다 렌더링
@@ -28,17 +34,22 @@ export default function MainLayout() {
   const [productId, setProductId] = useState([]);
   const [productImage, setProductImage] = useState([]);
   useEffect(() => {
-    axiosInstance
-      .get("/recent-view")
-      .then((response) => {
-        const data = response.data.data;
-        const productIdArray = data.map((item) => item.productId);
-        const productId = [...new Set(productIdArray)];
-        setProductId(productId);
-      })
-      .catch((error) => {
-        console.error("최근본상품 에러:", error);
-      });
+    const accessToken = Cookies.get("accessToken");
+    if (accessToken) {
+      axiosInstance
+        .get("/recent-view")
+        .then((response) => {
+          const data = response.data.data;
+          const productIdArray = data.map((item) => item.productId);
+          const productId = [...new Set(productIdArray)];
+          setProductId(productId);
+        })
+        .catch((error) => {
+          console.error("최근본상품 에러:", error);
+        });
+    } else {
+      setProductId([]);
+    }
   }, [location.pathname]);
 
   useEffect(() => {

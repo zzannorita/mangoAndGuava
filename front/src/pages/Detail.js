@@ -149,29 +149,39 @@ export default function Detail({ shopOwnerUserId }) {
   // 현재 로그인된 사용자 정보 불러오기
   const [nowUserId, setNowUserId] = useState(null); // 기본값을 null로 설정
   useEffect(() => {
-    axiosInstance
-      .get("/user-data")
-      .then((response) => {
-        const data = response.data;
-        setNowUserId(data.user); // 로그인된 사용자 정보 저장
-      })
-      .catch((error) => {
-        console.log("로그인되지 않은 사용자입니다.");
-        setNowUserId(null); // 로그인되지 않았을 때 null 처리
-      });
+    const accessToken = Cookies.get("accessToken");
+    if (accessToken) {
+      axiosInstance
+        .get("/user-data")
+        .then((response) => {
+          const data = response.data;
+          setNowUserId(data.user); // 로그인된 사용자 정보 저장
+        })
+        .catch((error) => {
+          console.log("로그인되지 않은 사용자입니다.");
+          setNowUserId(null); // 로그인되지 않았을 때 null 처리
+        });
+    } else {
+      setNowUserId("test");
+    }
   }, []);
 
   // //////////////////////////후기작성///////////////////
   const [comment, setComment] = useState(false);
   useEffect(() => {
-    axiosInstance.get(`/comment/${productId}`).then((response) => {
-      const data = response.data.data;
-      if (data.length > 0) {
-        setComment(true);
-      } else {
-        setComment(false);
-      }
-    });
+    const accessToken = Cookies.get("accessToken");
+    if (accessToken) {
+      axiosInstance.get(`/comment/${productId}`).then((response) => {
+        const data = response.data.data;
+        if (data.length > 0) {
+          setComment(true);
+        } else {
+          setComment(false);
+        }
+      });
+    } else {
+      setComment(false);
+    }
   }, [productId]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -191,20 +201,24 @@ export default function Detail({ shopOwnerUserId }) {
   //찜돼있는 상태 동기화 하는 useEffect 함수
   useEffect(() => {
     const getBookmarkList = async () => {
-      try {
-        const response = await axiosInstance.post("product/bookmark/user");
-        const bookmarkList = response.data?.data || [];
-        console.log("테스트", bookmarkList.length);
-        if (bookmarkList.length > 0) {
-          //내부에 존재할 경우
-          bookmarkList.map((item) => {
-            if (productId === item.productId) {
-              setClickedHeart(false);
-            }
-          });
+      const accessToken = Cookies.get("accessToken");
+      if (accessToken) {
+        try {
+          const response = await axiosInstance.post("product/bookmark/user");
+          const bookmarkList = response.data?.data || [];
+          console.log("테스트", bookmarkList.length);
+          if (bookmarkList.length > 0) {
+            //내부에 존재할 경우
+            bookmarkList.map((item) => {
+              if (productId === item.productId) {
+                setClickedHeart(false);
+              }
+            });
+          }
+        } catch (error) {
+          console.error("찜상태 동기화 오류", error);
         }
-      } catch (error) {
-        console.error("찜상태 동기화 오류", error);
+      } else {
       }
     };
     getBookmarkList();
@@ -235,7 +249,10 @@ export default function Detail({ shopOwnerUserId }) {
 
   //최근본 상품
   useEffect(() => {
-    axiosInstance.post("recent-view", { productId });
+    const accessToken = Cookies.get("accessToken");
+    if (accessToken) {
+      axiosInstance.post("recent-view", { productId });
+    }
   });
   return (
     <div className="container">

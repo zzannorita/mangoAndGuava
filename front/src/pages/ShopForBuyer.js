@@ -3,10 +3,11 @@ import shopStyle from "../styles/shop.module.css";
 import axiosInstance from "../axios";
 import RatingAvg from "../components/RatingAvg";
 import userImg from "../image/userImg.png";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import ProductList from "../components/ProductList";
 import OthersReview from "./OthersReview";
 import sortProducts from "../utils/sortUtils";
+import Cookies from "js-cookie";
 
 export default function ShopForBuyer() {
   //쿼리파라미터에서 sellerId가져오기
@@ -28,27 +29,32 @@ export default function ShopForBuyer() {
 
   //이미 팔로우 되어있을 시
   useEffect(() => {
-    axiosInstance
-      .get("/myShop")
-      .then((response) => {
-        const data = response.data.bookmarkUser;
-        if (data.includes(sellerId)) {
-          setFollowSeller(true);
-        }
-      })
-      .catch((error) => {
-        console.error("팔로우 상태 확인 중 오류 발생:", error);
-      });
+    const accessToken = Cookies.get("accessToken");
+    if (accessToken) {
+      axiosInstance
+        .get("/myShop")
+        .then((response) => {
+          const data = response.data.bookmarkUser;
+          if (data.includes(sellerId)) {
+            setFollowSeller(true);
+          }
+        })
+        .catch((error) => {
+          console.error("팔로우 상태 확인 중 오류 발생:", error);
+        });
+    } else {
+    }
   }, [sellerId]);
 
   //팔로우 핸들러
+  const navigate = useNavigate();
   const handleFollowClick = async () => {
-    // const token = Cookies.get("accessToken"); // 로그인 여부 확인
-    // if (!token) {
-    //   alert("로그인 후 이용해주세요.");
-    //   navigate("/");
-    //   return;
-    // }
+    const accessToken = Cookies.get("accessToken"); // 로그인 여부 확인
+    if (!accessToken) {
+      alert("로그인 후 이용해주세요.");
+      navigate("/");
+      return;
+    }
     try {
       if (followSeller) {
         const response = await axiosInstance.delete(
@@ -76,25 +82,27 @@ export default function ShopForBuyer() {
 
   useEffect(() => {
     // 상점 정보 가져오기
+
     axiosInstance
       .get(`/shop?id=${sellerId}`)
       .then((response) => {
         const data = response.data;
         const shopData = data.shopData[0];
-        console.log(shopData);
-        ///촐///
-        axiosInstance
-          .get(`/user-data/other?userId=${shopData.userId}`)
-          .then((response) => {
-            //console.log(response.data.user.nickname2);
-            // setSellerNickName(response.data.user.nickname2);
-            ///율///
-            const nickname = response.data.user.nickname2;
-            setSellerNickName(nickname || shopData.userId);
-            const profileImg = response.data.user.profileImage;
-            setProfileImg(profileImg);
-          });
-        ////////
+        const accessToken = Cookies.get("accessToken");
+        if (accessToken) {
+          axiosInstance
+            .get(`/user-data/other?userId=${shopData.userId}`)
+            .then((response) => {
+              const nickname = response.data.user.nickname2;
+              setSellerNickName(nickname || shopData.userId);
+              const profileImg = response.data.user.profileImage;
+              setProfileImg(profileImg);
+            });
+        } else {
+          setSellerNickName(shopData.userId);
+          setProfileImg(profileImg);
+        }
+
         setDescription(shopData.shopInfo);
         setProducts(data.shopProducts);
         const shopComment = data.shopCommentData;
@@ -111,9 +119,9 @@ export default function ShopForBuyer() {
       .catch((error) => console.log("데이터 가져오기 실패", error));
   }, [sellerId]);
 
+  //선택된 필터가 없을 때 전체
   useEffect(() => {
     if (!selectedFilter) {
-      //선택된 필터가 없을 때 전체
       setSelectedFilter("전체");
     }
   }, [selectedFilter]);

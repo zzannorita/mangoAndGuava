@@ -11,24 +11,31 @@ const ProductList = ({ products, type }) => {
 
   //자신의 제품 찜 방지를 위해 userId 가져오기
   const [userId, setUserId] = useState("");
-  useEffect(() => {
-    const fetchUserId = async () => {
-      try {
-        const response = await axiosInstance.get("/user-data");
-        const data = response.data.user;
-        setUserId(data.userId);
-      } catch (error) {
-        console.error("사용자 데이터를 가져오는 중 에러:", error);
-      }
-    };
-    fetchUserId();
-  }, []);
+  // useEffect(() => {
+  //   const fetchUserId = async () => {
+  //     const accessToken = Cookies.get("accessToken");
+  //     if (accessToken) {
+  //     }
+  //     try {
+  //       const response = await axiosInstance.get("/user-data");
+  //       const data = response.data.user;
+  //       setUserId(data.userId);
+  //     } catch (error) {
+  //       console.error("사용자 데이터를 가져오는 중 에러:", error);
+  //     }
+  //   };
+  //   fetchUserId();
+  // }, []);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
       const accessToken = Cookies.get("accessToken");
       if (accessToken) {
         try {
+          const userResponse = await axiosInstance.get("/user-data");
+          const userData = userResponse.data.user;
+          setUserId(userData.userId);
+
           const response = await axiosInstance.post(
             "http://localhost:3001/product/bookmark/user"
           );
@@ -46,6 +53,7 @@ const ProductList = ({ products, type }) => {
           console.error("Bookmark 데이터를 불러오는 중 에러 발생:", error);
         }
       } else {
+        setUserId("test");
         setUpdatedProducts(products); // 로그인 상태가 아니면 원래 products 사용
       }
     };
