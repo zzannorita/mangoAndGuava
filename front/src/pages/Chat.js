@@ -18,6 +18,7 @@ const Chat = () => {
   const [selectedOtherUserData, setSelectedOtherUserData] = useState([]);
   const [selectedUserData, setSelectedUserData] = useState([]);
   const socket = useRef(null); // WebSocket 연결, 수신, 해제 등 리렌더랑 방지
+  const chatContentRef = useRef(null); //채팅 스크롤참조 위함
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -25,27 +26,82 @@ const Chat = () => {
   //채팅하기 눌러서 온 변수들
   const { ownerUserId = null, productId = null } = location.state || {}; //디테일 페이지에서 온 정보
 
+  // 채팅 내용이 업데이트될 때마다 스크롤을 맨 아래로 내리기
+  useEffect(() => {
+    if (chatContentRef.current) {
+      chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
+    }
+  }, [chatEach]); // 채팅내역이 업데이트될 때마다 실행
+
   // WebSocket 연결
   useEffect(() => {
-    socket.current = new WebSocket("ws://localhost:3001");
+    let reconnectAttempts = 0;
+    let isWebSocketConnected = false; // WebSocket 연결 여부를 추적
 
-    // WebSocket 열리면 userId 전달 (인증)
-    socket.current.onopen = () => {
-      socket.current.send(JSON.stringify({ type: "auth", userId }));
+    const connectWebSocket = () => {
+      if (socket.current && socket.current.readyState === WebSocket.OPEN) {
+        return; // 이미 연결되어 있으면 함수 종료
+      }
+
+      socket.current = new WebSocket("ws://localhost:3001");
+
+      // WebSocket 열리면 userId 전달 (인증)
+      socket.current.onopen = () => {
+        reconnectAttempts = 0; // 재연결 시도 횟수 초기화
+        isWebSocketConnected = true;
+        socket.current.send(JSON.stringify({ type: "auth", userId }));
+      };
+
+      // WebSocket으로 메시지 수신
+      socket.current.onmessage = (event) => {
+        const newMessage = JSON.parse(event.data);
+
+        const updatedMessage = {
+          room_id: newMessage.roomId,
+          user_from: newMessage.userFrom,
+          user_to: newMessage.userTo,
+          message: newMessage.content,
+          created_at: newMessage.timestamp,
+        };
+
+        if (
+          updatedMessage.room_id === selectedRoomId &&
+          String(userId) !== String(updatedMessage.user_from)
+        ) {
+          setChatEach((prevMessages) => [...prevMessages, updatedMessage]);
+        }
+      };
+
+      // WebSocket 연결이 닫혔을 때 재연결 시도
+      socket.current.onclose = () => {
+        isWebSocketConnected = false;
+        reconnectWebSocket();
+      };
+
+      // WebSocket 오류 발생 시 재연결 시도
+      socket.current.onerror = (error) => {
+        console.error("웹소켓 에러 발생 재연결 시도.");
+        socket.current.close();
+      };
     };
 
-    // WebSocket으로 메시지 수신
-    socket.current.onmessage = (event) => {
-      const newMessage = JSON.parse(event.data);
-
-      // 현재 선택된 채팅방에 해당하는 메시지면 추가
-      if (newMessage.roomId === selectedRoomId) {
-        setChatEach((prevMessages) => [...prevMessages, newMessage]);
+    const reconnectWebSocket = () => {
+      if (!isWebSocketConnected && reconnectAttempts < 10) {
+        reconnectAttempts++;
+        setTimeout(() => {
+          connectWebSocket();
+        }, reconnectAttempts * 1000); // 시도 횟수에 따라 지연 시간 증가
+      } else if (reconnectAttempts >= 10) {
+        console.error("WebSocket 재연결 실패. 최대 시도 횟수 초과.");
       }
     };
 
+    connectWebSocket(); // 처음 WebSocket 연결
+
     return () => {
-      socket.current.close();
+      if (socket.current) {
+        socket.current.close();
+      }
     };
   }, [userId, selectedRoomId]);
 
@@ -54,9 +110,9 @@ const Chat = () => {
     const roomId = userId + "-" + ownerUserId + "-" + productId;
     const newMessage = {
       type: "chat",
-      roomId: roomId,
-      user_from: userId,
-      user_to: ownerUserId,
+      room_id: roomId,
+      user_from: String(userId),
+      user_to: String(otherUserId),
       message: `${ownerUserId}님 상품 ${productId} 관련 채팅드립니다.`,
     };
 
@@ -90,7 +146,7 @@ const Chat = () => {
     };
 
     waitForConnection(sendMessage);
-  }, [ownerUserId, productId, userId, navigate]); // userId가 설정된 이후 실행
+  }, [ownerUserId, productId, userId]); // userId가 설정된 이후 실행
 
   // 채팅방 클릭 시 채팅 내역 가져오기
   const fetchChatRoomMessages = async (roomId, otherUser) => {
@@ -150,8 +206,7 @@ const Chat = () => {
     if (comment) {
       alert("이미 후기가 작성되었습니다."); // 후기가 있으면 알림
     } else {
-      setIsModalOpen(true); // 후기가 없으면 모달 열기
-      console.log("오픈 모달");
+      setIsModalOpen(true); // 후기가 없으면 모달 열기기
     }
   };
   const handleCloseModal = () => setIsModalOpen(false);
@@ -160,9 +215,9 @@ const Chat = () => {
     if (message.trim() !== "") {
       const newMessage = {
         type: "chat",
-        roomId: selectedRoomId,
-        user_from: userId,
-        user_to: otherUserId,
+        room_id: selectedRoomId,
+        user_from: String(userId),
+        user_to: String(otherUserId),
         message: message.trim(),
       };
 
@@ -178,9 +233,9 @@ const Chat = () => {
   const sendMessageAddress = () => {
     const addressMessage = {
       type: "chat",
-      roomId: selectedRoomId,
-      user_from: userId,
-      user_to: otherUserId,
+      room_id: selectedRoomId,
+      user_from: String(userId),
+      user_to: String(otherUserId),
       message: "주소 정보 : " + selectedUserData.address,
     };
 
@@ -194,9 +249,9 @@ const Chat = () => {
   const sendMessageAccount = () => {
     const AccountMessage = {
       type: "chat",
-      roomId: selectedRoomId,
-      user_from: userId,
-      user_to: otherUserId,
+      room_id: selectedRoomId,
+      user_from: String(userId),
+      user_to: String(otherUserId),
       message: "계좌 정보 : " + selectedUserData.account,
     };
 
@@ -429,7 +484,10 @@ const Chat = () => {
                   )}
                 </div>
 
-                <div className={chatStyle.chatContentDetailBox}>
+                <div
+                  className={chatStyle.chatContentDetailBox}
+                  ref={chatContentRef}
+                >
                   {chatEach.length > 0 ? (
                     chatEach.map((message, index) => (
                       <div

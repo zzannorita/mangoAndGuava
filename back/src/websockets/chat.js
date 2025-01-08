@@ -3,34 +3,51 @@ const db = require("../config/dbConfig"); // 데이터베이스 연결 가져오
 
 // WebSocket 관련 설정
 function setupWebSocket(server) {
+  const connectedChatClients = new Set();
+
   const wss = new Server({ server });
 
   // WebSocket 연결 이벤트
   wss.on("connection", (ws) => {
-    console.log("WebSocket client connected");
-
-    // 현재 연결된 클라이언트들 확인 테스트용
-    wss.clients.forEach((client) => {
-      console.log({
-        userId: client.userId,
-        readyState: client.readyState, // 연결 상태 (OPEN, CLOSED 등)
-      });
-    });
-
     // 각 클라이언트마다 고유한 userId 저장
     ws.on("message", async (data) => {
       try {
         const parsedData = JSON.parse(data);
         if (parsedData.type === "auth") {
-          ws.userId = parsedData.userId; // WebSocket 인스턴스에 userId 저장
+          if (parsedData.userId && parsedData.userId !== "") {
+            // userId가 유효할 경우에만 Set에 추가
+            if (
+              !Array.from(connectedChatClients).some(
+                (client) => client.userId === parsedData.userId
+              )
+            ) {
+              // Set에 해당 userId가 없으면 추가
+              ws.userId = parsedData.userId;
+              connectedChatClients.add(ws);
+              console.log(
+                "현재 연결된 userId 목록(중복 없음.):",
+                Array.from(connectedChatClients).map((client) => client.userId)
+              );
+            } else {
+              console.log("이미 연결된 userId:", parsedData.userId);
+              console.log(
+                "현재 연결된 userId 목록(중복 있음):",
+                Array.from(connectedChatClients).map((client) => client.userId)
+              );
+            }
+          } else {
+            console.log("유효하지 않은 userId");
+            console.log(
+              "현재 연결된 userId 목록(빈문자열):",
+              Array.from(connectedChatClients).map((client) => client.userId)
+            );
+          }
           return;
         }
 
+        // 기타 메시지 처리
         if (parsedData.type === "chat") {
-          console.log("채팅의 경우");
           handleChatMessage(parsedData);
-        } else if (parsedData.type === "like") {
-          console.log("찜하기 눌렀을경우");
         }
       } catch (error) {
         console.error("Error handling message:", error);
@@ -40,7 +57,7 @@ function setupWebSocket(server) {
 
     const handleChatMessage = async (parsedData) => {
       const {
-        roomId,
+        room_id: roomId,
         user_from: userFrom,
         user_to: userTo,
         message: content,
@@ -56,7 +73,8 @@ function setupWebSocket(server) {
       wss.clients.forEach((client) => {
         if (
           client.readyState === ws.OPEN &&
-          (client.userId === userTo || client.userId === userFrom)
+          (String(client.userId) === String(userTo) ||
+            String(client.userId) === String(userFrom))
         ) {
           client.send(
             JSON.stringify({
@@ -73,19 +91,16 @@ function setupWebSocket(server) {
 
     // 연결 종료 이벤트
     ws.on("close", () => {
-      console.log("WebSocket client disconnected");
+      connectedChatClients.delete(ws);
+      console.log("연결 종료:", ws.userId);
+      console.log(
+        "남은 연결된 userId 목록:",
+        Array.from(connectedChatClients).map((client) => client.userId)
+      );
     });
   });
 
-  console.log("WebSocket server setup complete");
-}
-
-function generateRoomId(userFrom, userTo, productId) {
-  // userFrom과 userTo를 정렬하여 일관된 순서로 조합
-  const sortedUsers = [userFrom, userTo].sort();
-  // room_id 생성
-  const roomId = `${sortedUsers[0]}_${sortedUsers[1]}_${productId}`;
-  return roomId;
+  console.log("웹소켓 서버 설정 완료");
 }
 
 module.exports = setupWebSocket;
