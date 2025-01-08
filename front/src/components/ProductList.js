@@ -11,22 +11,6 @@ const ProductList = ({ products, type }) => {
 
   //자신의 제품 찜 방지를 위해 userId 가져오기
   const [userId, setUserId] = useState("");
-  // useEffect(() => {
-  //   const fetchUserId = async () => {
-  //     const accessToken = Cookies.get("accessToken");
-  //     if (accessToken) {
-  //     }
-  //     try {
-  //       const response = await axiosInstance.get("/user-data");
-  //       const data = response.data.user;
-  //       setUserId(data.userId);
-  //     } catch (error) {
-  //       console.error("사용자 데이터를 가져오는 중 에러:", error);
-  //     }
-  //   };
-  //   fetchUserId();
-  // }, []);
-
   useEffect(() => {
     const checkLoginStatus = async () => {
       const accessToken = Cookies.get("accessToken");
