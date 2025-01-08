@@ -11,7 +11,7 @@ import Favorites from "./Favorites";
 import RatingAvg from "../components/RatingAvg";
 import axiosInstance from "../axios";
 import Cookies from "js-cookie";
-import sortProducts from "../utils/sortUtils";
+import { sortProducts } from "../utils/sortUtils";
 
 export default function Shop() {
   ////////////////////이미지 업로드//////////////////

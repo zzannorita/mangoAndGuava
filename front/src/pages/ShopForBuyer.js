@@ -6,7 +6,7 @@ import userImg from "../image/userImg.png";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import ProductList from "../components/ProductList";
 import OthersReview from "./OthersReview";
-import sortProducts from "../utils/sortUtils";
+import { sortProducts } from "../utils/sortUtils";
 import Cookies from "js-cookie";
 
 export default function ShopForBuyer() {

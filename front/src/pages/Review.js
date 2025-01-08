@@ -5,7 +5,7 @@ import RatingAvg from "../components/RatingAvg";
 import exImg from "../image/userImg.png";
 import axiosInstance from "../axios";
 import getRelativeTime from "../utils/getRelativeTime";
-import sortComments from "../utils/sortUtils";
+import { sortComments } from "../utils/sortUtils";
 export default function Review() {
   const [comments, setComments] = useState([]);
   const [commentCount, setCommentCount] = useState("");
@@ -15,7 +15,6 @@ export default function Review() {
       .get("/myShop")
       .then((response) => {
         const data = response.data;
-        console.log(data);
         const commentCount = data.commentCount;
         setCommentCount(commentCount.ratingAvg);
         const commentData = data.commentData || [];
