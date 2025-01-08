@@ -97,12 +97,6 @@
   font-size: 16px;
 }
 
-.registInputBox::-webkit-outer-spin-button,
-.registInputBox::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
 .registContentInputBox {
   height: 200px;
   border: 1px solid #ccc;
@@ -133,6 +127,13 @@
   border: none;
   font-family: "Pretendard-Regular";
   font-size: 16px;
+  outline: none;
+}
+
+.registPriceInputBox::-webkit-outer-spin-button,
+.registPriceInputBox::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 .deliveryFeeBox {
   display: flex;
