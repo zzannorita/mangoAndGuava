@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState} from "react";
 import shopStyle from "../styles/shop.module.css";
 import userImage from "../image/userImg.png";
 import editImg from "../image/edit.png";
@@ -17,7 +16,6 @@ export default function Shop() {
   ////////////////////이미지 업로드//////////////////
   const [userImg, setUserImg] = useState(""); // 업로드된 이미지
   const [userExImg, setUserExImg] = useState(""); // 기본 이미지
-  const navigate = useNavigate();
   const imageUploadHandler = async (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -175,11 +173,7 @@ export default function Shop() {
         case "구매내역":
           return <ProductList products={sortedPurchasedProducts} />;
         case "찜한상품":
-          return (
-            <div>
-              <ProductList products={sortedBookmarkedProducts} />
-            </div>
-          );
+          return <ProductList products={sortedBookmarkedProducts} />;
         case "즐겨찾기":
           return <Favorites bookmarkUser={bookmarkUser} />;
         case "설정":
