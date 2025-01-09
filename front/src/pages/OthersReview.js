@@ -1,10 +1,20 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ReviewStyle from "../styles/review.module.css";
 import shopStyle from "../styles/shop.module.css";
 import RatingAvg from "../components/RatingAvg";
 import exImg from "../image/userImg.png";
 import getRelativeTime from "../utils/getRelativeTime";
+import { sortComments2 } from "../utils/sortUtils";
 export default function OthersReview({ shopComment }) {
+  const [sortedComments, setSortedComments] = useState([...shopComment]); // 초기 데이터 복사
+  const [sortType, setSortType] = useState("newest");
+
+  // 정렬 함수 호출
+  useEffect(() => {
+    const updatedComments = sortComments2([...shopComment], sortType);
+    setSortedComments(updatedComments);
+  }, [shopComment, sortType]);
+
   return (
     <div className={ReviewStyle.myProductsBox}>
       <div className={shopStyle.myProductsMainBox}>
@@ -21,18 +31,32 @@ export default function OthersReview({ shopComment }) {
             />
           </div>
           <div className={shopStyle.mainTopRightBox}>
-            <div className={shopStyle.filterTextBox}>별점높은순</div>
+            <div
+              className={shopStyle.filterTextBox}
+              onClick={() => setSortType("highest")}
+            >
+              별점높은순
+            </div>
             <span>|</span>
-            <div className={shopStyle.filterTextBox}>별점낮은순</div>
+            <div
+              className={shopStyle.filterTextBox}
+              onClick={() => setSortType("lowest")}
+            >
+              별점낮은순
+            </div>
           </div>
         </div>
-        {shopComment && shopComment.length > 0 ? (
-          shopComment.map((comment, index) => (
+        {sortedComments && sortedComments.length > 0 ? (
+          sortedComments.map((comment, index) => (
             <div key={index} className={ReviewStyle.reviewBox}>
               <div className={ReviewStyle.reviewList}>
                 <img
                   className={ReviewStyle.reviewImg}
-                  src={exImg}
+                  src={
+                    comment.userInfo.profileImage
+                      ? `http://localhost:3001/profileImage/${comment.userInfo.profileImage}`
+                      : exImg
+                  }
                   alt="exImg"
                 ></img>
                 <div className={ReviewStyle.reviewTextBox}>
