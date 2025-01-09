@@ -82,7 +82,7 @@ export default function OthersReview({ shopComment }) {
             </div>
           ))
         ) : (
-          <div>등록된 후기가 없습니다.</div>
+          <div className={ReviewStyle.noReviewBox}>등록된 후기가 없습니다.</div>
         )}
       </div>
     </div>
