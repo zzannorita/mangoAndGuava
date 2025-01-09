@@ -53,6 +53,7 @@ body {
   max-width: var(--container-max-width);
   margin: 0 auto;
   padding: var(--container-padding);
+  min-width: 1200px;
 }
 
 .commonStyle {
