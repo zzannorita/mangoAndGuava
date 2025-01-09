@@ -1,7 +1,6 @@
 .container {
   display: flex;
   margin-top: 20px;
-  min-width: 1200px;
   justify-content: center;
 }
 .leftBox {
