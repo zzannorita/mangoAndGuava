@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ReviewStyle from "../styles/review.module.css";
 import shopStyle from "../styles/shop.module.css";
 import RatingAvg from "../components/RatingAvg";
@@ -19,14 +20,15 @@ export default function Review() {
         setCommentCount(commentCount.ratingAvg);
         const commentData = data.commentData || [];
         const arrangeComments = commentData.map((comment) => {
-          const user = comment.userInfo; // 각 댓글의 userInfo 접근
+          const user = comment.userInfo;
           return {
+            commentUserId: comment.commentUserId,
             productId: comment.purchasedProductId,
             productName: comment.productName,
             userNickname: user?.nickname || user?.userId,
             commentContent: comment.comment,
             commentDate: getRelativeTime(comment.commentDate),
-            originalDate: comment.commentDate, // 정렬위해 원본 날짜
+            originalDate: comment.commentDate,
             commentAvg: comment.avg,
             profileImage: user.profileImage,
           };
@@ -40,6 +42,10 @@ export default function Review() {
       });
   }, [sortType]);
 
+  //상점으로 이동
+  const navigate = useNavigate();
+  const handleEnterShop = (commentUserId) =>
+    navigate(`/yourShop?userId=${commentUserId}`);
   return (
     <div className={ReviewStyle.myProductsBox}>
       <div className={shopStyle.myProductsMainBox}>
@@ -78,6 +84,7 @@ export default function Review() {
                       : exImg
                   }
                   alt="exImg"
+                  onClick={() => handleEnterShop(comment.commentUserId)}
                 ></img>
                 <div className={ReviewStyle.reviewTextBox}>
                   <div className={ReviewStyle.reviewTopBox}>

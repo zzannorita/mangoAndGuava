@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import ReviewStyle from "../styles/review.module.css";
 import shopStyle from "../styles/shop.module.css";
 import RatingAvg from "../components/RatingAvg";
@@ -8,13 +9,17 @@ import { sortComments2 } from "../utils/sortUtils";
 export default function OthersReview({ shopComment }) {
   const [sortedComments, setSortedComments] = useState([...shopComment]); // 초기 데이터 복사
   const [sortType, setSortType] = useState("newest");
-
+  console.log(shopComment);
   // 정렬 함수 호출
   useEffect(() => {
     const updatedComments = sortComments2([...shopComment], sortType);
     setSortedComments(updatedComments);
   }, [shopComment, sortType]);
 
+  //상점으로 이동
+  const navigate = useNavigate();
+  const handleEnterShop = (commentUserId) =>
+    navigate(`/yourShop?userId=${commentUserId}`);
   return (
     <div className={ReviewStyle.myProductsBox}>
       <div className={shopStyle.myProductsMainBox}>
@@ -58,6 +63,7 @@ export default function OthersReview({ shopComment }) {
                       : exImg
                   }
                   alt="exImg"
+                  onClick={() => handleEnterShop(comment.commentUserId)}
                 ></img>
                 <div className={ReviewStyle.reviewTextBox}>
                   <div className={ReviewStyle.reviewTopBox}>
