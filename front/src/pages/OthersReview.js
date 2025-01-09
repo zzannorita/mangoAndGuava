@@ -9,9 +9,9 @@ import { sortComments2 } from "../utils/sortUtils";
 import axiosInstance from "../axios";
 import Cookies from "js-cookie";
 export default function OthersReview({ shopComment }) {
-  const [sortedComments, setSortedComments] = useState([...shopComment]); // 초기 데이터 복사
+  const [sortedComments, setSortedComments] = useState([...shopComment]);
   const [sortType, setSortType] = useState("newest");
-  console.log(shopComment);
+
   // 정렬 함수 호출
   useEffect(() => {
     const updatedComments = sortComments2([...shopComment], sortType);
@@ -19,7 +19,7 @@ export default function OthersReview({ shopComment }) {
   }, [shopComment, sortType]);
 
   // 로그인된 사용자 정보 불러오기
-  const [nowUserId, setNowUserId] = useState(null); // 기본값을 null로 설정
+  const [nowUserId, setNowUserId] = useState(null);
   useEffect(() => {
     const accessToken = Cookies.get("accessToken");
     if (accessToken) {
@@ -27,11 +27,11 @@ export default function OthersReview({ shopComment }) {
         .get("/user-data")
         .then((response) => {
           const data = response.data;
-          setNowUserId(data.user); // 로그인된 사용자 정보 저장
+          setNowUserId(data.user);
         })
         .catch((error) => {
           console.log("로그인되지 않은 사용자입니다.");
-          setNowUserId(null); // 로그인되지 않았을 때 null 처리
+          setNowUserId(null);
         });
     } else {
       setNowUserId("test");
@@ -42,9 +42,9 @@ export default function OthersReview({ shopComment }) {
   const navigate = useNavigate();
   const handleEnterShop = (commentUserId) => {
     if (nowUserId && String(nowUserId.userId) === String(commentUserId)) {
-      navigate("/myShop"); // 로그인된 사용자라면 /myShop으로
+      navigate("/myShop");
     } else {
-      navigate(`/yourShop?userId=${commentUserId}`); // 다른 사용자의 상점으로
+      navigate(`/yourShop?userId=${commentUserId}`);
     }
   };
   return (
