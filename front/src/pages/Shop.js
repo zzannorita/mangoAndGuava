@@ -9,18 +9,18 @@ import axiosInstance from "../axios";
 import { sortProducts } from "../utils/sortUtils";
 export default function Shop() {
   /////////////////필터///////////////////
-  const [selectedFilter, setSelectedFilter] = useState("전체");
-  const [selectedInfo, setSelectedInfo] = useState(null);
+  const [selectedProductFilter, setSelectedProductFilter] = useState("전체");
+  const [selectedInfoFilter, setSelectedInfoFilter] = useState(null);
 
   //필터 클릭 핸들러
-  const handleFilterClick = (filter) => {
-    setSelectedFilter(filter);
-    setSelectedInfo(null);
+  const handleProductClick = (product) => {
+    setSelectedProductFilter(product);
+    setSelectedInfoFilter(null);
   };
 
   const handleInfoClick = (info) => {
-    setSelectedInfo(info);
-    setSelectedFilter(null); // "내 정보"를 선택했을 때는 "내 상품" 필터 초기화
+    setSelectedInfoFilter(info);
+    setSelectedProductFilter(null); // "내 정보"를 선택했을 때는 "내 상품" 필터 초기화
   };
 
   //상점 데이터 상태
@@ -54,8 +54,8 @@ export default function Shop() {
 
   //필터에 따른 컨테이너
   const renderContainer = () => {
-    if (selectedFilter) {
-      switch (selectedFilter) {
+    if (selectedProductFilter) {
+      switch (selectedProductFilter) {
         case "전체":
           return <ProductList products={sortedProducts} />;
         case "판매중":
@@ -87,8 +87,8 @@ export default function Shop() {
         default:
           return <ProductList products={sortedProducts} />;
       }
-    } else if (selectedInfo) {
-      switch (selectedInfo) {
+    } else if (selectedInfoFilter) {
+      switch (selectedInfoFilter) {
         case "구매내역":
           return <ProductList products={sortedPurchasedProducts} />;
         case "찜한상품":
@@ -111,13 +111,13 @@ export default function Shop() {
           <div className={shopStyle.myProductsListBox}>
             <div className={shopStyle.myProductsTitle}>내 상품</div>
             <div className={shopStyle.myProductsList}>
-              {["판매중", "예약중", "판매완료", "거래후기"].map((filter) => (
+              {["판매중", "예약중", "판매완료", "거래후기"].map((product) => (
                 <div
-                  key={filter}
+                  key={product}
                   className={shopStyle.myProductsListTitle}
-                  onClick={() => handleFilterClick(filter)}
+                  onClick={() => handleProductClick(product)}
                 >
-                  {filter}
+                  {product}
                 </div>
               ))}
             </div>
@@ -143,29 +143,35 @@ export default function Shop() {
           </div>
           <div className={shopStyle.myProductsBox}>
             <div className={shopStyle.myProductsText}>
-              {selectedFilter ? "내 상품" : selectedInfo ? "내 정보" : ""}
+              {selectedProductFilter
+                ? "내 상품"
+                : selectedInfoFilter
+                ? "내 정보"
+                : ""}
             </div>
             <div className={shopStyle.productListBox}>
-              {selectedFilter &&
+              {selectedProductFilter &&
                 ["전체", "판매중", "예약중", "판매완료", "거래후기"].map(
-                  (filter) => (
+                  (product) => (
                     <div
-                      key={filter}
+                      key={product}
                       className={`${shopStyle.productsListTitle} ${
-                        selectedFilter === filter ? shopStyle.selected : ""
+                        selectedProductFilter === product
+                          ? shopStyle.selected
+                          : ""
                       }`}
-                      onClick={() => handleFilterClick(filter)}
+                      onClick={() => handleProductClick(product)}
                     >
-                      {filter}
+                      {product}
                     </div>
                   )
                 )}
-              {selectedInfo &&
+              {selectedInfoFilter &&
                 ["구매내역", "찜한상품", "즐겨찾기", "설정"].map((info) => (
                   <div
                     key={info}
                     className={`${shopStyle.productsListTitle} ${
-                      selectedInfo === info ? shopStyle.selected : ""
+                      selectedInfoFilter === info ? shopStyle.selected : ""
                     }`}
                     onClick={() => handleInfoClick(info)}
                   >
@@ -175,9 +181,9 @@ export default function Shop() {
             </div>
             <div className={shopStyle.myProductsMainBox}>
               {!(
-                selectedFilter === "거래후기" ||
-                selectedInfo === "즐겨찾기" ||
-                selectedInfo === "설정"
+                selectedProductFilter === "거래후기" ||
+                selectedInfoFilter === "즐겨찾기" ||
+                selectedInfoFilter === "설정"
               ) ? (
                 <div className={shopStyle.mainTopBox}>
                   <div className={shopStyle.mainTopLeftBox}>
@@ -185,8 +191,8 @@ export default function Shop() {
                       상품 &nbsp;
                       <span className="impact">
                         {(() => {
-                          if (selectedFilter) {
-                            switch (selectedFilter) {
+                          if (selectedProductFilter) {
+                            switch (selectedProductFilter) {
                               case "전체":
                                 return sortedProducts.length;
                               case "판매중":
@@ -204,8 +210,8 @@ export default function Shop() {
                               default:
                                 return sortedProducts.length;
                             }
-                          } else if (selectedInfo) {
-                            switch (selectedInfo) {
+                          } else if (selectedInfoFilter) {
+                            switch (selectedInfoFilter) {
                               case "구매내역":
                                 return sortedPurchasedProducts.length;
                               case "찜한상품":
