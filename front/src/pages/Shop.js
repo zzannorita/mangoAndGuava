@@ -190,40 +190,12 @@ export default function Shop() {
                     <div>
                       상품 &nbsp;
                       <span className="impact">
-                        {(() => {
-                          if (selectedProductFilter) {
-                            switch (selectedProductFilter) {
-                              case "전체":
-                                return sortedProducts.length;
-                              case "판매중":
-                                return sortedProducts.filter(
-                                  (product) => product.tradeState === "판매중"
-                                ).length;
-                              case "예약중":
-                                return sortedProducts.filter(
-                                  (product) => product.tradeState === "예약중"
-                                ).length;
-                              case "판매완료":
-                                return sortedProducts.filter(
-                                  (product) => product.tradeState === "판매완료"
-                                ).length;
-                              default:
-                                return sortedProducts.length;
-                            }
-                          } else if (selectedInfoFilter) {
-                            switch (selectedInfoFilter) {
-                              case "구매내역":
-                                return sortedPurchasedProducts.length;
-                              case "찜한상품":
-                                return sortedBookmarkedProducts.length;
-                              case "즐겨찾기":
-                                return bookmarkUser.length;
-                              default:
-                                return 0;
-                            }
-                          }
-                          return 0;
-                        })()}
+                        {selectedProductFilter === "전체"
+                          ? sortedProducts.length
+                          : sortedProducts.filter(
+                              (product) =>
+                                product.tradeState === selectedProductFilter
+                            ).length}
                       </span>
                     </div>
                   </div>
