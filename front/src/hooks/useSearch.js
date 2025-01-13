@@ -14,6 +14,7 @@ const useSearch = () => {
       setSubmitQuery(query); // 입력 값을 최종 전송 상태로 저장
       navigate(`/products?q=${encodeURIComponent(query)}`);
     }
+    setQuery("");
   };
 
   return { query, submitQuery, onChange, handleSearch };

@@ -81,8 +81,6 @@ export default function ShopForBuyer() {
   };
 
   useEffect(() => {
-    // 상점 정보 가져오기
-
     axiosInstance
       .get(`/shop?id=${sellerId}`)
       .then((response) => {
@@ -107,14 +105,9 @@ export default function ShopForBuyer() {
         setProducts(data.shopProducts);
         const shopComment = data.shopCommentData;
         setReviews(shopComment);
-        // 별점 평균 계산
-        const totalRating = shopComment.reduce(
-          (sum, comment) => sum + comment.avg,
-          0
-        );
-        const avgRating =
-          shopComment.length > 0 ? totalRating / shopComment.length : 0;
-        setAverageRating(avgRating);
+        console.log(response.data);
+
+        setAverageRating(shopData.shopAvg);
       })
       .catch((error) => console.log("데이터 가져오기 실패", error));
   }, [sellerId]);
@@ -171,7 +164,6 @@ export default function ShopForBuyer() {
     <div className="container">
       <div className={shopStyle.shopForBuyerContainer}>
         <div className={shopStyle.container}>
-          {/* 오른쪽 상점 정보 */}
           <div className={shopStyle.rightBox}>
             <div className={shopStyle.myShopBox}>
               <div className={shopStyle.myShopBoxInner}>
@@ -229,7 +221,15 @@ export default function ShopForBuyer() {
                   <div className={shopStyle.mainTopBox}>
                     <div className={shopStyle.mainTopLeftBox}>
                       <div>
-                        상품 <span className="impact">{products.length}</span>
+                        상품{" "}
+                        <span className="impact">
+                          {selectedFilter === "전체"
+                            ? sortedProducts.length
+                            : sortedProducts.filter(
+                                (product) =>
+                                  product.tradeState === selectedFilter
+                              ).length}
+                        </span>
                       </div>
                     </div>
                     <div className={shopStyle.mainTopRightBox}>

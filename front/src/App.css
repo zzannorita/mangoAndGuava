@@ -37,8 +37,11 @@
   }
 }
 
+html,
 body {
   font-family: "Pretendard-Regular";
+  width: 100%;
+  overflow-x: auto;
 }
 
 /*전체 페이지 적용 css */
