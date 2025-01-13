@@ -33,6 +33,12 @@ export default function Category() {
     setHoveredSubSubCategory(subSubCategory);
   };
 
+  // 상태 초기화 함수
+  const resetHoverState = () => {
+    setHoveredCategory(null);
+    setHoveredSubCategory(null);
+    setHoveredSubSubCategory(null);
+  };
   return (
     <div className={CategoryStyle.categoryBox}>
       <img
@@ -83,7 +89,13 @@ export default function Category() {
             onMouseEnter={() => handleMouseHover("의류")}
             onMouseLeave={handleMouseLeave}
           >
-            <Link to="/products?category=100">의류</Link>
+            <Link
+              to="/products?category=100"
+              onClick={resetHoverState}
+              className={CategoryStyle.clickSize}
+            >
+              의류
+            </Link>
             {hoveredCategory === "의류" && (
               <div className={CategoryStyle.subNavbar}>
                 <ul>
@@ -91,7 +103,12 @@ export default function Category() {
                     onMouseEnter={() => handleSubMouseHover("남성의류")}
                     onMouseLeave={handleMouseLeave}
                   >
-                    <Link to="/products?category=100110">남성의류</Link>
+                    <Link
+                      to="/products?category=100110"
+                      onClick={resetHoverState}
+                    >
+                      남성의류
+                    </Link>
                     {hoveredSubCategory === "남성의류" && (
                       <div className={CategoryStyle.subSubNavbar}>
                         <ul>
@@ -99,13 +116,23 @@ export default function Category() {
                             onMouseEnter={() => handleSubSubMouseHover("상의")}
                             onMouseLeave={handleMouseLeave}
                           >
-                            <Link to="/products?category=100110111">상의</Link>
+                            <Link
+                              to="/products?category=100110111"
+                              onClick={resetHoverState}
+                            >
+                              상의
+                            </Link>
                           </li>
                           <li
                             onMouseEnter={() => handleSubSubMouseHover("하의")}
                             onMouseLeave={handleMouseLeave}
                           >
-                            <Link to="/products?category=100110112">하의</Link>
+                            <Link
+                              to="/products?category=100110112"
+                              onClick={resetHoverState}
+                            >
+                              하의
+                            </Link>
                           </li>
                           <li
                             onMouseEnter={() =>
@@ -113,7 +140,10 @@ export default function Category() {
                             }
                             onMouseLeave={handleMouseLeave}
                           >
-                            <Link to="/products?category=100110113">
+                            <Link
+                              to="/products?category=100110113"
+                              onClick={resetHoverState}
+                            >
                               운동화
                             </Link>
                           </li>
@@ -125,27 +155,53 @@ export default function Category() {
                     onMouseEnter={() => handleSubMouseHover("여성의류")}
                     onMouseLeave={handleMouseLeave}
                   >
-                    <Link to="/products?category=100120">여성의류</Link>
+                    <Link
+                      to="/products?category=100120"
+                      onClick={resetHoverState}
+                    >
+                      여성의류
+                    </Link>
                     {hoveredSubCategory === "여성의류" && (
                       <div className={CategoryStyle.subSubNavbar}>
                         <ul>
                           <li
-                            onMouseEnter={() => handleSubSubMouseHover("상의")}
+                            onMouseEnter={() =>
+                              handleSubSubMouseHover("원피스")
+                            }
                             onMouseLeave={handleMouseLeave}
                           >
-                            <Link to="/products?category=100120111">상의</Link>
+                            <Link
+                              to="/products?category=100120121"
+                              onClick={resetHoverState}
+                            >
+                              원피스
+                            </Link>
                           </li>
                           <li
-                            onMouseEnter={() => handleSubSubMouseHover("하의")}
+                            onMouseEnter={() =>
+                              handleSubSubMouseHover("스커트")
+                            }
                             onMouseLeave={handleMouseLeave}
                           >
-                            <Link to="/products?category=100120112">하의</Link>
+                            <Link
+                              to="/products?category=100120122"
+                              onClick={resetHoverState}
+                            >
+                              스커트
+                            </Link>
                           </li>
                           <li
-                            onMouseEnter={() => handleSubSubMouseHover("신발")}
+                            onMouseEnter={() =>
+                              handleSubSubMouseHover("하이힐")
+                            }
                             onMouseLeave={handleMouseLeave}
                           >
-                            <Link to="/products?category=100120113">신발</Link>
+                            <Link
+                              to="/products?category=100120123"
+                              onClick={resetHoverState}
+                            >
+                              하이힐
+                            </Link>
                           </li>
                         </ul>
                       </div>
@@ -155,21 +211,51 @@ export default function Category() {
                     onMouseEnter={() => handleSubMouseHover("아동의류")}
                     onMouseLeave={handleMouseLeave}
                   >
-                    <Link to="/products?category=100130">아동의류</Link>
+                    <Link
+                      to="/products?category=100130"
+                      onClick={resetHoverState}
+                    >
+                      아동의류
+                    </Link>
                     {hoveredSubCategory === "아동의류" && (
                       <div className={CategoryStyle.subSubNavbar}>
                         <ul>
                           <li
-                            onMouseEnter={() => handleSubSubMouseHover("상의")}
+                            onMouseEnter={() =>
+                              handleSubSubMouseHover("티셔츠")
+                            }
                             onMouseLeave={handleMouseLeave}
                           >
-                            <Link to="/products?category=100130111">상의</Link>
+                            <Link
+                              to="/products?category=100130131"
+                              onClick={resetHoverState}
+                            >
+                              티셔츠
+                            </Link>
                           </li>
                           <li
-                            onMouseEnter={() => handleSubSubMouseHover("하의")}
+                            onMouseEnter={() => handleSubSubMouseHover("바지")}
                             onMouseLeave={handleMouseLeave}
                           >
-                            <Link to="/products?category=100130112">하의</Link>
+                            <Link
+                              to="/products?category=100130132"
+                              onClick={resetHoverState}
+                            >
+                              바지
+                            </Link>
+                          </li>
+                          <li
+                            onMouseEnter={() =>
+                              handleSubSubMouseHover("운동화")
+                            }
+                            onMouseLeave={handleMouseLeave}
+                          >
+                            <Link
+                              to="/products?category=100130133"
+                              onClick={resetHoverState}
+                            >
+                              운동화
+                            </Link>
                           </li>
                         </ul>
                       </div>
@@ -183,26 +269,88 @@ export default function Category() {
             onMouseEnter={() => handleMouseHover("가전제품")}
             onMouseLeave={handleMouseLeave}
           >
-            <Link to="/products?category=200">가전제품</Link>
+            <Link to="/products?category=200" onClick={resetHoverState}>
+              가전제품
+            </Link>
             {hoveredCategory === "가전제품" && (
               <div className={CategoryStyle.subNavbar}>
                 <ul>
                   <li
+                    onMouseEnter={() => handleSubMouseHover("TV")}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    <Link
+                      to="/products?category=200210"
+                      onClick={resetHoverState}
+                    >
+                      TV
+                    </Link>
+                    {hoveredSubCategory === "TV" && (
+                      <div className={CategoryStyle.subSubNavbar}>
+                        <ul>
+                          <li>
+                            <Link
+                              to="/products?category=200210211"
+                              onClick={resetHoverState}
+                            >
+                              LED TV
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              to="/products?category=200210212"
+                              onClick={resetHoverState}
+                            >
+                              OLED TV
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              to="/products?category=200210213"
+                              onClick={resetHoverState}
+                            >
+                              QLED TV
+                            </Link>
+                          </li>
+                        </ul>
+                      </div>
+                    )}
+                  </li>
+                  <li
                     onMouseEnter={() => handleSubMouseHover("냉장고")}
                     onMouseLeave={handleMouseLeave}
                   >
-                    <Link to="/products?category=200210">냉장고</Link>
+                    <Link
+                      to="/products?category=200220"
+                      onClick={resetHoverState}
+                    >
+                      냉장고
+                    </Link>
                     {hoveredSubCategory === "냉장고" && (
                       <div className={CategoryStyle.subSubNavbar}>
                         <ul>
                           <li>
-                            <Link to="/products?category=200210211">
-                              1인용 냉장고
+                            <Link
+                              to="/products?category=200220211"
+                              onClick={resetHoverState}
+                            >
+                              양문형
                             </Link>
                           </li>
                           <li>
-                            <Link to="/products?category=200210212">
-                              대형 냉장고
+                            <Link
+                              to="/products?category=200220212"
+                              onClick={resetHoverState}
+                            >
+                              미니 냉장고
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              to="/products?category=200220213"
+                              onClick={resetHoverState}
+                            >
+                              와인 냉장고
                             </Link>
                           </li>
                         </ul>
@@ -213,62 +361,37 @@ export default function Category() {
                     onMouseEnter={() => handleSubMouseHover("세탁기")}
                     onMouseLeave={handleMouseLeave}
                   >
-                    <Link to="/products?category=200220">세탁기</Link>
+                    <Link
+                      to="/products?category=200230"
+                      onClick={resetHoverState}
+                    >
+                      세탁기
+                    </Link>
                     {hoveredSubCategory === "세탁기" && (
                       <div className={CategoryStyle.subSubNavbar}>
                         <ul>
                           <li>
-                            <Link to="/products?category=200220211">
+                            <Link
+                              to="/products?category=200230211"
+                              onClick={resetHoverState}
+                            >
                               드럼 세탁기
                             </Link>
                           </li>
                           <li>
-                            <Link to="/products?category=200220212">
+                            <Link
+                              to="/products?category=200230212"
+                              onClick={resetHoverState}
+                            >
                               통돌이 세탁기
                             </Link>
                           </li>
-                        </ul>
-                      </div>
-                    )}
-                  </li>
-                  <li
-                    onMouseEnter={() => handleSubMouseHover("에어컨")}
-                    onMouseLeave={handleMouseLeave}
-                  >
-                    <Link to="/products?category=200230">에어컨</Link>
-                    {hoveredSubCategory === "에어컨" && (
-                      <div className={CategoryStyle.subSubNavbar}>
-                        <ul>
                           <li>
-                            <Link to="/products?category=200230211">
-                              벽걸이형
-                            </Link>
-                          </li>
-                          <li>
-                            <Link to="/products?category=200230212">
-                              스탠드형
-                            </Link>
-                          </li>
-                        </ul>
-                      </div>
-                    )}
-                  </li>
-                  <li
-                    onMouseEnter={() => handleSubMouseHover("TV")}
-                    onMouseLeave={handleMouseLeave}
-                  >
-                    <Link to="/products?category=200240">TV</Link>
-                    {hoveredSubCategory === "TV" && (
-                      <div className={CategoryStyle.subSubNavbar}>
-                        <ul>
-                          <li>
-                            <Link to="/products?category=200240211">
-                              스마트 TV
-                            </Link>
-                          </li>
-                          <li>
-                            <Link to="/products?category=200240212">
-                              UHD TV
+                            <Link
+                              to="/products?category=200230213"
+                              onClick={resetHoverState}
+                            >
+                              미니 세탁기
                             </Link>
                           </li>
                         </ul>
@@ -283,62 +406,129 @@ export default function Category() {
             onMouseEnter={() => handleMouseHover("주방용품")}
             onMouseLeave={handleMouseLeave}
           >
-            <Link to="/products?category=300">주방용품</Link>
+            <Link to="/products?category=300" onClick={resetHoverState}>
+              주방용품
+            </Link>
             {hoveredCategory === "주방용품" && (
               <div className={CategoryStyle.subNavbar}>
                 <ul>
                   <li
-                    onMouseEnter={() => handleSubMouseHover("식기류")}
+                    onMouseEnter={() => handleSubMouseHover("냄비")}
                     onMouseLeave={handleMouseLeave}
                   >
-                    <Link to="/products?category=300310">식기류</Link>
-                    {hoveredSubCategory === "식기류" && (
+                    <Link
+                      to="/products?category=300310"
+                      onClick={resetHoverState}
+                    >
+                      냄비
+                    </Link>
+                    {hoveredSubCategory === "냄비" && (
                       <div className={CategoryStyle.subSubNavbar}>
                         <ul>
                           <li>
-                            <Link to="/products?category=300310311">접시</Link>
-                          </li>
-                          <li>
-                            <Link to="/products?category=300310312">컵</Link>
-                          </li>
-                        </ul>
-                      </div>
-                    )}
-                  </li>
-                  <li
-                    onMouseEnter={() => handleSubMouseHover("조리도구")}
-                    onMouseLeave={handleMouseLeave}
-                  >
-                    <Link to="/products?category=300320">조리도구</Link>
-                    {hoveredSubCategory === "조리도구" && (
-                      <div className={CategoryStyle.subSubNavbar}>
-                        <ul>
-                          <li>
-                            <Link to="/products?category=300320311">칼</Link>
-                          </li>
-                          <li>
-                            <Link to="/products?category=300320312">국자</Link>
-                          </li>
-                        </ul>
-                      </div>
-                    )}
-                  </li>
-                  <li
-                    onMouseEnter={() => handleSubMouseHover("전자레인지")}
-                    onMouseLeave={handleMouseLeave}
-                  >
-                    <Link to="/products?category=300330">전자레인지</Link>
-                    {hoveredSubCategory === "전자레인지" && (
-                      <div className={CategoryStyle.subSubNavbar}>
-                        <ul>
-                          <li>
-                            <Link to="/products?category=300330311">
-                              일반 전자레인지
+                            <Link
+                              to="/products?category=300310311"
+                              onClick={resetHoverState}
+                            >
+                              스테인리스 냄비
                             </Link>
                           </li>
                           <li>
-                            <Link to="/products?category=300330312">
-                              조리기능 전자레인지
+                            <Link
+                              to="/products?category=300310312"
+                              onClick={resetHoverState}
+                            >
+                              압력솥
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              to="/products?category=300310313"
+                              onClick={resetHoverState}
+                            >
+                              법랑 냄비
+                            </Link>
+                          </li>
+                        </ul>
+                      </div>
+                    )}
+                  </li>
+                  <li
+                    onMouseEnter={() => handleSubMouseHover("프라이팬")}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    <Link
+                      to="/products?category=300320"
+                      onClick={resetHoverState}
+                    >
+                      프라이팬
+                    </Link>
+                    {hoveredSubCategory === "프라이팬" && (
+                      <div className={CategoryStyle.subSubNavbar}>
+                        <ul>
+                          <li>
+                            <Link
+                              to="/products?category=300320311"
+                              onClick={resetHoverState}
+                            >
+                              비철 프라이팬
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              to="/products?category=300320312"
+                              onClick={resetHoverState}
+                            >
+                              비철 프라이팬
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              to="/products?category=300320313"
+                              onClick={resetHoverState}
+                            >
+                              그릴 팬
+                            </Link>
+                          </li>
+                        </ul>
+                      </div>
+                    )}
+                  </li>
+                  <li
+                    onMouseEnter={() => handleSubMouseHover("식기")}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    <Link
+                      to="/products?category=300330"
+                      onClick={resetHoverState}
+                    >
+                      식기
+                    </Link>
+                    {hoveredSubCategory === "식기" && (
+                      <div className={CategoryStyle.subSubNavbar}>
+                        <ul>
+                          <li>
+                            <Link
+                              to="/products?category=300330311"
+                              onClick={resetHoverState}
+                            >
+                              접시
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              to="/products?category=300330312"
+                              onClick={resetHoverState}
+                            >
+                              컵
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              to="/products?category=300330313"
+                              onClick={resetHoverState}
+                            >
+                              수저
                             </Link>
                           </li>
                         </ul>

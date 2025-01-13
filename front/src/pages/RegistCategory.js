@@ -181,9 +181,15 @@ export default function Category({ onCategorySelect }) {
                     {clickedSubCategory === "220" && (
                       <div className={CategoryStyle.subSubNavbar}>
                         <ul>
-                          <li>양문형</li>
-                          <li>미니 냉장고</li>
-                          <li>와인 냉장고</li>
+                          <li onClick={() => handleSubSubCategoryClick("211")}>
+                            양문형
+                          </li>
+                          <li onClick={() => handleSubSubCategoryClick("212")}>
+                            미니 냉장고
+                          </li>
+                          <li onClick={() => handleSubSubCategoryClick("213")}>
+                            와인 냉장고
+                          </li>
                         </ul>
                       </div>
                     )}
@@ -195,9 +201,15 @@ export default function Category({ onCategorySelect }) {
                     {clickedSubCategory === "230" && (
                       <div className={CategoryStyle.subSubNavbar}>
                         <ul>
-                          <li>드럼 세탁기</li>
-                          <li>통돌이 세탁기</li>
-                          <li>미니 세탁기</li>
+                          <li onClick={() => handleSubSubCategoryClick("211")}>
+                            드럼 세탁기
+                          </li>
+                          <li onClick={() => handleSubSubCategoryClick("212")}>
+                            통돌이 세탁기
+                          </li>
+                          <li onClick={() => handleSubSubCategoryClick("213")}>
+                            미니 세탁기
+                          </li>
                         </ul>
                       </div>
                     )}
@@ -207,63 +219,71 @@ export default function Category({ onCategorySelect }) {
             )}
           </li>
           <li>
-            <div onClick={() => handleCategoryClick("주방용품")}>주방용품</div>
-            {clickedCategory === "주방용품" && (
+            <div onClick={() => handleCategoryClick("300")}>주방용품</div>
+            {clickedCategory === "300" && (
               <div className={CategoryStyle.subNavbar}>
                 <ul>
                   <li>
-                    <div onClick={() => handleSubCategoryClick("냄비")}>
+                    <div onClick={() => handleSubCategoryClick("310")}>
                       냄비
                     </div>
-                    {clickedSubCategory === "냄비" && (
+                    {clickedSubCategory === "310" && (
                       <div className={CategoryStyle.subSubNavbar}>
                         <ul>
-                          <li>스테인리스 냄비</li>
-                          <li>압력솥</li>
-                          <li>법랑 냄비</li>
+                          <li onClick={() => handleSubSubCategoryClick("311")}>
+                            스테인리스 냄비
+                          </li>
+                          <li onClick={() => handleSubSubCategoryClick("312")}>
+                            압력솥
+                          </li>
+                          <li onClick={() => handleSubSubCategoryClick("313")}>
+                            법랑 냄비
+                          </li>
                         </ul>
                       </div>
                     )}
                   </li>
                   <li>
-                    <div onClick={() => handleSubCategoryClick("프라이팬")}>
+                    <div onClick={() => handleSubCategoryClick("320")}>
                       프라이팬
                     </div>
-                    {clickedSubCategory === "프라이팬" && (
+                    {clickedSubCategory === "320" && (
                       <div className={CategoryStyle.subSubNavbar}>
                         <ul>
-                          <li>비철 프라이팬</li>
-                          <li>코팅 프라이팬</li>
-                          <li>그릴 팬</li>
+                          <li onClick={() => handleSubSubCategoryClick("311")}>
+                            비철 프라이팬
+                          </li>
+                          <li onClick={() => handleSubSubCategoryClick("312")}>
+                            비철 프라이팬
+                          </li>
+                          <li onClick={() => handleSubSubCategoryClick("313")}>
+                            그릴 팬
+                          </li>
                         </ul>
                       </div>
                     )}
                   </li>
                   <li>
-                    <div onClick={() => handleSubCategoryClick("식기")}>
+                    <div onClick={() => handleSubCategoryClick("330")}>
                       식기
                     </div>
-                    {clickedSubCategory === "식기" && (
+                    {clickedSubCategory === "330" && (
                       <div className={CategoryStyle.subSubNavbar}>
                         <ul>
-                          <li>접시</li>
-                          <li>컵</li>
-                          <li>수저</li>
+                          <li onClick={() => handleSubSubCategoryClick("311")}>
+                            접시
+                          </li>
+                          <li onClick={() => handleSubSubCategoryClick("312")}>
+                            컵
+                          </li>
+                          <li onClick={() => handleSubSubCategoryClick("313")}>
+                            수저
+                          </li>
                         </ul>
                       </div>
                     )}
                   </li>
                 </ul>
-              </div>
-            )}
-          </li>
-          <li>
-            <div onClick={() => handleCategoryClick("자동차용품")}>
-              자동차용품
-            </div>
-            {clickedCategory === "자동차용품" && (
-              <div className={CategoryStyle.subNavbar}>
-                <ul>{/* 서브 카테고리와 서브서브 카테고리 추가 */}</ul>
               </div>
             )}
           </li>
