@@ -23,17 +23,23 @@
   color: #333;
   opacity: 0;
 }
-
+.selectedCategory1,
+.selectedCategory2,
+.selectedCategory3 {
+  width: 150px;
+  display: flex;
+  justify-content: center;
+}
 .selectedCategory1 {
   left: 6%;
 }
 
 .selectedCategory2 {
-  left: 27%;
+  left: 34%;
 }
 
 .selectedCategory3 {
-  left: 51%;
+  left: 60%;
 }
 
 .greaterImg {
@@ -46,11 +52,11 @@
 }
 
 .greaterImg1 {
-  left: 18%;
+  left: 33%;
 }
 
 .greaterImg2 {
-  left: 43%;
+  left: 60%;
 }
 
 .visible {

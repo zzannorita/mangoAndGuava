@@ -251,10 +251,10 @@ export default function Category({ onCategorySelect }) {
                       <div className={CategoryStyle.subSubNavbar}>
                         <ul>
                           <li onClick={() => handleSubSubCategoryClick("311")}>
-                            비철 프라이팬
+                            일반 프라이팬
                           </li>
                           <li onClick={() => handleSubSubCategoryClick("312")}>
-                            비철 프라이팬
+                            논스틱 프라이팬
                           </li>
                           <li onClick={() => handleSubSubCategoryClick("313")}>
                             그릴 팬
