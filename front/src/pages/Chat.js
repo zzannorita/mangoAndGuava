@@ -278,7 +278,7 @@ const Chat = () => {
     });
 
     axiosInstance.get("http://localhost:3001/user-data").then((response) => {
-      setUserId(response.data.user.userId);
+      setUserId(String(response.data.user.userId));
     });
   }, []);
 

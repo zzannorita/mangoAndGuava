@@ -6,6 +6,7 @@ const userRoutes = require("./routes/user");
 const productsRoutes = require("./routes/products");
 const shopRoutes = require("./routes/shop");
 const chatRoutes = require("./routes/chat");
+const alarmRoutes = require("./routes/alarm");
 const refreshRoutes = require("./token/refresh");
 const setupWebSocket = require("./websockets/chat"); // WebSocket 모듈 가져오기
 
@@ -28,6 +29,7 @@ app.use("/", productsRoutes);
 app.use("/", shopRoutes);
 app.use("/", chatRoutes);
 app.use("/", refreshRoutes);
+app.use("/", alarmRoutes);
 
 // Start HTTP server
 const server = app.listen(port, () => {

@@ -1,4 +1,8 @@
 const { Server } = require("ws");
+const userDao = require("../daos/userDao");
+const productsDao = require("../daos/productsDao");
+const chatDao = require("../daos/chatDao");
+const alarmDao = require("../daos/alarmDao");
 const db = require("../config/dbConfig"); // 데이터베이스 연결 가져오기
 
 // WebSocket 관련 설정
@@ -64,10 +68,29 @@ function setupWebSocket(server) {
       } = parsedData;
 
       // MySQL 데이터베이스에 메시지 저장
-      await db.execute(
-        `INSERT INTO chat (room_id, user_from, user_to, message) VALUES (?, ?, ?, ?)`,
-        [String(roomId), String(userFrom), String(userTo), String(content)]
+      await chatDao.insertChat(parsedData);
+
+      // 채팅 알림 생성
+      const [, , productId] = roomId.split("-");
+      const products = await productsDao.getProductByProductId(productId);
+      const { productName, images } = products[0];
+      const { nickname: userFromNickname } = await userDao.getUserById(
+        userFrom
       );
+      const notificationMessage = `${userFromNickname}님이 메시지를 보냈습니다.`;
+      const alarmNoti = {
+        userTo, //알람 받을사람
+        userFrom, //알람 보낸이
+        productName,
+        content: notificationMessage,
+        chatContent: content,
+        userFromNickname,
+        roomId,
+        type: "chat",
+      };
+
+      // 채팅 알림 데이터베이스에 저장
+      await alarmDao.insertAlarm(alarmNoti);
 
       // 특정 클라이언트(userTo)에게만 메시지 전송
       wss.clients.forEach((client) => {
@@ -83,6 +106,27 @@ function setupWebSocket(server) {
               userTo,
               content,
               timestamp: new Date().toISOString(),
+            })
+          );
+        }
+        // 알림 전송
+        const extraData = {
+          productName,
+          userFromNickname,
+          chatContent: content,
+          sendUserID: userFrom,
+          roomId,
+        };
+        const isRead = 0;
+        if (String(client.userId) === String(userTo)) {
+          client.send(
+            JSON.stringify({
+              type: "notification",
+              content: notificationMessage,
+              extraData,
+              isRead,
+              userId: userTo,
+              createdAt: new Date().toISOString(),
             })
           );
         }

@@ -48,4 +48,26 @@ const getChatEachRoomId = async (room_id) => {
   }
 };
 
-module.exports = { getMyChatList, getChatEachRoomId };
+const insertChat = async (chatData) => {
+  const {
+    room_id: roomId,
+    user_from: userFrom,
+    user_to: userTo,
+    message: content,
+  } = chatData;
+  const escapedRoomId = mysql.escape(roomId);
+  const escapedUserFrom = mysql.escape(String(userFrom));
+  const escapedUserTo = mysql.escape(String(userTo));
+  const escapedContent = mysql.escape(content);
+  const insertQuery = `INSERT INTO chat (room_id, user_from, user_to, message) VALUES (${escapedRoomId}, ${escapedUserFrom}, ${escapedUserTo}, ${escapedContent})`;
+
+  try {
+    const [rows] = await db.execute(insertQuery);
+    return rows;
+  } catch (error) {
+    console.error("Error fetching chat each:", error.message);
+    throw error; // 에러를 호출한 쪽에서 처리하도록 다시 던지기
+  }
+};
+
+module.exports = { getMyChatList, getChatEachRoomId, insertChat };
