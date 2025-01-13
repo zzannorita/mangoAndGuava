@@ -30,7 +30,6 @@ export default function Home() {
       <Carousel type="home" images={sliderImages} />
       <div className={HomeStyle.recommendBox}>
         <div className={HomeStyle.userRecommendBox}>
-          <div className={HomeStyle.userRecommendName}>최신 상품 목록</div>
           <div className={HomeStyle.productList}>
             <ProductList type="home" products={products} />
           </div>
