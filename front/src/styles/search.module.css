@@ -1,6 +1,5 @@
 .resultTextBottomBox {
-  /* height: 150px; */
-  margin: 20px;
+  margin: 10px 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
