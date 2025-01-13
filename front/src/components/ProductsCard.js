@@ -79,7 +79,13 @@ const ProductsCard = ({ product, userId, type }) => {
       className={type === "home" ? HomeStyle.product : productStyle.productCard}
     >
       <img
-        src={product.images.length > 0 ? product.images[0].productImage : ""}
+        src={
+          product.images.length > 0
+            ? typeof product.images[0] === "object"
+              ? product.images[0].productImage
+              : product.images[0]
+            : ""
+        }
         alt={product.productName}
         className={
           type === "home"
