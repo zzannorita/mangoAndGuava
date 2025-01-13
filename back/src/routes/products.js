@@ -19,4 +19,5 @@ router.patch(
   "/update-product/buyer-user-id/:productId",
   productsController.updateProductByBuyerUserId
 );
+router.get("/image", productsController.getProductImage);
 module.exports = router;
