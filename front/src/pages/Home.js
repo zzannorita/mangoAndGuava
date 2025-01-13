@@ -15,7 +15,7 @@ export default function Home() {
 
   useEffect(() => {
     axiosInstance
-      .get("http://localhost:3001/products")
+      .get("/products")
       .then((response) => {
         setProducts(response.data.products || []); // 상품 배열 저장
         setTotalPage(response.data.totalPages);
