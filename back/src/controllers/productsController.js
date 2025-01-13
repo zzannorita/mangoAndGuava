@@ -212,6 +212,45 @@ const getBookmarkList = async (req, res) => {
   }
 };
 
+const getProductImage = async (req, res) => {
+  const accessToken = req.headers.authorization?.split(" ")[1];
+
+  if (!accessToken) {
+    return res
+      .status(401)
+      .json({ message: "No access token provided", errorType: "NO_TOKEN" });
+  }
+
+  try {
+    const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const productId = req.query.id;
+
+    const imageArray = await productsDao.getProductImageByproductId(productId);
+
+    return res.status(200).json({
+      code: "SUCCESS_SELECT_PRODUCTIMAGE",
+      data: imageArray,
+    });
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      const errorMessage =
+        error.response.data.error === "invalid_token"
+          ? { message: "Invalid access token", errorType: "INVALID_TOKEN" }
+          : { message: "Token expired", errorType: "TOKEN_EXPIRED" };
+      return res.status(401).json(errorMessage);
+    }
+
+    return res
+      .status(500)
+      .json({ message: "Failed to fetch user data", error: error.message });
+  }
+};
+
 // const updateProduct = async (req, res) => {
 //   const accessToken = req.headers.authorization?.split(" ")[1];
 //   const updateData = req.body;
@@ -351,4 +390,5 @@ module.exports = {
   updateProductByBuyerUserId,
   getProductsByFilter, //이게 수술후 함수
   updateProductByView,
+  getProductImage,
 };

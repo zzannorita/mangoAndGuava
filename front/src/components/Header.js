@@ -10,6 +10,7 @@ import sell from "../image/sell.png";
 import SearchBox from "../components/SearchBox";
 import axios from "axios";
 import Cookies from "js-cookie";
+import axiosInstance from "../axios";
 
 function Header() {
   ////////////////////////알림///////////////////////////////
@@ -17,6 +18,7 @@ function Header() {
   const [userId, setUserId] = useState(null); // 사용자 데이터 상태 추가
   const [newMessage, setNewMessage] = useState(false); // 새로운 메시지 알림 상태
   const socket = useRef(null); // useRef를 사용하여 socket 객체 저장
+  const [alarmData, setAlarmData] = useState([]);
 
   const handleClick = () => {
     setClickedAlarm((alarmClick) => !alarmClick);
@@ -33,6 +35,9 @@ function Header() {
   useEffect(() => {
     const checkLoginStatus = () => {
       const accessToken = Cookies.get("accessToken");
+      //촐추가//
+      setUserId(String(Cookies.get("userId")));
+      /////////
       const loginStatus = !!accessToken;
       setIsLogin(loginStatus);
     };
@@ -40,51 +45,83 @@ function Header() {
   }, []);
 
   //컴포넌트 마운트될때 로그인상태 확인
+  // WebSocket 연결
   useEffect(() => {
-    if (isLogin && userId) {
-      const connectWebSocket = () => {
-        socket.current = new WebSocket("ws://localhost:3001"); // 웹소켓 서버 주소
+    let reconnectAttempts = 0;
+    let isWebSocketConnected = false; // WebSocket 연결 여부를 추적
 
-        socket.current.onopen = () => {
-          console.log("웹소켓 연결됨");
-          // 사용자 ID로 웹소켓 연결 설정
-          socket.current.send(JSON.stringify({ type: "auth", userId: userId }));
-        };
+    const connectWebSocket = () => {
+      if (socket.current && socket.current.readyState === WebSocket.OPEN) {
+        return; // 이미 연결되어 있으면 함수 종료
+      }
 
-        socket.current.onmessage = (event) => {
-          const parsedData = JSON.parse(event.data); // 변수명 변경
-          console.log("수신된 메시지:", parsedData);
+      socket.current = new WebSocket("ws://localhost:3001");
 
-          // 메시지 타입에 따라 처리
-          if (parsedData.type === "chat") {
-            // chat 타입인 경우, 채팅 메시지를 처리
-            if (parsedData.userTo === userId) {
-              setNewMessage(true); // 새로운 채팅 메시지가 오면 알림 표시
-              console.log("새로운 채팅 메시지 수신:", parsedData);
-            }
-          } else if (parsedData.type === "like") {
-            // like 타입인 경우, 다른 처리
-            console.log("좋아요 메시지 수신:", parsedData);
-            // 예시: 좋아요 알림을 처리하거나 UI 업데이트
-          }
-        };
-
-        socket.current.onclose = () => {
-          console.log("웹소켓 연결 종료");
-          // 연결이 끊어지면 재연결 시도
-          setTimeout(connectWebSocket, 5000); // 5초 후에 재연결 시도
-        };
+      // WebSocket 열리면 userId 전달 (인증)
+      socket.current.onopen = () => {
+        reconnectAttempts = 0; // 재연결 시도 횟수 초기화
+        isWebSocketConnected = true;
+        console.log("웹소켓 열림(헤더).");
+        console.log("전달할 userId(헤더),", userId);
+        socket.current.send(JSON.stringify({ type: "auth", userId }));
       };
 
-      connectWebSocket();
+      // WebSocket으로 메시지 수신
+      socket.current.onmessage = (event) => {
+        const newMessage = JSON.parse(event.data);
+        // type이 'notification'인 경우에만 처리
 
-      return () => {
-        if (socket.current) {
-          socket.current.close(); // 컴포넌트 언마운트 시 소켓 종료
+        if (newMessage.type === "notification") {
+          console.log("📢 알림 메시지:", newMessage);
+          console.log("확인용", alarmData);
+          // 알림 처리 로직 추가
+          setAlarmData((prev) => {
+            // 새로운 알림의 roomId 추출
+            const newRoomId = newMessage.extraData.roomId;
+            // 동일한 roomId가 있는 기존 알림을 제거하고 새 알림 추가
+            const updatedData = [
+              ...prev.filter((alarm) => alarm.extraData.roomId !== newRoomId),
+              newMessage,
+            ];
+
+            console.log("업데이트된 알람 데이터", updatedData);
+            return updatedData;
+          });
         }
       };
-    }
-  }, [isLogin, userId]);
+
+      // WebSocket 연결이 닫혔을 때 재연결 시도
+      socket.current.onclose = () => {
+        isWebSocketConnected = false;
+        reconnectWebSocket();
+      };
+
+      // WebSocket 오류 발생 시 재연결 시도
+      socket.current.onerror = (error) => {
+        console.error("웹소켓 에러 발생 재연결 시도.");
+        socket.current.close();
+      };
+    };
+
+    const reconnectWebSocket = () => {
+      if (!isWebSocketConnected && reconnectAttempts < 10) {
+        reconnectAttempts++;
+        setTimeout(() => {
+          connectWebSocket();
+        }, reconnectAttempts * 1000); // 시도 횟수에 따라 지연 시간 증가
+      } else if (reconnectAttempts >= 10) {
+        console.error("WebSocket 재연결 실패. 최대 시도 횟수 초과.");
+      }
+    };
+
+    connectWebSocket(); // 처음 WebSocket 연결
+
+    return () => {
+      if (socket.current) {
+        socket.current.close();
+      }
+    };
+  }, [userId]);
 
   ////////////////////////로그아웃///////////////////////////
   const handleLogout = async () => {
@@ -131,6 +168,19 @@ function Header() {
     }
   };
 
+  ////////////////알람 내역 가져오기 ////////////////////
+  useEffect(() => {
+    axiosInstance
+      .get("/alarm")
+      .then((response) => {
+        console.log(response.data.alarmData);
+        setAlarmData(response.data.alarmData);
+      })
+      .catch((error) => {
+        console.log("데이터 가져오기 실패", error);
+      });
+  }, []);
+
   return (
     <header className="container">
       <div className={HeaderStyle.headerBox}>
@@ -158,7 +208,7 @@ function Header() {
                 src={alarmOff}
                 onClick={handleClick}
               />
-              <Alarm alarmClick={clickedAlarm} />
+              <Alarm alarmClick={clickedAlarm} alarmData={alarmData} />
             </div>
           </div>
         </div>

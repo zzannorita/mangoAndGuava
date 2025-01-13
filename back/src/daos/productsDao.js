@@ -419,7 +419,6 @@ const getProductByProductId = async (productId) => {
 
     // 객체를 배열로 변환
     const products = Object.values(productsMap);
-
     return products;
   } catch (error) {
     throw new Error("Database query error: " + error.message);
@@ -543,6 +542,29 @@ const updateProductFieldsByBuyerUserId = async (
   }
 };
 
+const getProductImageByproductId = async (productId) => {
+  const escapedProductId = mysql.escape(productId);
+
+  const query = `SELECT * FROM productimage WHERE productId=${escapedProductId}`;
+
+  try {
+    const [rows] = await db.execute(query);
+    // 각 이미지 객체에 productImage 값을 변환하여 추가
+    const updatedRows = rows.map((row) => {
+      // 이미지 URL을 http://localhost:3001/uploads/{productImage} 형식으로 변경
+      return {
+        ...row,
+        productImage: `http://localhost:3001/uploads/${row.productImage}`,
+      };
+    });
+
+    return updatedRows; // 변환된 배열을 반환
+  } catch (error) {
+    console.error("Error in update product data:", error.message);
+    throw error; // 에러를 호출한 쪽에서 처리하도록 다시 던지기
+  }
+};
+
 module.exports = {
   getProductsAll,
   getProductsByUserId,
@@ -556,4 +578,5 @@ module.exports = {
   updateProductFieldsByBuyerUserId,
   getProductsByFilter, //대수술중 함수
   updateProductByView,
+  getProductImageByproductId,
 };
