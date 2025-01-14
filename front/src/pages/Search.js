@@ -199,7 +199,7 @@ const Search = () => {
       </div>
       <div className={SearchStyle.resultProductsBox}>
         {products && products.length > 0 ? (
-          <ProductList products={products} />
+          <ProductList type="home" products={products} />
         ) : (
           <p className={SearchStyle.noProductsText}>
             상품 검색 결과가 없습니다.
