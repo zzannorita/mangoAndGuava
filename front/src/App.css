@@ -45,17 +45,11 @@ body {
 }
 
 /*전체 페이지 적용 css */
-:root {
-  --container-width: 90%;
-  --container-max-width: 1200px;
-  --container-padding: 1rem;
-}
-
 .container {
-  width: var(--container-width);
-  max-width: var(--container-max-width);
+  width: 90%;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: var(--container-padding);
+  padding: 1rem;
   min-width: 1200px;
 }
 
