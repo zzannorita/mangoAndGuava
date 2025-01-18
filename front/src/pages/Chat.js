@@ -6,6 +6,7 @@ import mangoImg from "../image/logo.png";
 import chatRemove from "../image/x.png";
 import axiosInstance from "../axios";
 import Modal from "../components/Modal";
+import { useWebSocket } from "../contexts/WebSocketContext";
 
 const Chat = () => {
   const [message, setMessage] = useState(""); // 입력 메시지
@@ -23,6 +24,8 @@ const Chat = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const { newChat, sendMessage } = useWebSocket(); // 최신 메시지 및 누적 알림 가져오기
+
   //채팅하기 눌러서 온 변수들
   const { ownerUserId = null, productId = null } = location.state || {}; //디테일 페이지에서 온 정보
 
@@ -33,35 +36,19 @@ const Chat = () => {
     }
   }, [chatEach]); // 채팅내역이 업데이트될 때마다 실행
 
-  // WebSocket 연결
   useEffect(() => {
-    let reconnectAttempts = 0;
-    let isWebSocketConnected = false; // WebSocket 연결 여부를 추적
-
-    const connectWebSocket = () => {
-      if (socket.current && socket.current.readyState === WebSocket.OPEN) {
-        return; // 이미 연결되어 있으면 함수 종료
-      }
-
-      socket.current = new WebSocket("ws://localhost:3001");
-
-      // WebSocket 열리면 userId 전달 (인증)
-      socket.current.onopen = () => {
-        reconnectAttempts = 0; // 재연결 시도 횟수 초기화
-        isWebSocketConnected = true;
-        socket.current.send(JSON.stringify({ type: "auth", userId }));
-      };
-
-      // WebSocket으로 메시지 수신
-      socket.current.onmessage = (event) => {
-        const newMessage = JSON.parse(event.data);
-
+    if (newChat) {
+      // 원하는 타입별로 처리
+      if (newChat.type === "chatting") {
+        // alert(`새로운 알림: ${newMessage.payload.message}`);
+        console.log("타입이 chatting");
+        // 알림 처리 로직 추가
         const updatedMessage = {
-          room_id: newMessage.roomId,
-          user_from: newMessage.userFrom,
-          user_to: newMessage.userTo,
-          message: newMessage.content,
-          created_at: newMessage.timestamp,
+          room_id: newChat.roomId,
+          user_from: newChat.userFrom,
+          user_to: newChat.userTo,
+          message: newChat.content,
+          created_at: newChat.timestamp,
         };
 
         if (
@@ -70,40 +57,11 @@ const Chat = () => {
         ) {
           setChatEach((prevMessages) => [...prevMessages, updatedMessage]);
         }
-      };
-
-      // WebSocket 연결이 닫혔을 때 재연결 시도
-      socket.current.onclose = () => {
-        isWebSocketConnected = false;
-        reconnectWebSocket();
-      };
-
-      // WebSocket 오류 발생 시 재연결 시도
-      socket.current.onerror = (error) => {
-        console.error("웹소켓 에러 발생 재연결 시도.");
-        socket.current.close();
-      };
-    };
-
-    const reconnectWebSocket = () => {
-      if (!isWebSocketConnected && reconnectAttempts < 10) {
-        reconnectAttempts++;
-        setTimeout(() => {
-          connectWebSocket();
-        }, reconnectAttempts * 1000); // 시도 횟수에 따라 지연 시간 증가
-      } else if (reconnectAttempts >= 10) {
-        console.error("WebSocket 재연결 실패. 최대 시도 횟수 초과.");
+      } else {
+        console.log("다른 타입의 메시지:", newChat);
       }
-    };
-
-    connectWebSocket(); // 처음 WebSocket 연결
-
-    return () => {
-      if (socket.current) {
-        socket.current.close();
-      }
-    };
-  }, [userId, selectedRoomId]);
+    }
+  }, [newChat]); // newMessage가 변경될 때 실행
 
   useEffect(() => {
     if (!ownerUserId || !productId || !userId) return; // userId가 설정된 이후에만 실행
@@ -116,36 +74,20 @@ const Chat = () => {
       message: `${ownerUserId}님 상품 ${productId} 관련 채팅드립니다.`,
     };
 
-    const sendMessage = async () => {
-      if (socket.current && socket.current.readyState === WebSocket.OPEN) {
-        const chatData = await axiosInstance.get(`chat-each?roomId=${roomId}`);
-        if (!(chatData.data.data.length > 0)) {
-          socket.current.send(JSON.stringify(newMessage));
-          setSelectedRoomId(roomId);
-          fetchChatRoomMessages(roomId, ownerUserId);
-        } else {
-          setSelectedRoomId(roomId);
-          fetchChatRoomMessages(roomId, ownerUserId);
-        }
+    const firstSendMessage = async () => {
+      const chatData = await axiosInstance.get(`chat-each?roomId=${roomId}`);
+      if (!(chatData.data.data.length > 0)) {
+        //채팅방이 존재하지 않을경우
+        sendMessage(JSON.stringify(newMessage));
+        setSelectedRoomId(roomId);
+        fetchChatRoomMessages(roomId, ownerUserId);
       } else {
-        console.error("WebSocket 연결 상태가 준비되지 않았습니다.");
+        setSelectedRoomId(roomId);
+        fetchChatRoomMessages(roomId, ownerUserId);
       }
     };
 
-    const waitForConnection = (callback, interval = 100, retries = 10) => {
-      if (socket.current.readyState === WebSocket.OPEN) {
-        callback();
-      } else if (retries > 0) {
-        setTimeout(
-          () => waitForConnection(callback, interval, retries - 1),
-          interval
-        );
-      } else {
-        console.error("WebSocket 연결 실패");
-      }
-    };
-
-    waitForConnection(sendMessage);
+    firstSendMessage();
   }, [ownerUserId, productId, userId]); // userId가 설정된 이후 실행
 
   // 채팅방 클릭 시 채팅 내역 가져오기
@@ -220,9 +162,7 @@ const Chat = () => {
         user_to: String(otherUserId),
         message: message.trim(),
       };
-
-      // WebSocket으로 메시지 전송
-      socket.current.send(JSON.stringify(newMessage));
+      sendMessage(newMessage);
 
       // 로컬에서 즉시 메시지 렌더링
       setChatEach((prevMessages) => [...prevMessages, newMessage]);
@@ -239,8 +179,12 @@ const Chat = () => {
       message: "주소 정보 : " + selectedUserData.address,
     };
 
+    if (!selectedUserData.address) {
+      addressMessage.message = "주소가 설정되지 않았습니다.";
+    }
+
     // WebSocket으로 메시지 전송
-    socket.current.send(JSON.stringify(addressMessage));
+    sendMessage(addressMessage);
 
     // 로컬에서 즉시 메시지 렌더링
     setChatEach((prevMessages) => [...prevMessages, addressMessage]);
@@ -255,14 +199,18 @@ const Chat = () => {
       message: "계좌 정보 : " + selectedUserData.account,
     };
 
+    if (!selectedUserData.account) {
+      AccountMessage.message = "계좌가 설정되지 않았습니다.";
+    }
+
     // WebSocket으로 메시지 전송
-    socket.current.send(JSON.stringify(AccountMessage));
+    sendMessage(AccountMessage);
 
     // 로컬에서 즉시 메시지 렌더링
     setChatEach((prevMessages) => [...prevMessages, AccountMessage]);
   };
 
-  const sendMessage = (e) => {
+  const enterSendMessage = (e) => {
     if (e.key === "Enter") {
       handleSendMessage();
     }
@@ -539,7 +487,7 @@ const Chat = () => {
                       type="text"
                       value={message}
                       onChange={handleChange}
-                      onKeyDown={sendMessage}
+                      onKeyDown={enterSendMessage}
                       placeholder={
                         selectedProductData.tradeState === "판매완료"
                           ? "판매가 완료되어 채팅이 비활성화 되었습니다."
@@ -607,3 +555,75 @@ const Chat = () => {
 };
 
 export default Chat;
+
+// WebSocket 연결
+// useEffect(() => {
+//   let reconnectAttempts = 0;
+//   let isWebSocketConnected = false; // WebSocket 연결 여부를 추적
+
+//   const connectWebSocket = () => {
+//     if (socket.current && socket.current.readyState === WebSocket.OPEN) {
+//       return; // 이미 연결되어 있으면 함수 종료
+//     }
+
+//     socket.current = new WebSocket("ws://localhost:3001");
+
+//     // WebSocket 열리면 userId 전달 (인증)
+//     socket.current.onopen = () => {
+//       reconnectAttempts = 0; // 재연결 시도 횟수 초기화
+//       isWebSocketConnected = true;
+//       socket.current.send(JSON.stringify({ type: "auth", userId }));
+//     };
+
+//     // WebSocket으로 메시지 수신
+//     socket.current.onmessage = (event) => {
+//       const newMessage = JSON.parse(event.data);
+
+//       const updatedMessage = {
+//         room_id: newMessage.roomId,
+//         user_from: newMessage.userFrom,
+//         user_to: newMessage.userTo,
+//         message: newMessage.content,
+//         created_at: newMessage.timestamp,
+//       };
+
+//       if (
+//         updatedMessage.room_id === selectedRoomId &&
+//         String(userId) !== String(updatedMessage.user_from)
+//       ) {
+//         setChatEach((prevMessages) => [...prevMessages, updatedMessage]);
+//       }
+//     };
+
+//     // WebSocket 연결이 닫혔을 때 재연결 시도
+//     socket.current.onclose = () => {
+//       isWebSocketConnected = false;
+//       reconnectWebSocket();
+//     };
+
+//     // WebSocket 오류 발생 시 재연결 시도
+//     socket.current.onerror = (error) => {
+//       console.error("웹소켓 에러 발생 재연결 시도.");
+//       socket.current.close();
+//     };
+//   };
+
+//   const reconnectWebSocket = () => {
+//     if (!isWebSocketConnected && reconnectAttempts < 10) {
+//       reconnectAttempts++;
+//       setTimeout(() => {
+//         connectWebSocket();
+//       }, reconnectAttempts * 1000); // 시도 횟수에 따라 지연 시간 증가
+//     } else if (reconnectAttempts >= 10) {
+//       console.error("WebSocket 재연결 실패. 최대 시도 횟수 초과.");
+//     }
+//   };
+
+//   connectWebSocket(); // 처음 WebSocket 연결
+
+//   return () => {
+//     if (socket.current) {
+//       socket.current.close();
+//     }
+//   };
+// }, [userId, selectedRoomId]);
