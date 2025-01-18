@@ -7,8 +7,24 @@ import getRelativeTime from "../utils/getRelativeTime";
 import axiosInstance from "../axios";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
+import { useWebSocket } from "../contexts/WebSocketContext";
 
 const ProductsCard = ({ product, userId, type }) => {
+  ///////////////////////context api websocket/////////////////
+  const { sendMessage } = useWebSocket();
+
+  const sendMessageLikeNotification = () => {
+    const sendData = {
+      type: "like",
+      userId: String(userId), //본인 userId
+      productUserId: product.userId, //판매자 userId
+      productName: product.productName,
+      productId: product.productId,
+    };
+
+    sendMessage(sendData);
+  };
+
   ////////////////////로그인상태 확인///////////////////////
   const [isLogin, setIsLogin] = useState(false);
   useEffect(() => {
@@ -39,8 +55,10 @@ const ProductsCard = ({ product, userId, type }) => {
       });
       if (response.status === 200) {
         const wasHeartEmpty = clickedHeart; // 하트가 있었는지 확인
+        if (clickedHeart) {
+          sendMessageLikeNotification(); // 웹소켓으로 알림 보내기
+        }
         setClickedHeart(!clickedHeart); // 하트 상태 토글
-
         if (wasHeartEmpty) {
           setShowAlarm(true);
           setTimeout(() => setShowAlarm(false), 1500);

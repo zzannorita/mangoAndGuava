@@ -8,6 +8,7 @@ import ProductList from "../components/ProductList";
 import OthersReview from "./OthersReview";
 import { sortProducts } from "../utils/sortUtils";
 import Cookies from "js-cookie";
+import { useWebSocket } from "../contexts/WebSocketContext";
 
 export default function ShopForBuyer() {
   //쿼리파라미터에서 sellerId가져오기
@@ -22,6 +23,20 @@ export default function ShopForBuyer() {
 
   const [selectedFilter, setSelectedFilter] = useState("전체");
   const [followSeller, setFollowSeller] = useState(false);
+
+  ///////////////////////context api websocket/////////////////
+  const { sendMessage } = useWebSocket();
+
+  const sendMessageFollowNotification = () => {
+    const sendData = {
+      type: "follow",
+      userId: String(Cookies.get("userId")), //본인 userId
+      followUserId: sellerId, //팔로우 하려는 userId
+    };
+
+    sendMessage(sendData);
+  };
+
   //필터 클릭 핸들러
   const handleFilterClick = (filter) => {
     setSelectedFilter(filter);
@@ -70,6 +85,7 @@ export default function ShopForBuyer() {
         const response = await axiosInstance.post("bookmark", { sellerId });
         if (response.status === 200) {
           setFollowSeller(true);
+          sendMessageFollowNotification();
           alert(`${sellerNickName}님을 팔로우 하였습니다.`);
         } else {
           console.error("팔로우 실패", response.data);
