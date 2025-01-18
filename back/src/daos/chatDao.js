@@ -78,7 +78,7 @@ FROM chat
 WHERE SUBSTRING_INDEX(room_id, '-', -1) = ${escapedProductId};`;
 
   try {
-    const [rows] = await db.execute(insertQuery);
+    const [rows] = await db.execute(query);
     return rows;
   } catch (error) {
     console.error("Error fetching chat each:", error.message);
