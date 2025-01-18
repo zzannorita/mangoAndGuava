@@ -33,6 +33,7 @@ export default function Detail({ shopOwnerUserId }) {
   const [productInfo, setProductInfo] = useState("");
   const [tradeState, setTradeState] = useState("");
   const [buyerId, setBuyerId] = useState("");
+  const [chatNum, setChatNum] = useState("");
   ///////////////////사용자 상태//////////////////////////////
   const [userNickName, setUserNickName] = useState("");
   const [userId, setUserId] = useState("");
@@ -145,7 +146,12 @@ export default function Detail({ shopOwnerUserId }) {
         console.log("상품 데이터 불러오기 실패", error);
       });
   }, [productId]);
-
+  //채팅 수
+  useEffect(() => {
+    axiosInstance.get(`/chat-num?productId=${productId}`).then((response) => {
+      setChatNum(response.data[0].count);
+    });
+  });
   // 현재 로그인된 사용자 정보 불러오기
   const [nowUserId, setNowUserId] = useState(null); // 기본값을 null로 설정
   useEffect(() => {
@@ -345,7 +351,9 @@ export default function Detail({ shopOwnerUserId }) {
                   <img src={eyeImg} alt="eyeImg" className="smallImgSize"></img>
                   <div>{productViews}</div>
                 </div>
-                <div className={DetailStyle.productDetainInfoBoxes}>채팅 5</div>
+                <div className={DetailStyle.productDetainInfoBoxes}>
+                  채팅 {chatNum}
+                </div>
                 <div className={DetailStyle.productDetainInfoBoxes}>
                   {productCreatedDate}
                 </div>
