@@ -1,272 +1,77 @@
 import React, { useState } from "react";
 import CategoryStyle from "../styles/registCategory.module.css";
+import categories from "../hooks/useCategory";
 
 export default function Category({ onCategorySelect }) {
   const [clickedCategory, setClickedCategory] = useState(null);
   const [clickedSubCategory, setClickedSubCategory] = useState(null);
   const [clickedSubSubCategory, setClickedSubSubCategory] = useState(null);
-  const [clickedCategoryName, setClickedCategoryName] = useState("");
-  const [clickedSubCategoryName, setClickedSubCategoryName] = useState("");
-  const [clickedSubSubCategoryName, setClickedSubSubCategoryName] =
-    useState("");
-  // 카테고리 클릭 시
-  const handleCategoryClick = (category, categoryName) => {
-    setClickedCategory(category);
-    setClickedCategoryName(categoryName);
-    setClickedSubCategory(null); // 서브 카테고리 초기화
+
+  const handleCategoryClick = (categoryCode) => {
+    setClickedCategory(categoryCode);
+    setClickedSubCategory(null);
     setClickedSubSubCategory(null);
   };
 
-  // 서브 카테고리 클릭 시
-  const handleSubCategoryClick = (subCategory, categoryName) => {
-    setClickedSubCategory(subCategory);
-    setClickedSubCategoryName(categoryName);
+  const handleSubCategoryClick = (subCategoryCode) => {
+    setClickedSubCategory(subCategoryCode);
     setClickedSubSubCategory(null);
   };
 
-  // 서브 서브 카테고리 클릭 시
-  const handleSubSubCategoryClick = (
-    subSubCategoryCode,
-    subSubCategoryName
-  ) => {
+  const handleSubSubCategoryClick = (subSubCategoryCode, fullCategoryName) => {
     setClickedSubSubCategory(subSubCategoryCode);
-    setClickedSubSubCategoryName(subSubCategoryName);
-    const fullCategoryCode = `${clickedCategory}${clickedSubCategory}${subSubCategoryCode}`;
-    const fullCategoryName = `${clickedCategoryName} > ${clickedSubCategoryName} > ${subSubCategoryName}`;
-    onCategorySelect(fullCategoryCode, fullCategoryName);
+    onCategorySelect(subSubCategoryCode, fullCategoryName);
   };
 
   return (
     <div className={CategoryStyle.categoryBox}>
       <div className={CategoryStyle.navbar}>
         <ul>
-          <li>
-            <div onClick={() => handleCategoryClick("100", "의류")}>의류</div>
-            {clickedCategory === "100" && (
-              <div className={CategoryStyle.subNavbar}>
-                <ul>
-                  <li>
-                    <div
-                      onClick={() => handleSubCategoryClick("110", "남성의류")}
-                    >
-                      남성의류
-                    </div>
-                    {clickedSubCategory === "110" && (
-                      <div className={CategoryStyle.subSubNavbar}>
-                        <ul>
-                          <li
-                            onClick={() =>
-                              handleSubSubCategoryClick("111", "상의")
-                            }
-                          >
-                            상의
-                          </li>
-                          <li
-                            onClick={() =>
-                              handleSubSubCategoryClick("112", "하의")
-                            }
-                          >
-                            하의
-                          </li>
-                          <li
-                            onClick={() =>
-                              handleSubSubCategoryClick("113", "운동화")
-                            }
-                          >
-                            운동화
-                          </li>
-                        </ul>
-                      </div>
-                    )}
-                  </li>
-                  <li>
-                    <div
-                      onClick={() => handleSubCategoryClick("120", "여성의류")}
-                    >
-                      여성의류
-                    </div>
-                    {clickedSubCategory === "120" && (
-                      <div className={CategoryStyle.subSubNavbar}>
-                        <ul>
-                          <li
-                            onClick={() =>
-                              handleSubSubCategoryClick("121", "원피스")
-                            }
-                          >
-                            원피스
-                          </li>
-                          <li
-                            onClick={() =>
-                              handleSubSubCategoryClick("122", "스커트")
-                            }
-                          >
-                            스커트
-                          </li>
-                          <li
-                            onClick={() =>
-                              handleSubSubCategoryClick("123", "하이힐")
-                            }
-                          >
-                            하이힐
-                          </li>
-                        </ul>
-                      </div>
-                    )}
-                  </li>
-                  <li>
-                    <div
-                      onClick={() => handleSubCategoryClick("130", "아동의류")}
-                    >
-                      아동의류
-                    </div>
-                    {clickedSubCategory === "130" && (
-                      <div className={CategoryStyle.subSubNavbar}>
-                        <ul>
-                          <li
-                            onClick={() =>
-                              handleSubSubCategoryClick("131", "티셔츠")
-                            }
-                          >
-                            티셔츠
-                          </li>
-                          <li
-                            onClick={() =>
-                              handleSubSubCategoryClick("132", "바지")
-                            }
-                          >
-                            바지
-                          </li>
-                          <li
-                            onClick={() =>
-                              handleSubSubCategoryClick("133", "운동화")
-                            }
-                          >
-                            운동화
-                          </li>
-                        </ul>
-                      </div>
-                    )}
-                  </li>
-                </ul>
+          {categories.map((category) => (
+            <li key={category.code}>
+              <div onClick={() => handleCategoryClick(category.code)}>
+                {category.name}
               </div>
-            )}
-          </li>
-          <li>
-            <div onClick={() => handleCategoryClick("200")}>가전제품</div>
-            {clickedCategory === "200" && (
-              <div className={CategoryStyle.subNavbar}>
-                <ul>
-                  <li>
-                    <div onClick={() => handleSubCategoryClick("210")}>TV</div>
-                    {clickedSubCategory === "210" && (
-                      <div className={CategoryStyle.subSubNavbar}>
-                        <ul>
-                          <li onClick={() => handleSubSubCategoryClick("211")}>
-                            LED TV
-                          </li>
-                          <li onClick={() => handleSubSubCategoryClick("212")}>
-                            OLED TV
-                          </li>
-                          <li onClick={() => handleSubSubCategoryClick("213")}>
-                            QLED TV
-                          </li>
-                        </ul>
-                      </div>
-                    )}
-                  </li>
-                  <li>
-                    <div onClick={() => handleSubCategoryClick("220")}>
-                      냉장고
-                    </div>
-                    {clickedSubCategory === "220" && (
-                      <div className={CategoryStyle.subSubNavbar}>
-                        <ul>
-                          <li>양문형</li>
-                          <li>미니 냉장고</li>
-                          <li>와인 냉장고</li>
-                        </ul>
-                      </div>
-                    )}
-                  </li>
-                  <li>
-                    <div onClick={() => handleSubCategoryClick("230")}>
-                      세탁기
-                    </div>
-                    {clickedSubCategory === "230" && (
-                      <div className={CategoryStyle.subSubNavbar}>
-                        <ul>
-                          <li>드럼 세탁기</li>
-                          <li>통돌이 세탁기</li>
-                          <li>미니 세탁기</li>
-                        </ul>
-                      </div>
-                    )}
-                  </li>
-                </ul>
-              </div>
-            )}
-          </li>
-          <li>
-            <div onClick={() => handleCategoryClick("주방용품")}>주방용품</div>
-            {clickedCategory === "주방용품" && (
-              <div className={CategoryStyle.subNavbar}>
-                <ul>
-                  <li>
-                    <div onClick={() => handleSubCategoryClick("냄비")}>
-                      냄비
-                    </div>
-                    {clickedSubCategory === "냄비" && (
-                      <div className={CategoryStyle.subSubNavbar}>
-                        <ul>
-                          <li>스테인리스 냄비</li>
-                          <li>압력솥</li>
-                          <li>법랑 냄비</li>
-                        </ul>
-                      </div>
-                    )}
-                  </li>
-                  <li>
-                    <div onClick={() => handleSubCategoryClick("프라이팬")}>
-                      프라이팬
-                    </div>
-                    {clickedSubCategory === "프라이팬" && (
-                      <div className={CategoryStyle.subSubNavbar}>
-                        <ul>
-                          <li>비철 프라이팬</li>
-                          <li>코팅 프라이팬</li>
-                          <li>그릴 팬</li>
-                        </ul>
-                      </div>
-                    )}
-                  </li>
-                  <li>
-                    <div onClick={() => handleSubCategoryClick("식기")}>
-                      식기
-                    </div>
-                    {clickedSubCategory === "식기" && (
-                      <div className={CategoryStyle.subSubNavbar}>
-                        <ul>
-                          <li>접시</li>
-                          <li>컵</li>
-                          <li>수저</li>
-                        </ul>
-                      </div>
-                    )}
-                  </li>
-                </ul>
-              </div>
-            )}
-          </li>
-          <li>
-            <div onClick={() => handleCategoryClick("자동차용품")}>
-              자동차용품
-            </div>
-            {clickedCategory === "자동차용품" && (
-              <div className={CategoryStyle.subNavbar}>
-                <ul>{/* 서브 카테고리와 서브서브 카테고리 추가 */}</ul>
-              </div>
-            )}
-          </li>
+              {clickedCategory === category.code && (
+                <div className={CategoryStyle.subNavbar}>
+                  <ul>
+                    {category.subCategories.map((subCategory) => (
+                      <li key={subCategory.code}>
+                        <div
+                          onClick={() =>
+                            handleSubCategoryClick(subCategory.code)
+                          }
+                        >
+                          {subCategory.name}
+                        </div>
+                        {clickedSubCategory === subCategory.code && (
+                          <div className={CategoryStyle.subSubNavbar}>
+                            <ul>
+                              {subCategory.subSubCategories.map(
+                                (subSubCategory) => (
+                                  <li
+                                    key={subSubCategory.code}
+                                    onClick={() =>
+                                      handleSubSubCategoryClick(
+                                        subSubCategory.code,
+                                        `${category.name} > ${subCategory.name} > ${subSubCategory.name}`
+                                      )
+                                    }
+                                  >
+                                    {subSubCategory.name}
+                                  </li>
+                                )
+                              )}
+                            </ul>
+                          </div>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </li>
+          ))}
         </ul>
       </div>
     </div>

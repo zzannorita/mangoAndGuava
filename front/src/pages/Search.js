@@ -96,8 +96,8 @@ const Search = () => {
       <div className={SearchStyle.resultTextBox}>
         <div className={shopStyle.mainTopBox}>
           <div className={shopStyle.mainTopLeftBox}>
-            '&nbsp;<span className="impact impact2">{query}</span>&nbsp;'의 검색
-            결과 &nbsp;
+            <span className="impact impact2">{query}</span>&nbsp; 검색 결과
+            &nbsp;
             <span className="impact">{products.length}</span>건
           </div>
           <div className={shopStyle.mainTopRightBox}>
@@ -199,7 +199,7 @@ const Search = () => {
       </div>
       <div className={SearchStyle.resultProductsBox}>
         {products && products.length > 0 ? (
-          <ProductList products={products} />
+          <ProductList type="home" products={products} />
         ) : (
           <p className={SearchStyle.noProductsText}>
             상품 검색 결과가 없습니다.

@@ -15,7 +15,7 @@ export default function Home() {
 
   useEffect(() => {
     axiosInstance
-      .get("http://localhost:3001/products")
+      .get("/products")
       .then((response) => {
         setProducts(response.data.products || []); // 상품 배열 저장
         setTotalPage(response.data.totalPages);
@@ -30,7 +30,6 @@ export default function Home() {
       <Carousel type="home" images={sliderImages} />
       <div className={HomeStyle.recommendBox}>
         <div className={HomeStyle.userRecommendBox}>
-          <div className={HomeStyle.userRecommendName}>최신 상품 목록</div>
           <div className={HomeStyle.productList}>
             <ProductList type="home" products={products} />
           </div>
