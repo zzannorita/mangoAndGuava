@@ -41,19 +41,18 @@ const getAlarm = async (userId) => {
   const escapedUserId = mysql.escape(userId);
 
   const selectQuery = `SELECT a.*
-                        FROM notifications a
-                        INNER JOIN (
-                            SELECT 
-                                extraData->>'$.roomId' AS roomId,
-                                MAX(createdAt) AS latestCreatedAt
-                            FROM notifications
-                            WHERE type = 'chat'
-                            AND userId = ${escapedUserId}
-                            GROUP BY extraData->>'$.roomId'
-                        ) b ON a.extraData->>'$.roomId' = b.roomId 
-                        AND a.createdAt = b.latestCreatedAt
-                        AND a.userId = ${escapedUserId};
-                      `;
+FROM notifications a
+INNER JOIN (
+    SELECT 
+        extraData->>'$.roomId' AS roomId,
+        MAX(createdAt) AS latestCreatedAt
+    FROM notifications
+    WHERE userId = ${escapedUserId}
+    GROUP BY extraData->>'$.roomId'
+) b ON a.extraData->>'$.roomId' = b.roomId 
+AND a.createdAt = b.latestCreatedAt
+AND a.userId = ${escapedUserId}
+ORDER BY a.createdAt DESC;`;
 
   try {
     const [rows] = await db.execute(selectQuery);
