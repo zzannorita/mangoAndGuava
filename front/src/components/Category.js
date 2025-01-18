@@ -10,6 +10,7 @@ export default function Category() {
   const [hoveredCategory, setHoveredCategory] = useState(null);
   const [hoveredSubCategory, setHoveredSubCategory] = useState(null);
   const [hoveredSubSubCategory, setHoveredSubSubCategory] = useState(null);
+  const [isImageHovered, setIsImageHovered] = useState(false);
 
   //첫번째 카테고리 hover시
   const handleMouseHover = (category) => {
@@ -32,10 +33,12 @@ export default function Category() {
   return (
     <div
       className={CategoryStyle.categoryBox}
+      onMouseEnter={() => setIsImageHovered(true)}
       onMouseLeave={() => {
         setHoveredCategory(null);
         setHoveredSubCategory(null);
         setHoveredSubSubCategory(null);
+        setIsImageHovered(false);
       }}
     >
       <img
@@ -49,7 +52,7 @@ export default function Category() {
             CategoryStyle.selectedCategory1
           } ${hoveredCategory ? CategoryStyle.visible : ""}`}
         >
-          {hoveredCategory || ""}
+          {hoveredCategory?.name || ""}
         </div>
         <img
           className={`${CategoryStyle.greaterImg} ${
@@ -63,7 +66,7 @@ export default function Category() {
             CategoryStyle.selectedCategory2
           } ${hoveredSubCategory ? CategoryStyle.visible : ""}`}
         >
-          {hoveredSubCategory || ""}
+          {hoveredSubCategory?.name || ""}
         </div>
         <img
           className={`${CategoryStyle.greaterImg} ${
@@ -77,59 +80,52 @@ export default function Category() {
             CategoryStyle.selectedCategory3
           } ${hoveredSubSubCategory ? CategoryStyle.visible : ""}`}
         >
-          {hoveredSubSubCategory || ""}
+          {hoveredSubSubCategory?.name || ""}
         </div>
       </div>
-      <div className={CategoryStyle.navbar}>
-        <ul>
-          {categories.map((category) => (
-            <li
-              key={category.name}
-              onMouseEnter={() => handleMouseHover(category.name)}
-            >
-              <Link to={category.link}>{category.name}</Link>
-              {hoveredCategory === category.name && (
-                <div className={CategoryStyle.subNavbar}>
-                  <ul>
-                    {category.subCategories.map((subCategory) => (
-                      <li
-                        key={subCategory.name}
-                        onMouseEnter={() =>
-                          handleSubMouseHover(subCategory.name)
-                        }
-                      >
-                        <Link to={subCategory.link}>{subCategory.name}</Link>
-                        {hoveredSubCategory === subCategory.name && (
-                          <div className={CategoryStyle.subSubNavbar}>
-                            <ul>
-                              {subCategory.subSubCategories.map(
-                                (subSubCategory) => (
-                                  <li
-                                    key={subSubCategory.name}
-                                    onMouseEnter={() =>
-                                      handleSubSubMouseHover(
-                                        subSubCategory.name
-                                      )
-                                    }
-                                  >
-                                    <Link to={subSubCategory.link}>
-                                      {subSubCategory.name}
-                                    </Link>
-                                  </li>
-                                )
-                              )}
-                            </ul>
-                          </div>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
+      {isImageHovered && (
+        <>
+          <div className={CategoryStyle.navbar}>
+            {categories.map((category) => (
+              <div
+                key={category.code}
+                onMouseEnter={() => handleMouseHover(category)}
+                className={CategoryStyle.navbarItem}
+              >
+                <Link to={category.link}>{category.name}</Link>
+              </div>
+            ))}
+          </div>
+
+          {hoveredCategory?.subCategories && (
+            <div className={CategoryStyle.subNavbar}>
+              {hoveredCategory.subCategories.map((subCategory) => (
+                <div
+                  key={subCategory.code}
+                  onMouseEnter={() => handleSubMouseHover(subCategory)}
+                  className={CategoryStyle.subNavbarItem}
+                >
+                  <Link to={subCategory.link}>{subCategory.name}</Link>
                 </div>
-              )}
-            </li>
-          ))}
-        </ul>
-      </div>
+              ))}
+            </div>
+          )}
+
+          {hoveredSubCategory?.subSubCategories && (
+            <div className={CategoryStyle.subSubNavbar}>
+              {hoveredSubCategory.subSubCategories.map((subSubCategory) => (
+                <div
+                  key={subSubCategory.code}
+                  onMouseEnter={() => handleSubSubMouseHover(subSubCategory)}
+                  className={CategoryStyle.subSubNavbarItem}
+                >
+                  <Link to={subSubCategory.link}>{subSubCategory.name}</Link>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }
