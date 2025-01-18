@@ -140,8 +140,21 @@ const getChatEach = async (req, res) => {
   }
 };
 
+const getChatNumber = async (req, res) => {
+  const productId = req.query.productId;
+
+  try {
+    const result = await chatDao.getNumberOfChat(productId);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error! get chatNum" });
+  }
+};
+
 module.exports = {
   handleChatAndProduct,
   getMyChatList,
   getChatEach,
+  getChatNumber,
 };

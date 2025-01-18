@@ -7,5 +7,6 @@ const chatController = require("../controllers/chatController");
 router.post("/chat-product", chatController.handleChatAndProduct);
 router.get("/chat-my", chatController.getMyChatList);
 router.get("/chat-each", chatController.getChatEach);
+router.get("/chat-num", chatController.getChatNumber);
 
 module.exports = router;

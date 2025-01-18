@@ -70,4 +70,25 @@ const insertChat = async (chatData) => {
   }
 };
 
-module.exports = { getMyChatList, getChatEachRoomId, insertChat };
+const getNumberOfChat = async (productId) => {
+  const escapedProductId = mysql.escape(productId);
+
+  const query = `SELECT COUNT(DISTINCT room_id) AS count
+FROM chat
+WHERE SUBSTRING_INDEX(room_id, '-', -1) = ${escapedProductId};`;
+
+  try {
+    const [rows] = await db.execute(insertQuery);
+    return rows;
+  } catch (error) {
+    console.error("Error fetching chat each:", error.message);
+    throw error; // 에러를 호출한 쪽에서 처리하도록 다시 던지기
+  }
+};
+
+module.exports = {
+  getMyChatList,
+  getChatEachRoomId,
+  insertChat,
+  getNumberOfChat,
+};
