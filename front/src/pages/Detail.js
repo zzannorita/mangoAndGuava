@@ -26,7 +26,7 @@ export default function Detail({ shopOwnerUserId }) {
   const [productState, setProductState] = useState("");
   const [productTradingMethod, setProductTradingMethod] = useState("");
   const [productTradingAddress, setProductTradingAddress] = useState("");
-  const [productShippngFee, setProductShippngFee] = useState("");
+  const [productShippingFee, setProductShippingFee] = useState("");
   const [productWishlistCount, setProductWishlistCount] = useState("");
   const [productViews, setProductViews] = useState("");
   const [productCreatedDate, setProductCreatedDate] = useState("");
@@ -136,7 +136,7 @@ export default function Detail({ shopOwnerUserId }) {
         setProductTradingMethod(
           product.tradingMethod === 1 ? "직거래" : "택배거래"
         );
-        setProductShippngFee(product.isShippingFee === 0 ? "별도" : "-");
+        setProductShippingFee(product.isShippingFee === 0 ? "별도" : "-");
 
         const user = response.data.user;
         setUserId(user.userId);
@@ -320,7 +320,7 @@ export default function Detail({ shopOwnerUserId }) {
               <div className={DetailStyle.isShippingFee}>
                 <div>배송비</div>
                 <div className={DetailStyle.productText}>
-                  {productShippngFee}
+                  {productShippingFee}
                 </div>
               </div>
             </div>
