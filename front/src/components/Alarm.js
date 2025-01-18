@@ -6,27 +6,11 @@ import axiosInstance from "../axios";
 export default function Alarm({ alarmClick, alarmData }) {
   const [imageData, setImageData] = useState({});
 
-  // const getProductIamge = async (roomId) => {
-  //   const [, , productId] = roomId.split("-");
-
-  //   try {
-  //     const response = await axiosInstance.get(`/image?id=${productId}`);
-  //     console.log("이미지 요청시", response.data.data);
-  //     // setImageData((prevState) => ({
-  //     //   ...prevState,
-  //     //   [productId]: response.data.data.productIamge, // 이미지를 productId에 매핑
-  //     // }));
-  //   } catch (error) {
-  //     console.error("이미지 로드 실패", error);
-  //   }
-  // };
-
-  const getProductIamge = async (roomId) => {
+  const getProductImage = async (roomId) => {
     const [, , productId] = roomId.split("-");
 
     try {
       const response = await axiosInstance.get(`/image?id=${productId}`);
-      console.log("이미지 요청시", response.data.data);
 
       // 첫 번째 이미지만 사용
       const firstImage = response.data.data[0];
@@ -44,9 +28,8 @@ export default function Alarm({ alarmClick, alarmData }) {
   };
 
   useEffect(() => {
-    console.log("알림 상태가 변경(알람컴포):", alarmData);
     alarmData.forEach((alarm) => {
-      getProductIamge(alarm.extraData.roomId);
+      getProductImage(alarm.extraData.roomId);
     });
   }, [alarmData]);
 
@@ -73,14 +56,6 @@ export default function Alarm({ alarmClick, alarmData }) {
       return `${days}일 전`; // 하루 이상
     }
   }
-
-  // const getProductIamge = async (roomId) => {
-  //   const [, , productId] = roomId.split("-");
-  //   let productArray = [];
-  //   axiosInstance.get(`/image?id=${productId}`).then((response) => {
-  //     console.log("이미지 요청시", response);
-  //   });
-  // };
 
   return (
     <div
