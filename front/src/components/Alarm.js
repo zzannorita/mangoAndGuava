@@ -57,6 +57,15 @@ export default function Alarm({ alarmClick, alarmData }) {
     }
   }
 
+  const wordLimit = (word) => {
+    if (word.length > 15) {
+      const updateWord = word.substr(0, 13) + "...";
+      return updateWord;
+    } else {
+      return word;
+    }
+  };
+
   return (
     <div
       className={`${AlarmStyle.alarmContainer} ${
@@ -69,31 +78,82 @@ export default function Alarm({ alarmClick, alarmData }) {
         {alarmData.map((alarm, index) => {
           const productId = alarm.extraData.roomId.split("-")[2]; // roomId로 productId 추출
           const imageUrl = imageData[productId]; // 상태에서 이미지 URL을 가져옴
-
+          console.log("확인용", alarm);
           return (
-            <div className={AlarmStyle.alarmList} key={index}>
-              <div className={AlarmStyle.alarmListLeftBox}>
-                <img
-                  src={imageUrl ? imageUrl : imageImg} // 이미지가 있으면 URL을 사용, 없으면 기본 이미지 사용
-                  alt={imageUrl || "default image"}
-                  className={AlarmStyle.alarmListImg}
-                ></img>
-                <div>
-                  <div className={AlarmStyle.alarmListTitle}>
-                    {alarm.extraData.productName} -{" "}
-                    {alarm.extraData.userFromNickname}님
+            <>
+              {alarm.type === "chat" && (
+                <div className={AlarmStyle.alarmList} key={index}>
+                  <div className={AlarmStyle.alarmListLeftBox}>
+                    <img
+                      src={imageUrl ? imageUrl : imageImg} // 이미지가 있으면 URL을 사용, 없으면 기본 이미지 사용
+                      alt={imageUrl || "default image"}
+                      className={AlarmStyle.alarmListImg}
+                    />
+                    <div>
+                      <div className={AlarmStyle.alarmListTitle}>
+                        {wordLimit(alarm.extraData.productName)}
+                      </div>
+                      <div className={AlarmStyle.alarmListContent}>
+                        {alarm.extraData.userFromNickname}
+                        {" : "}
+                        {alarm.extraData.chatContent}
+                      </div>
+                    </div>
                   </div>
-                  <div className={AlarmStyle.alarmListContent}>
-                    {alarm.extraData.chatContent}
+                  <div className={AlarmStyle.alarmListRightBox}>
+                    <div className={AlarmStyle.alarmRegistTime}>
+                      {formatRelativeTime(alarm.createdAt)}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className={AlarmStyle.alarmListRightBox}>
-                <div className={AlarmStyle.alarmRegistTime}>
-                  {formatRelativeTime(alarm.createdAt)}
+              )}
+              {alarm.type === "like" && (
+                <div className={AlarmStyle.alarmList} key={index}>
+                  <div className={AlarmStyle.alarmListLeftBox}>
+                    <img
+                      src={imageUrl ? imageUrl : imageImg} // 이미지가 있으면 URL을 사용, 없으면 기본 이미지 사용
+                      alt={imageUrl || "default image"}
+                      className={AlarmStyle.alarmListImg}
+                    />
+                    <div>
+                      <div className={AlarmStyle.alarmListTitle}>찜 알림</div>
+                      <div className={AlarmStyle.alarmListContent}>
+                        {wordLimit(alarm.extraData.chatContent)}
+                      </div>
+                    </div>
+                  </div>
+                  <div className={AlarmStyle.alarmListRightBox}>
+                    <div className={AlarmStyle.alarmRegistTime}>
+                      {formatRelativeTime(alarm.createdAt)}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              )}
+              {alarm.type === "follow" && (
+                <div className={AlarmStyle.alarmList} key={index}>
+                  <div className={AlarmStyle.alarmListLeftBox}>
+                    <img
+                      src={imageUrl ? imageUrl : imageImg} // 이미지가 있으면 URL을 사용, 없으면 기본 이미지 사용
+                      alt={imageUrl || "default image"}
+                      className={AlarmStyle.alarmListImg}
+                    />
+                    <div>
+                      <div className={AlarmStyle.alarmListTitle}>
+                        팔로우 알림
+                      </div>
+                      <div className={AlarmStyle.alarmListContent}>
+                        {alarm.extraData.chatContent}
+                      </div>
+                    </div>
+                  </div>
+                  <div className={AlarmStyle.alarmListRightBox}>
+                    <div className={AlarmStyle.alarmRegistTime}>
+                      {formatRelativeTime(alarm.createdAt)}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
           );
         })}
       </div>
