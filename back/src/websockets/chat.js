@@ -53,11 +53,113 @@ function setupWebSocket(server) {
         if (parsedData.type === "chat") {
           handleChatMessage(parsedData);
         }
+
+        if (parsedData.type === "like") {
+          console.log(" 좋아요 알림 도착 ");
+          handleLikeNotification(parsedData);
+        }
+
+        if (parsedData.type === "follow") {
+          console.log(" 팔로우 알림 도착");
+          handleFollowNotification(parsedData);
+        }
       } catch (error) {
         console.error("Error handling message:", error);
         ws.send(JSON.stringify({ error: "Message handling error" }));
       }
     });
+
+    const handleFollowNotification = async (parsedData) => {
+      const { nickname: userFromNickname } = await userDao.getUserById(
+        parsedData.userId
+      );
+      const roomId = `${parsedData.userId}-${parsedData.followUserId}-follow`;
+      const content = `${userFromNickname}님이 팔로우 했습니다.`;
+
+      const alarmNoti = {
+        userTo: parsedData.followUserId,
+        userFrom: parsedData.userId,
+        productName: "null",
+        content,
+        chatContent: content,
+        userFromNickname,
+        roomId: roomId,
+        type: "follow",
+      };
+
+      // 채팅 알림 데이터베이스에 저장
+      await alarmDao.insertAlarm(alarmNoti);
+
+      wss.clients.forEach((client) => {
+        // 알림 전송
+        const extraData = {
+          productName: "null",
+          userFromNickname,
+          chatContent: content,
+          sendUserID: parsedData.userId,
+          roomId,
+        };
+        const isRead = 0;
+        if (String(client.userId) === String(parsedData.followUserId)) {
+          client.send(
+            JSON.stringify({
+              type: "notification",
+              content: content,
+              extraData,
+              isRead,
+              userId: parsedData.productUserId,
+              createdAt: new Date().toISOString(),
+            })
+          );
+        }
+      });
+    };
+
+    const handleLikeNotification = async (parsedData) => {
+      const { nickname: userFromNickname } = await userDao.getUserById(
+        parsedData.userId
+      );
+      const roomId = `${parsedData.userId}-${parsedData.productUserId}-${parsedData.productId}-like`;
+      const content = `${userFromNickname}님이 상품을 찜했습니다.`;
+
+      const alarmNoti = {
+        userTo: parsedData.productUserId,
+        userFrom: parsedData.userId,
+        productName: parsedData.productName,
+        content,
+        chatContent: content,
+        userFromNickname,
+        roomId: roomId,
+        type: "like",
+      };
+
+      // 채팅 알림 데이터베이스에 저장
+      await alarmDao.insertAlarm(alarmNoti);
+
+      wss.clients.forEach((client) => {
+        // 알림 전송
+        const extraData = {
+          productName: parsedData.productName,
+          userFromNickname,
+          chatContent: content,
+          sendUserID: parsedData.userId,
+          roomId,
+        };
+        const isRead = 0;
+        if (String(client.userId) === String(parsedData.productUserId)) {
+          client.send(
+            JSON.stringify({
+              type: "notification",
+              content: content,
+              extraData,
+              isRead,
+              userId: parsedData.productUserId,
+              createdAt: new Date().toISOString(),
+            })
+          );
+        }
+      });
+    };
 
     const handleChatMessage = async (parsedData) => {
       const {
@@ -101,6 +203,7 @@ function setupWebSocket(server) {
         ) {
           client.send(
             JSON.stringify({
+              type: "chatting",
               roomId,
               userFrom,
               userTo,
