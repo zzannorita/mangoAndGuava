@@ -26,54 +26,57 @@ export default function Category({ onCategorySelect }) {
   return (
     <div className={CategoryStyle.categoryBox}>
       <div className={CategoryStyle.navbar}>
-        <ul>
-          {categories.map((category) => (
-            <li key={category.code}>
-              <div onClick={() => handleCategoryClick(category.code)}>
-                {category.name}
-              </div>
-              {clickedCategory === category.code && (
-                <div className={CategoryStyle.subNavbar}>
-                  <ul>
-                    {category.subCategories.map((subCategory) => (
-                      <li key={subCategory.code}>
-                        <div
-                          onClick={() =>
-                            handleSubCategoryClick(subCategory.code)
-                          }
-                        >
-                          {subCategory.name}
-                        </div>
-                        {clickedSubCategory === subCategory.code && (
-                          <div className={CategoryStyle.subSubNavbar}>
-                            <ul>
-                              {subCategory.subSubCategories.map(
-                                (subSubCategory) => (
-                                  <li
-                                    key={subSubCategory.code}
-                                    onClick={() =>
-                                      handleSubSubCategoryClick(
-                                        subSubCategory.code,
-                                        `${category.name} > ${subCategory.name} > ${subSubCategory.name}`
-                                      )
-                                    }
-                                  >
-                                    {subSubCategory.name}
-                                  </li>
-                                )
-                              )}
-                            </ul>
-                          </div>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </li>
-          ))}
-        </ul>
+        {categories.map((category) => (
+          <div
+            key={category.code}
+            onClick={() => handleCategoryClick(category)}
+            className={`${CategoryStyle.navbarItem} ${
+              clickedCategory === category ? CategoryStyle.selected : ""
+            }`}
+          >
+            {category.name}
+          </div>
+        ))}
       </div>
+
+      {clickedCategory?.subCategories && (
+        <div className={CategoryStyle.subNavbar}>
+          {clickedCategory.subCategories.map((subCategory) => (
+            <div
+              key={subCategory.code}
+              onClick={() => handleSubCategoryClick(subCategory)}
+              className={`${CategoryStyle.subNavbarItem} ${
+                clickedSubCategory === subCategory ? CategoryStyle.selected : ""
+              }`}
+            >
+              {subCategory.name}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {clickedSubCategory?.subSubCategories && (
+        <div className={CategoryStyle.subSubNavbar}>
+          {clickedSubCategory.subSubCategories.map((subSubCategory) => (
+            <div
+              key={subSubCategory.code}
+              onClick={() =>
+                handleSubSubCategoryClick(
+                  subSubCategory.code,
+                  `${clickedCategory.name} > ${clickedSubCategory.name} > ${subSubCategory.name}`
+                )
+              }
+              className={`${CategoryStyle.subSubNavbarItem} ${
+                clickedSubSubCategory === subSubCategory.code
+                  ? CategoryStyle.selected
+                  : ""
+              }`}
+            >
+              {subSubCategory.name}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

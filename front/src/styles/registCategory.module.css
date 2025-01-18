@@ -15,25 +15,6 @@
   background-color: #f9f9f9;
   width: 300px;
 }
-.navbar li:hover {
-  background-color: #ffe187;
-}
-
-.navbar ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.navbar li {
-  position: relative;
-  padding: 15px 15px;
-}
-
-.navbar a {
-  text-decoration: none;
-  color: #333;
-}
 
 .subNavbar {
   border-right: 1px solid #f1f1f1;
@@ -49,6 +30,25 @@
   width: 300px;
   position: absolute;
   top: 0;
-  left: 300px;
+  left: 600px;
   background-color: #f9f9f9;
+}
+
+.navbarItem,
+.subNavbarItem,
+.subSubNavbarItem {
+  padding: 15px 30px;
+  cursor: pointer;
+  position: relative;
+  width: 240px;
+  height: 20px;
+}
+
+.navbarItem:hover,
+.subNavbarItem:hover,
+.subSubNavbarItem:hover {
+  background-color: #ffe187;
+}
+.selected {
+  background-color: #ffe187;
 }
