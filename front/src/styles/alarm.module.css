@@ -15,7 +15,6 @@
 .alarmContainer.open {
   right: 0px !important;
 }
-
 .alarmText {
   display: flex;
   align-items: center;
@@ -67,4 +66,21 @@
 .alarmListRightBox {
   display: flex;
   align-items: center;
+}
+@media (max-width: 768px) {
+  .alarmContainer {
+    top: 40px;
+    width: 150px;
+  }
+  .alarmText {
+    margin: 10px;
+  }
+  .alarmListImg {
+    width: 15px;
+    height: 15px;
+    margin-right: 5px;
+  }
+  .alarmListContent {
+    font-size: 12px;
+  }
 }
