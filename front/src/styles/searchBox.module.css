@@ -28,3 +28,15 @@
   width: 20px;
   height: 20px;
 }
+@media (max-width: 480px) {
+  .searchContainer {
+    width: 250px;
+    height: 30px;
+    border: 2px solid #ffc107;
+    /* font-size: 8px; */
+  }
+  .searchImg {
+    width: 10px;
+    height: 10px;
+  }
+}
