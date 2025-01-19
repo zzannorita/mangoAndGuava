@@ -100,3 +100,34 @@
   z-index: 10;
   border: 2px solid white;
 }
+@media (max-width: 480px) {
+  .product {
+    width: 115px;
+    height: 230px;
+    margin: 8px 3px 8px;
+  }
+  .productImage {
+    width: 100px;
+    height: 130px;
+  }
+  .emptyHeartImg {
+    top: 5px;
+    right: 5px;
+    width: 15px;
+    height: 15px;
+  }
+  .heartAlarm {
+    top: 32%;
+    width: 100px;
+    height: 25px;
+    font-size: 10px;
+  }
+  .productTopBox {
+    height: 70px;
+    font-size: 12px;
+  }
+  .overlay {
+    font-size: 14px;
+    width: 50px;
+  }
+}
