@@ -135,3 +135,32 @@ a:visited {
 a:active {
   color: inherit; /* 클릭 시에도 색상 유지 */
 }
+
+@media (max-width: 768px) {
+  .container {
+    width: 90%;
+    padding: 0.5rem;
+    min-width: unset;
+  }
+  .mainLayout {
+    top: 136px;
+  }
+}
+@media (max-width: 480px) {
+  .container {
+    width: 90%;
+  }
+  .commonImgSize {
+    width: 18px;
+    height: 18px;
+  }
+  .mainLayout {
+    top: 81px;
+  }
+  .separator {
+    top: 80px;
+  }
+  .mainContent {
+    margin-top: 110px;
+  }
+}
