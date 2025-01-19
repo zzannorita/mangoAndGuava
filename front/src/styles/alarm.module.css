@@ -9,6 +9,7 @@
   transition: right 0.3s ease !important;
   display: flex;
   flex-direction: column;
+  z-index: 1;
 }
 
 .alarmContainer.open {
