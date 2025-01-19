@@ -114,3 +114,68 @@
 .visible {
   opacity: 1;
 }
+@media (max-width: 480px) {
+  .categoryImg {
+    width: 20px;
+    height: 20px;
+  }
+  .selectedCategoryBox {
+    position: relative;
+    height: 30px;
+    font-size: 16px;
+    /* width: 100%; */
+  }
+  .selectedCategory1,
+  .selectedCategory2,
+  .selectedCategory3 {
+    width: 60px;
+  }
+  .selectedCategory {
+    font-size: 12px;
+  }
+  .selectedCategory1 {
+    left: 0%;
+  }
+
+  .selectedCategory2 {
+    left: 14%;
+  }
+
+  .selectedCategory3 {
+    left: 28%;
+  }
+  .greaterImg {
+    width: 10px;
+  }
+  .greaterImg1 {
+    left: 10%;
+  }
+
+  .greaterImg2 {
+    left: 28%;
+  }
+  .navbar,
+  .subNavbar,
+  .subSubNavbar {
+    width: 100px;
+    height: 300px;
+    top: 25px;
+    padding: 20px 0;
+    font-size: 16px;
+  }
+  .subNavbar {
+    left: 100px;
+  }
+
+  .subSubNavbar {
+    left: 200px;
+  }
+  .navbarItem,
+  .subNavbarItem,
+  .subSubNavbarItem {
+    padding: 7.5px 15px;
+    width: 70px;
+    height: 15px;
+    font-size: 12px;
+  }
+}
