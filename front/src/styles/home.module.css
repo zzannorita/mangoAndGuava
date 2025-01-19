@@ -41,3 +41,20 @@
   align-items: center;
   overflow: hidden;
 }
+@media (max-width: 480px) {
+  .sliderImage {
+    height: 130px;
+  }
+  .product {
+    width: 115px;
+    height: 200px;
+    margin: 8px 3px 8px;
+  }
+  .productImage {
+    width: 115px;
+    height: 150px;
+  }
+  .productList {
+    margin-top: 0;
+  }
+}

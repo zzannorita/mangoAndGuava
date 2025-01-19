@@ -10,7 +10,8 @@
   object-fit: cover;
   border-radius: 15px;
 }
-
+@media (max-width: 480px) {
+}
 .prevBtn {
   left: 10px;
 }
