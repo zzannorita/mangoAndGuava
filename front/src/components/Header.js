@@ -160,9 +160,9 @@ function Header() {
         <div className={HeaderStyle.headerBottom}>
           <div className={HeaderStyle.logoBox} onClick={logoClickHandler}>
             <div className={HeaderStyle.logo}>
-              <img alt="logo" src={logo} />
+              <img className={HeaderStyle.logoImg} alt="logo" src={logo} />
             </div>
-            <div>망고와 구아바</div>
+            <div className={HeaderStyle.logoText}>망고와 구아바</div>
           </div>
           <SearchBox />
           <div className={HeaderStyle.rightBox}>
