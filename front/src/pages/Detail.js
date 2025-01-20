@@ -260,6 +260,7 @@ export default function Detail({ shopOwnerUserId }) {
       axiosInstance.post("recent-view", { productId });
     }
   });
+
   return (
     <div className="container">
       <div className={DetailStyle.productInfoBox}>
@@ -338,8 +339,8 @@ export default function Detail({ shopOwnerUserId }) {
               <img src={rightImg} alt="rightImg" className="smallImgSize"></img>
             </div>
             <div className={DetailStyle.productInfoTopBox}>
-              <div className={DetailStyle.productDetainInfoBox}>
-                <div className={DetailStyle.productDetainInfoBoxes}>
+              <div className={DetailStyle.productDetailInfoBox}>
+                <div className={DetailStyle.productDetailInfoBoxes}>
                   <img
                     src={emptyHeartImg}
                     alt="emptyHeartImg"
@@ -347,15 +348,30 @@ export default function Detail({ shopOwnerUserId }) {
                   ></img>
                   <div>{productWishlistCount}</div>
                 </div>
-                <div className={DetailStyle.productDetainInfoBoxes}>
+                <div className={DetailStyle.productDetailInfoBoxes}>
                   <img src={eyeImg} alt="eyeImg" className="smallImgSize"></img>
                   <div>{productViews}</div>
                 </div>
-                <div className={DetailStyle.productDetainInfoBoxes}>
+                <div className={DetailStyle.productDetailInfoBoxes}>
                   채팅 {chatNum}
                 </div>
-                <div className={DetailStyle.productDetainInfoBoxes}>
+                <div className={DetailStyle.productDetailInfoBoxes}>
                   {productCreatedDate}
+                </div>
+                <div
+                  className={DetailStyle.productShopEnterBoxNone}
+                  onClick={
+                    String(userId) === String(nowUserId?.userId)
+                      ? handleEnterMyShop
+                      : handleEnterShop
+                  }
+                >
+                  <span className="impact3">{userNickName}</span>님 상점&nbsp;
+                  <img
+                    src={rightImg}
+                    alt="rightImg"
+                    className="smallImgSize"
+                  ></img>
                 </div>
               </div>
             </div>
@@ -399,7 +415,7 @@ export default function Detail({ shopOwnerUserId }) {
                 ? "수정하기" // userId가 현재 사용자와 같으면 수정하기
                 : tradeState === "판매중"
                 ? "채팅하기"
-                : ""}
+                : "판매완료"}
             </div>
             {/* 모달 컴포넌트 */}
             <Modal

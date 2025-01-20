@@ -24,12 +24,6 @@
   border-radius: 15px;
 }
 
-.productImg {
-  border-radius: 15px;
-  width: 400px;
-  height: 400px;
-}
-
 .disabled {
   pointer-events: none;
   opacity: 0.5;
@@ -161,12 +155,12 @@
   flex-direction: column;
 }
 
-.productDetainInfoBox {
+.productDetailInfoBox {
   display: flex;
   padding-bottom: 100px;
   justify-content: space-between;
 }
-.productDetainInfoBoxes {
+.productDetailInfoBoxes {
   display: flex;
   width: 60px;
   justify-content: space-evenly;
@@ -184,10 +178,7 @@
   border-radius: 5px;
   color: #333;
 }
-/* 
-.chattingBtnBox:hover {
-  background-color: #ffc107;
-} */
+
 .productContentBoxName {
   margin: 70px 0 30px 0;
 }
@@ -201,4 +192,82 @@
 
 .disabledBtn {
   opacity: 0.5;
+}
+.productShopEnterBoxNone {
+  display: none;
+  justify-content: flex-end;
+  align-items: center;
+  cursor: pointer;
+}
+@media (max-width: 480px) {
+  .productInfoBox {
+    margin-top: 10px;
+    justify-content: center;
+    align-items: center;
+    width: 370px;
+  }
+  .productInfoBottomBox {
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    height: 600px;
+  }
+  .overlay {
+    width: 140px;
+  }
+  .productInfoLeftBox {
+    width: 350px;
+  }
+  .productInfoMiddleBox {
+    width: 330px;
+    height: 200px;
+    padding: 10px 10px 0 10px;
+  }
+
+  .productNameBox {
+    font-size: 15px;
+    font-weight: bold;
+  }
+
+  .productPriceBox {
+    padding-bottom: 10px;
+  }
+  .productCategoryBox {
+    font-size: 12px;
+  }
+  .productPrice,
+  .text {
+    font-weight: bold;
+    font-size: 20px;
+  }
+  .productShopEnterBox {
+    display: none;
+  }
+  .productDetailBox {
+    height: 80px;
+    font-size: 12px;
+  }
+  .productDetailInfoBox {
+    font-size: 12px;
+    padding-bottom: 15px;
+    width: 340px;
+    justify-content: space-evenly;
+  }
+  .productShopEnterBoxNone {
+    display: flex;
+    width: 100px;
+    margin-left: 30px;
+  }
+  .chattingBtnBox {
+    display: none;
+  }
+
+  .productContentBox {
+    width: 350px;
+    padding: 0 20px;
+    font-size: 12px;
+  }
+  .productContentBoxName {
+    margin: 30px 0 10px 0;
+  }
 }
