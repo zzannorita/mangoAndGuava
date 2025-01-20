@@ -308,7 +308,7 @@ const Chat = () => {
               <div className={chatStyle.chatTitleText}>채팅</div>
               <div className={chatStyle.chatNickNameText}>
                 {selectedRoomId && (
-                  <>{selectedOtherUserData.nickname2} 님 과의 대화</>
+                  <>{selectedOtherUserData.nickname2} 님과의 대화</>
                 )}
               </div>
             </div>
@@ -330,7 +330,12 @@ const Chat = () => {
                     }
                   >
                     <div className={chatStyle.chatEachImgBox}>
-                      <img src={chatTestImg} alt="chatTestImg" />
+                      <img
+                        src={
+                          !chat.otherUserImg ? chatTestImg : chat.otherUserImg
+                        }
+                        alt="chatTestImg"
+                      />
                     </div>
                     <div className={chatStyle.chatEachMainBox}>
                       <div className={chatStyle.chatEachNameBox}>
