@@ -67,7 +67,7 @@
   display: flex;
   align-items: center;
 }
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .alarmContainer {
     top: 40px;
     width: 150px;
