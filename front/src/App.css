@@ -163,4 +163,8 @@ a:active {
   .mainContent {
     margin-top: 110px;
   }
+  .smallImgSize {
+    width: 15px;
+    height: 15px;
+  }
 }
