@@ -7,6 +7,7 @@ import chatRemove from "../image/x.png";
 import axiosInstance from "../axios";
 import Modal from "../components/Modal";
 import { useWebSocket } from "../contexts/WebSocketContext";
+import { useMediaQuery } from "react-responsive";
 
 const Chat = () => {
   const [message, setMessage] = useState(""); // 입력 메시지
@@ -20,6 +21,7 @@ const Chat = () => {
   const [selectedUserData, setSelectedUserData] = useState([]);
   const socket = useRef(null); // WebSocket 연결, 수신, 해제 등 리렌더랑 방지
   const chatContentRef = useRef(null); //채팅 스크롤참조 위함
+  const isMobile = useMediaQuery({ maxWidth: 1000 });
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -302,258 +304,548 @@ const Chat = () => {
   return (
     <div className="container">
       <div className={chatStyle.container}>
-        <div className={chatStyle.chatContainer}>
-          <div className={chatStyle.chatTitleBox}>
-            <div className={chatStyle.chatTitleTextBox}>
-              <div className={chatStyle.chatTitleText}>채팅</div>
-              <div className={chatStyle.chatNickNameText}>
-                {selectedRoomId && (
-                  <>{selectedOtherUserData.nickname2} 님과의 대화</>
-                )}
+        {!isMobile && (
+          <div className={chatStyle.chatContainer}>
+            <div className={chatStyle.chatTitleBox}>
+              <div className={chatStyle.chatTitleTextBox}>
+                <div className={chatStyle.chatTitleText}>채팅</div>
+                <div className={chatStyle.chatNickNameText}>
+                  {selectedRoomId && (
+                    <>{selectedOtherUserData.nickname2} 님과의 대화</>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-          <div className={chatStyle.chatBox}>
-            {/* 채팅방 목록 */}
-            <div className={chatStyle.chatListBox}>
-              {chatList.length > 0 ? (
-                chatList.map((chat, index) => (
-                  <div
-                    key={index}
-                    className={`${chatStyle.chatEachBox} ${
-                      selectedRoomId === chat.room_id
-                        ? chatStyle.selectedChatBox
-                        : ""
-                    }`}
-                    onClick={() =>
-                      fetchChatRoomMessages(chat.room_id, chat.other_user)
-                    }
-                  >
-                    <div className={chatStyle.chatEachImgBox}>
-                      <img
-                        src={
-                          !chat.otherUserImg ? chatTestImg : chat.otherUserImg
-                        }
-                        alt="chatTestImg"
-                      />
-                    </div>
-                    <div className={chatStyle.chatEachMainBox}>
-                      <div className={chatStyle.chatEachNameBox}>
-                        <div className={chatStyle.chatEachName}>
-                          {chat.otherUserNickname}
-                        </div>
-                        <div className={chatStyle.chatEachDate}>
-                          {formatRelativeTime(chat.recent_time)}
-                        </div>
-                      </div>
-                      <div className={chatStyle.chatEachContentBox}>
-                        {chat.recent_message}
-                      </div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className={chatStyle.noChatMessage}>채팅이 없습니다.</div>
-              )}
-            </div>
-
-            {/* 채팅 내용 */}
-            <div className={chatStyle.chattingBox}>
-              <div
-                className={`${chatStyle.chatContentBox} ${
-                  selectedProductData.tradeState === "판매완료"
-                    ? chatStyle.disabledBox
-                    : ""
-                }`}
-              >
-                {selectedRoomId && (
-                  <div className={chatStyle.chatContentTitleBox}>
-                    <div className={chatStyle.chatContentNameBox}>
-                      <div className={chatStyle.chatProductImg}>
+            <div className={chatStyle.chatBox}>
+              {/* 채팅방 목록 */}
+              <div className={chatStyle.chatListBox}>
+                {chatList.length > 0 ? (
+                  chatList.map((chat, index) => (
+                    <div
+                      key={index}
+                      className={`${chatStyle.chatEachBox} ${
+                        selectedRoomId === chat.room_id
+                          ? chatStyle.selectedChatBox
+                          : ""
+                      }`}
+                      onClick={() =>
+                        fetchChatRoomMessages(chat.room_id, chat.other_user)
+                      }
+                    >
+                      <div className={chatStyle.chatEachImgBox}>
                         <img
-                          className={chatStyle.chatProductImgTag}
-                          src={selectedProductData?.images?.[0] || mangoImg}
-                          alt="productImg"
+                          src={
+                            !chat.otherUserImg ? chatTestImg : chat.otherUserImg
+                          }
+                          alt="chatTestImg"
                         />
                       </div>
-
-                      <div className={chatStyle.chatProductInfoBox}>
-                        <div className={chatStyle.chatProductName}>
-                          상품명 | {selectedProductData.productName}
+                      <div className={chatStyle.chatEachMainBox}>
+                        <div className={chatStyle.chatEachNameBox}>
+                          <div className={chatStyle.chatEachName}>
+                            {chat.otherUserNickname}
+                          </div>
+                          <div className={chatStyle.chatEachDate}>
+                            {formatRelativeTime(chat.recent_time)}
+                          </div>
                         </div>
-                        <div className={chatStyle.chatProductPrice}>
-                          상품 가격 | {selectedProductData.productPrice} 원
+                        <div className={chatStyle.chatEachContentBox}>
+                          {chat.recent_message}
                         </div>
                       </div>
                     </div>
+                  ))
+                ) : (
+                  <div className={chatStyle.noChatMessage}>
+                    채팅이 없습니다.
+                  </div>
+                )}
+              </div>
 
-                    <div className={chatStyle.chatContentDeleteImg}>
-                      {/* 모든 사용자에게 현재 상태를 보여준다 */}
-                      <div className={chatStyle.tradeStateText}>
-                        거래 상태 | {selectedProductData.tradeState}
-                      </div>
+              {/* 채팅 내용 */}
+              <div className={chatStyle.chattingBox}>
+                <div
+                  className={`${chatStyle.chatContentBox} ${
+                    selectedProductData.tradeState === "판매완료"
+                      ? chatStyle.disabledBox
+                      : ""
+                  }`}
+                >
+                  {selectedRoomId && (
+                    <div className={chatStyle.chatContentTitleBox}>
+                      <div className={chatStyle.chatContentNameBox}>
+                        <div className={chatStyle.chatProductImg}>
+                          <img
+                            className={chatStyle.chatProductImgTag}
+                            src={selectedProductData?.images?.[0] || mangoImg}
+                            alt="productImg"
+                          />
+                        </div>
 
-                      {/* 로그인한 사용자와 상품 소유자가 같을 때만 상태 변경 */}
-                      {String(userId) === String(selectedProductData.userId) ? (
-                        <div className={chatStyle.tradeStateBox}>
-                          <div className={chatStyle.tradeStateSelectBox}>
-                            <select
-                              value={selectedProductData.tradeState}
-                              onChange={(e) =>
-                                handleStateChange(e.target.value)
-                              } // select 값 변경 시 처리 함수
-                              className={chatStyle.tradeStateSelect} // 스타일 클래스 추가
-                            >
-                              <option value="none">거래 상태 변경</option>
-                              {/* 현재 상태에 따라 표시할 옵션을 조건부로 렌더링 */}
-                              {selectedProductData.tradeState !== "판매중" && (
-                                <option value="판매중">판매중</option>
-                              )}
-                              {selectedProductData.tradeState !== "예약중" && (
-                                <option value="예약중">예약중</option>
-                              )}
-                              {selectedProductData.tradeState !==
-                                "판매완료" && (
-                                <option value="판매완료">판매완료</option>
-                              )}
-                            </select>
+                        <div className={chatStyle.chatProductInfoBox}>
+                          <div className={chatStyle.chatProductName}>
+                            상품명 | {selectedProductData.productName}
+                          </div>
+                          <div className={chatStyle.chatProductPrice}>
+                            상품 가격 | {selectedProductData.productPrice} 원
                           </div>
                         </div>
-                      ) : null}
+                      </div>
+
+                      <div className={chatStyle.chatContentDeleteImg}>
+                        {/* 모든 사용자에게 현재 상태를 보여준다 */}
+                        <div className={chatStyle.tradeStateText}>
+                          거래 상태 | {selectedProductData.tradeState}
+                        </div>
+
+                        {/* 로그인한 사용자와 상품 소유자가 같을 때만 상태 변경 */}
+                        {String(userId) ===
+                        String(selectedProductData.userId) ? (
+                          <div className={chatStyle.tradeStateBox}>
+                            <div className={chatStyle.tradeStateSelectBox}>
+                              <select
+                                value={selectedProductData.tradeState}
+                                onChange={(e) =>
+                                  handleStateChange(e.target.value)
+                                } // select 값 변경 시 처리 함수
+                                className={chatStyle.tradeStateSelect} // 스타일 클래스 추가
+                              >
+                                <option value="none">거래 상태 변경</option>
+                                {/* 현재 상태에 따라 표시할 옵션을 조건부로 렌더링 */}
+                                {selectedProductData.tradeState !==
+                                  "판매중" && (
+                                  <option value="판매중">판매중</option>
+                                )}
+                                {selectedProductData.tradeState !==
+                                  "예약중" && (
+                                  <option value="예약중">예약중</option>
+                                )}
+                                {selectedProductData.tradeState !==
+                                  "판매완료" && (
+                                  <option value="판매완료">판매완료</option>
+                                )}
+                              </select>
+                            </div>
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
+                  )}
+                  <div className={chatStyle.chatContentTradingAressContainer}>
+                    {selectedRoomId && (
+                      <>
+                        {selectedProductData.tradingMethod ? (
+                          <div className={chatStyle.chatContentTradingAressBox}>
+                            직거래 장소 | {selectedProductData.tradingAddress}
+                          </div>
+                        ) : (
+                          <></>
+                        )}
+                      </>
+                    )}
+                  </div>
+
+                  <div
+                    className={chatStyle.chatContentDetailBox}
+                    ref={chatContentRef}
+                  >
+                    {chatEach.length > 0 ? (
+                      chatEach.map((message, index) => (
+                        <div
+                          key={index}
+                          className={
+                            String(message.user_from) === String(userId)
+                              ? chatStyle.myMessageWrapper
+                              : chatStyle.otherMessageWrapper
+                          }
+                        >
+                          <div
+                            className={
+                              String(message.user_from) === String(userId)
+                                ? chatStyle.myMessage
+                                : chatStyle.otherMessage
+                            }
+                          >
+                            {message.message}
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className={chatStyle.emptyChatBox}></div>
+                    )}
+                  </div>
+                </div>
+
+                {/* 메시지 입력 */}
+                {selectedRoomId && (
+                  <div className={chatStyle.chatFieldContainer}>
+                    <div className={chatStyle.actionButtonsContainer}>
+                      <button
+                        className={chatStyle.actionButton}
+                        onClick={sendMessageAccount} // 계좌 전달 버튼 클릭 시
+                        disabled={selectedProductData.tradeState === "판매완료"}
+                      >
+                        계좌 전달
+                      </button>
+                      <button
+                        className={chatStyle.actionButton}
+                        onClick={sendMessageAddress} // 주소 전달 버튼 클릭 시
+                        disabled={selectedProductData.tradeState === "판매완료"}
+                      >
+                        주소 전달
+                      </button>
+                    </div>
+                    <div className={chatStyle.chatFieldBox}>
+                      <input
+                        type="text"
+                        value={message}
+                        onChange={handleChange}
+                        onKeyDown={enterSendMessage}
+                        placeholder={
+                          selectedProductData.tradeState === "판매완료"
+                            ? "판매가 완료되어 채팅이 비활성화 되었습니다."
+                            : "메시지를 입력하세요.."
+                        }
+                        className={chatStyle.chatInput} // 스타일 클래스 추가
+                        disabled={selectedProductData.tradeState === "판매완료"}
+                      />
+                      <button
+                        onClick={() => handleSendMessage()} // 버튼 클릭 시 메시지 전송
+                        className={chatStyle.sendButton} // 스타일 클래스 추가
+                        disabled={selectedProductData.tradeState === "판매완료"}
+                      >
+                        <img
+                          src={mangoImg} // 전송 버튼의 이미지 경로
+                          alt="Send"
+                          className={chatStyle.sendIcon}
+                        />
+                      </button>
                     </div>
                   </div>
                 )}
-                <div className={chatStyle.chatContentTradingAressContainer}>
-                  {selectedRoomId && (
-                    <>
-                      {selectedProductData.tradingMethod ? (
-                        <div className={chatStyle.chatContentTradingAressBox}>
-                          직거래 장소 | {selectedProductData.tradingAddress}
-                        </div>
-                      ) : (
-                        <></>
-                      )}
-                    </>
-                  )}
-                </div>
-
-                <div
-                  className={chatStyle.chatContentDetailBox}
-                  ref={chatContentRef}
-                >
-                  {chatEach.length > 0 ? (
-                    chatEach.map((message, index) => (
-                      <div
-                        key={index}
-                        className={
-                          String(message.user_from) === String(userId)
-                            ? chatStyle.myMessageWrapper
-                            : chatStyle.otherMessageWrapper
-                        }
-                      >
-                        <div
-                          className={
-                            String(message.user_from) === String(userId)
-                              ? chatStyle.myMessage
-                              : chatStyle.otherMessage
-                          }
-                        >
-                          {message.message}
-                        </div>
+                {/* 판매완료 메시지 */}
+                {selectedProductData.tradeState === "판매완료" && (
+                  <div className={chatStyle.tradeCompleteOverlay}>
+                    {String(selectedProductData.buyerUserId) ===
+                    String(userId) ? (
+                      <div className={chatStyle.buyerMessage}>
+                        상품 판매가 완료되었습니다. <br />
+                        {comment ? (
+                          <button
+                            className={chatStyle.reviewButton}
+                            disabled={true}
+                          >
+                            이미 후기를 작성했어요.
+                          </button>
+                        ) : (
+                          <button
+                            className={chatStyle.reviewButton}
+                            onClick={() => handleOpenModal()}
+                          >
+                            후기 작성
+                          </button>
+                        )}
                       </div>
-                    ))
-                  ) : (
-                    <div className={chatStyle.emptyChatBox}></div>
+                    ) : (
+                      <div className={chatStyle.sellerMessage}>
+                        상품 판매가 완료되었습니다.
+                      </div>
+                    )}
+                  </div>
+                )}
+                <Modal
+                  isOpen={isModalOpen}
+                  onClose={handleCloseModal}
+                  shopOwnerUserId={selectedProductData.userId} // 상점 주 userId 전달
+                  purchasedProductId={selectedProductData.productId}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+        {isMobile && (
+          <div className={chatStyle.chatContainer}>
+            <div className={chatStyle.chatTitleBox}>
+              <div className={chatStyle.chatTitleTextBox}>
+                {!selectedRoomId ? (
+                  <div className={chatStyle.chatTitleText}>채팅</div>
+                ) : (
+                  <div
+                    className={chatStyle.chatTitleText}
+                    onClick={() => {
+                      setSelectedRoomId(null);
+                    }}
+                  >
+                    {"<-"}
+                  </div>
+                )}
+                <div className={chatStyle.chatNickNameText}>
+                  {selectedRoomId && (
+                    <>{selectedOtherUserData.nickname2} 님과의 대화</>
                   )}
                 </div>
               </div>
-
-              {/* 메시지 입력 */}
-              {selectedRoomId && (
-                <div className={chatStyle.chatFieldContainer}>
-                  <div className={chatStyle.actionButtonsContainer}>
-                    <button
-                      className={chatStyle.actionButton}
-                      onClick={sendMessageAccount} // 계좌 전달 버튼 클릭 시
-                      disabled={selectedProductData.tradeState === "판매완료"}
-                    >
-                      계좌 전달
-                    </button>
-                    <button
-                      className={chatStyle.actionButton}
-                      onClick={sendMessageAddress} // 주소 전달 버튼 클릭 시
-                      disabled={selectedProductData.tradeState === "판매완료"}
-                    >
-                      주소 전달
-                    </button>
-                  </div>
-                  <div className={chatStyle.chatFieldBox}>
-                    <input
-                      type="text"
-                      value={message}
-                      onChange={handleChange}
-                      onKeyDown={enterSendMessage}
-                      placeholder={
-                        selectedProductData.tradeState === "판매완료"
-                          ? "판매가 완료되어 채팅이 비활성화 되었습니다."
-                          : "메시지를 입력하세요.."
+            </div>
+            {!selectedRoomId ? (
+              <div className={chatStyle.chatListBox}>
+                {chatList.length > 0 ? (
+                  chatList.map((chat, index) => (
+                    <div
+                      key={index}
+                      className={`${chatStyle.chatEachBox} ${
+                        selectedRoomId === chat.room_id
+                          ? chatStyle.selectedChatBox
+                          : ""
+                      }`}
+                      onClick={() =>
+                        fetchChatRoomMessages(chat.room_id, chat.other_user)
                       }
-                      className={chatStyle.chatInput} // 스타일 클래스 추가
-                      disabled={selectedProductData.tradeState === "판매완료"}
-                    />
-                    <button
-                      onClick={() => handleSendMessage()} // 버튼 클릭 시 메시지 전송
-                      className={chatStyle.sendButton} // 스타일 클래스 추가
-                      disabled={selectedProductData.tradeState === "판매완료"}
                     >
-                      <img
-                        src={mangoImg} // 전송 버튼의 이미지 경로
-                        alt="Send"
-                        className={chatStyle.sendIcon}
-                      />
-                    </button>
+                      <div className={chatStyle.chatEachImgBox}>
+                        <img
+                          src={
+                            !chat.otherUserImg ? chatTestImg : chat.otherUserImg
+                          }
+                          alt="chatTestImg"
+                        />
+                      </div>
+                      <div className={chatStyle.chatEachMainBox}>
+                        <div className={chatStyle.chatEachNameBox}>
+                          <div className={chatStyle.chatEachName}>
+                            {chat.otherUserNickname}
+                          </div>
+                          <div className={chatStyle.chatEachDate}>
+                            {formatRelativeTime(chat.recent_time)}
+                          </div>
+                        </div>
+                        <div className={chatStyle.chatEachContentBox}>
+                          {chat.recent_message}
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className={chatStyle.noChatMessage}>
+                    채팅이 없습니다.
                   </div>
-                </div>
-              )}
-              {/* 판매완료 메시지 */}
-              {selectedProductData.tradeState === "판매완료" && (
-                <div className={chatStyle.tradeCompleteOverlay}>
-                  {String(selectedProductData.buyerUserId) ===
-                  String(userId) ? (
-                    <div className={chatStyle.buyerMessage}>
-                      상품 판매가 완료되었습니다. <br />
-                      {comment ? (
-                        <button
-                          className={chatStyle.reviewButton}
-                          disabled={true}
-                        >
-                          이미 후기를 작성했어요.
-                        </button>
-                      ) : (
-                        <button
-                          className={chatStyle.reviewButton}
-                          onClick={() => handleOpenModal()}
-                        >
-                          후기 작성
-                        </button>
+                )}
+              </div>
+            ) : (
+              <div className={chatStyle.chatBox}>
+                {/* 채팅방 목록 */}
+
+                {/* 채팅 내용 */}
+                <div className={chatStyle.chattingBox}>
+                  <div
+                    className={`${chatStyle.chatContentBox} ${
+                      selectedProductData.tradeState === "판매완료"
+                        ? chatStyle.disabledBox
+                        : ""
+                    }`}
+                  >
+                    {selectedRoomId && (
+                      <div className={chatStyle.chatContentTitleBox}>
+                        <div className={chatStyle.chatContentNameBox}>
+                          <div className={chatStyle.chatProductImg}>
+                            <img
+                              className={chatStyle.chatProductImgTag}
+                              src={selectedProductData?.images?.[0] || mangoImg}
+                              alt="productImg"
+                            />
+                          </div>
+
+                          <div className={chatStyle.chatProductInfoBox}>
+                            <div className={chatStyle.chatProductName}>
+                              상품명 | {selectedProductData.productName}
+                            </div>
+                            <div className={chatStyle.chatProductPrice}>
+                              상품 가격 | {selectedProductData.productPrice} 원
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className={chatStyle.chatContentDeleteImg}>
+                          {/* 모든 사용자에게 현재 상태를 보여준다 */}
+                          <div className={chatStyle.tradeStateText}>
+                            거래 상태 | {selectedProductData.tradeState}
+                          </div>
+
+                          {/* 로그인한 사용자와 상품 소유자가 같을 때만 상태 변경 */}
+                          {String(userId) ===
+                          String(selectedProductData.userId) ? (
+                            <div className={chatStyle.tradeStateBox}>
+                              <div className={chatStyle.tradeStateSelectBox}>
+                                <select
+                                  value={selectedProductData.tradeState}
+                                  onChange={(e) =>
+                                    handleStateChange(e.target.value)
+                                  } // select 값 변경 시 처리 함수
+                                  className={chatStyle.tradeStateSelect} // 스타일 클래스 추가
+                                >
+                                  <option value="none">거래 상태 변경</option>
+                                  {/* 현재 상태에 따라 표시할 옵션을 조건부로 렌더링 */}
+                                  {selectedProductData.tradeState !==
+                                    "판매중" && (
+                                    <option value="판매중">판매중</option>
+                                  )}
+                                  {selectedProductData.tradeState !==
+                                    "예약중" && (
+                                    <option value="예약중">예약중</option>
+                                  )}
+                                  {selectedProductData.tradeState !==
+                                    "판매완료" && (
+                                    <option value="판매완료">판매완료</option>
+                                  )}
+                                </select>
+                              </div>
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                    )}
+                    <div className={chatStyle.chatContentTradingAressContainer}>
+                      {selectedRoomId && (
+                        <>
+                          {selectedProductData.tradingMethod ? (
+                            <div
+                              className={chatStyle.chatContentTradingAressBox}
+                            >
+                              직거래 장소 | {selectedProductData.tradingAddress}
+                            </div>
+                          ) : (
+                            <></>
+                          )}
+                        </>
                       )}
                     </div>
-                  ) : (
-                    <div className={chatStyle.sellerMessage}>
-                      상품 판매가 완료되었습니다.
+
+                    <div
+                      className={chatStyle.chatContentDetailBox}
+                      ref={chatContentRef}
+                    >
+                      {chatEach.length > 0 ? (
+                        chatEach.map((message, index) => (
+                          <div
+                            key={index}
+                            className={
+                              String(message.user_from) === String(userId)
+                                ? chatStyle.myMessageWrapper
+                                : chatStyle.otherMessageWrapper
+                            }
+                          >
+                            <div
+                              className={
+                                String(message.user_from) === String(userId)
+                                  ? chatStyle.myMessage
+                                  : chatStyle.otherMessage
+                              }
+                            >
+                              {message.message}
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className={chatStyle.emptyChatBox}></div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* 메시지 입력 */}
+                  {selectedRoomId && (
+                    <div className={chatStyle.chatFieldContainer}>
+                      <div className={chatStyle.actionButtonsContainer}>
+                        <button
+                          className={chatStyle.actionButton}
+                          onClick={sendMessageAccount} // 계좌 전달 버튼 클릭 시
+                          disabled={
+                            selectedProductData.tradeState === "판매완료"
+                          }
+                        >
+                          계좌
+                        </button>
+                        <button
+                          className={chatStyle.actionButton}
+                          onClick={sendMessageAddress} // 주소 전달 버튼 클릭 시
+                          disabled={
+                            selectedProductData.tradeState === "판매완료"
+                          }
+                        >
+                          주소
+                        </button>
+                      </div>
+                      <div className={chatStyle.chatFieldBox}>
+                        <input
+                          type="text"
+                          value={message}
+                          onChange={handleChange}
+                          onKeyDown={enterSendMessage}
+                          placeholder={
+                            selectedProductData.tradeState === "판매완료"
+                              ? "판매가 완료되어 채팅이 비활성화 되었습니다."
+                              : "메시지를 입력하세요.."
+                          }
+                          className={chatStyle.chatInput} // 스타일 클래스 추가
+                          disabled={
+                            selectedProductData.tradeState === "판매완료"
+                          }
+                        />
+                        <button
+                          onClick={() => handleSendMessage()} // 버튼 클릭 시 메시지 전송
+                          className={chatStyle.sendButton} // 스타일 클래스 추가
+                          disabled={
+                            selectedProductData.tradeState === "판매완료"
+                          }
+                        >
+                          <img
+                            src={mangoImg} // 전송 버튼의 이미지 경로
+                            alt="Send"
+                            className={chatStyle.sendIcon}
+                          />
+                        </button>
+                      </div>
                     </div>
                   )}
+                  {/* 판매완료 메시지 */}
+                  {selectedProductData.tradeState === "판매완료" && (
+                    <div className={chatStyle.tradeCompleteOverlay}>
+                      {String(selectedProductData.buyerUserId) ===
+                      String(userId) ? (
+                        <div className={chatStyle.buyerMessage}>
+                          상품 판매가 완료되었습니다. <br />
+                          {comment ? (
+                            <button
+                              className={chatStyle.reviewButton}
+                              disabled={true}
+                            >
+                              이미 후기를 작성했어요.
+                            </button>
+                          ) : (
+                            <button
+                              className={chatStyle.reviewButton}
+                              onClick={() => handleOpenModal()}
+                            >
+                              후기 작성
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                        <div className={chatStyle.sellerMessage}>
+                          상품 판매가 완료되었습니다.
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  <Modal
+                    isOpen={isModalOpen}
+                    onClose={handleCloseModal}
+                    shopOwnerUserId={selectedProductData.userId} // 상점 주 userId 전달
+                    purchasedProductId={selectedProductData.productId}
+                  />
                 </div>
-              )}
-              <Modal
-                isOpen={isModalOpen}
-                onClose={handleCloseModal}
-                shopOwnerUserId={selectedProductData.userId} // 상점 주 userId 전달
-                purchasedProductId={selectedProductData.productId}
-              />
-            </div>
+              </div>
+            )}
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

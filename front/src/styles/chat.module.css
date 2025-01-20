@@ -94,7 +94,7 @@
 
 .chatEachBox:hover {
   /* border: 2px solid #ffe187; */
-  background-color: #f1f1f1;
+  /* background-color: #f1f1f1; */
 }
 
 .selectedChatBox {
@@ -474,4 +474,22 @@
 .tradeStateSelect:focus {
   border-color: #ffe187;
   outline: none;
+}
+
+@media (max-width: 1000px) {
+  .chatContainer {
+    height: 65vh;
+  }
+  .chatListBox {
+    width: 100%;
+  }
+  .chattingBox {
+    width: 100%;
+    border-left: none;
+  }
+  .actionButton {
+    width: 35px;
+    height: 35px;
+    font-size: 10px;
+  }
 }
