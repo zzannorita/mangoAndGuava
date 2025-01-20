@@ -73,8 +73,9 @@ const getMyChatList = async (req, res) => {
       }
       const otherUser = await userDao.getUserById(otherUserId);
       const otherUserNickname = otherUser.nickname;
+      const otherUserImg = otherUser.profileImage;
 
-      const updatedChat = { ...chat, otherUserNickname }; // 기존 chat 객체에 새로운 속성 추가
+      const updatedChat = { ...chat, otherUserNickname, otherUserImg }; // 기존 chat 객체에 새로운 속성 추가
 
       updatedChatList.push(updatedChat);
     }

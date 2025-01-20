@@ -78,18 +78,19 @@ export default function Alarm({ alarmClick, alarmData }) {
         {alarmData.map((alarm, index) => {
           const productId = alarm.extraData.roomId.split("-")[2]; // roomId로 productId 추출
           const imageUrl = imageData[productId]; // 상태에서 이미지 URL을 가져옴
-          console.log("확인용", alarm);
           return (
             <>
               {alarm.type === "chat" && (
                 <div className={AlarmStyle.alarmList} key={index}>
                   <div className={AlarmStyle.alarmListLeftBox}>
-                    <img
-                      src={imageUrl ? imageUrl : imageImg} // 이미지가 있으면 URL을 사용, 없으면 기본 이미지 사용
-                      alt={imageUrl || "default image"}
-                      className={AlarmStyle.alarmListImg}
-                    />
-                    <div>
+                    <div className={AlarmStyle.alarmProductImgBox}>
+                      <img
+                        src={imageUrl ? imageUrl : imageImg} // 이미지가 있으면 URL을 사용, 없으면 기본 이미지 사용
+                        alt={imageUrl || "default image"}
+                        className={AlarmStyle.alarmListImg}
+                      />
+                    </div>
+                    <div className={AlarmStyle.alarmListTextBox}>
                       <div className={AlarmStyle.alarmListTitle}>
                         {wordLimit(alarm.extraData.productName)}
                       </div>
