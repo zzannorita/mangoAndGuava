@@ -5,7 +5,6 @@ import shopStyle from "../styles/shop.module.css";
 import registStyle from "../styles/regist.module.css";
 import PostCode from "react-daum-postcode";
 import axiosInstance from "../axios";
-import ReactDOM from "react-dom";
 
 export default function Settings() {
   /////////////////////////주소등록//////////////////////
@@ -80,7 +79,7 @@ export default function Settings() {
         setAccount(receivedAccountNumber || "");
       })
       .catch((error) => {
-        console.log("데이터 가져오기 실패", error);
+        console.error("데이터 가져오기 실패", error);
       });
   }, []);
 
@@ -92,7 +91,6 @@ export default function Settings() {
       address: `${zoneCode},${address},${detailedAddress}`,
       account: `${bankName},${account}`,
     };
-    console.log("업데이트 데이터:", updatedData);
     axiosInstance
       .patch("/user-update", updatedData)
       .then((response) => {

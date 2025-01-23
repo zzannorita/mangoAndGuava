@@ -143,7 +143,7 @@ export default function Detail({ shopOwnerUserId }) {
         setUserNickName(user?.nickname || user.userId);
       })
       .catch((error) => {
-        console.log("상품 데이터 불러오기 실패", error);
+        console.error("상품 데이터 불러오기 실패", error);
       });
   }, [productId]);
   //채팅 수
@@ -164,7 +164,6 @@ export default function Detail({ shopOwnerUserId }) {
           setNowUserId(data.user); // 로그인된 사용자 정보 저장
         })
         .catch((error) => {
-          console.log("로그인되지 않은 사용자입니다.");
           setNowUserId(null); // 로그인되지 않았을 때 null 처리
         });
     } else {
@@ -212,7 +211,6 @@ export default function Detail({ shopOwnerUserId }) {
         try {
           const response = await axiosInstance.post("product/bookmark/user");
           const bookmarkList = response.data?.data || [];
-          console.log("테스트", bookmarkList.length);
           if (bookmarkList.length > 0) {
             //내부에 존재할 경우
             bookmarkList.map((item) => {
@@ -236,7 +234,7 @@ export default function Detail({ shopOwnerUserId }) {
       try {
         await axios.post("http://localhost:3001/detail/view", { productId });
       } catch (error) {
-        console.log("조회수 증가 실패", error);
+        console.error("조회수 증가 실패", error);
       }
     };
     increaseView();

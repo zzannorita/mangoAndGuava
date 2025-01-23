@@ -30,8 +30,6 @@ export default function Favorites({ bookmarkUser }) {
           // 상점 데이터 구조에서 shopAvg와 userId 추출
           const shopAvg = shopData.shopData?.[0]?.shopAvg ?? 0;
           const userId = shopData.shopData?.[0]?.userId;
-          console.log(shopAvg);
-          console.log(userId);
           // 반환되는 데이터 구성
           return {
             userId: userId, //상점 userId
@@ -53,7 +51,6 @@ export default function Favorites({ bookmarkUser }) {
 
   const handleClickShop = (userId) => {
     navigate(`/yourShop?userId=${userId}`);
-    console.log("클릭된유저:", userId);
   };
   return (
     <div className={favoritesStyle.myProductsBox}>

@@ -125,7 +125,7 @@ export default function ShopForBuyer() {
 
         setAverageRating(shopData.shopAvg);
       })
-      .catch((error) => console.log("데이터 가져오기 실패", error));
+      .catch((error) => console.error("데이터 가져오기 실패", error));
   }, [sellerId]);
 
   //선택된 필터가 없을 때 전체

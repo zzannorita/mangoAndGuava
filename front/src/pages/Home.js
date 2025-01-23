@@ -19,10 +19,9 @@ export default function Home() {
       .then((response) => {
         setProducts(response.data.products || []);
         setTotalPage(response.data.totalPages);
-        console.log("API Response:", response.data.products);
       })
       .catch((error) => {
-        console.log("데이터 가져오기 실패", error);
+        console.error("데이터 가져오기 실패", error);
       });
   }, []);
   return (

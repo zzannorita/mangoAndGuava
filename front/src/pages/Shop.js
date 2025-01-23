@@ -42,7 +42,7 @@ export default function Shop() {
         setBookmarkUser(data.bookmarkUser);
       })
       .catch((error) => {
-        console.log("데이터 가져오기 실패", error);
+        console.error("데이터 가져오기 실패", error);
       });
   }, []);
 

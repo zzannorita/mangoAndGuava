@@ -76,7 +76,7 @@ const Search = () => {
       setProducts(response.data.products || []);
       setTotalPage(response.data.totalPages);
     } catch (error) {
-      console.error("Error fetching products:", error);
+      console.error("데이터 가져오기 실패 :", error);
     }
   };
 

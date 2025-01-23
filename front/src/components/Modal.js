@@ -26,7 +26,6 @@ function Modal({ isOpen, onClose, shopOwnerUserId, purchasedProductId }) {
       }
       const response = await axiosInstance.post("/shop/comment", reviewData);
       alert("리뷰가 작성되었습니다.");
-      console.log("리뷰 저장 성공:", response.data);
 
       // 초기화 및 네비게이션
       setReviewText(""); // 후기 입력 필드 초기화

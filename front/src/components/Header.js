@@ -23,7 +23,6 @@ function Header() {
 
   const handleClick = () => {
     setClickedAlarm((alarmClick) => !alarmClick);
-    console.log("ClickedAlarm 상태 변경:", clickedAlarm);
   };
 
   ////////////////////////로그인/////////////////////////////
@@ -70,7 +69,6 @@ function Header() {
   const handleLogout = async () => {
     const accessToken = Cookies.get("accessToken");
     if (!accessToken) {
-      console.error("토큰이 없음");
       return;
     }
     axios
@@ -84,11 +82,10 @@ function Header() {
           Cookies.remove("accessToken");
           setIsLogin(false);
           navigate("/");
-          console.log("로그아웃성공");
         }
       })
       .catch((error) => {
-        console.log("로그아웃 실패", error);
+        console.error("로그아웃 실패", error);
       });
   };
 
@@ -101,7 +98,6 @@ function Header() {
 
   ///////////////////미로그인시 페이지 접근 방지//////////////
   const protectedHandler = (event, redirect) => {
-    console.log(isLogin);
     event.preventDefault();
     if (isLogin) {
       navigate(redirect);
@@ -119,7 +115,7 @@ function Header() {
         setAlarmData(response.data.alarmData);
       })
       .catch((error) => {
-        console.log("데이터 가져오기 실패(알람)", error);
+        console.error("데이터 가져오기 실패(알람)", error);
       });
   }, []);
 

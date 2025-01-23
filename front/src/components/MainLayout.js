@@ -21,7 +21,6 @@ export default function MainLayout() {
           setNowUserId(data.user);
         })
         .catch((error) => {
-          console.log("로그인되지 않은 사용자입니다.");
           setNowUserId(null);
         });
     } else {
