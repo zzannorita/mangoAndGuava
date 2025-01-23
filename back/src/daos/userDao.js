@@ -1,7 +1,4 @@
 // src/daos/userDao.js
-//userDao.js에서 데이터베이스와의 상호작용을 담당합니다.
-// 예를 들어, 유저 정보를 데이터베이스에 저장하거나 검색하는 기능을 구현합니다.
-const e = require("express");
 const db = require("../config/dbConfig");
 const mysql = require("mysql2");
 
@@ -115,7 +112,6 @@ const addRefreshToken = async (userId, refreshToken) => {
 
   try {
     const [checkRefreshToken] = await db.execute(checkRefreshTokenQuery);
-    console.log(checkRefreshToken);
     if (checkRefreshToken[0].refreshToken === null) {
       //리프레시 토큰에 값이 없는 경우
       await db.execute(updateRefreshTokenQuery);
