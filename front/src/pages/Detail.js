@@ -13,7 +13,11 @@ import Modal from "../components/Modal";
 import axios from "axios";
 import Cookies from "js-cookie";
 
-export default function Detail({ shopOwnerUserId }) {
+export default function Detail({
+  shopOwnerUserId,
+  isModalOpen,
+  setIsModalOpen,
+}) {
   // 현재 URL에서 쿼리 파라미터 추출
   const currentUrl = new URL(window.location.href);
   const productId = currentUrl.searchParams.get("itemId");
@@ -189,7 +193,12 @@ export default function Detail({ shopOwnerUserId }) {
     }
   }, [productId]);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLocalModalOpen, setIsLocalModalOpen] = useState(isModalOpen);
+  //모달 상태가 바뀔 때마다 호출
+  useEffect(() => {
+    setIsLocalModalOpen(isModalOpen);
+  }, [isModalOpen]);
+
   const isTransactionComplete =
     String(buyerId) === String(nowUserId?.userId) &&
     tradeState === "판매완료" &&
@@ -198,10 +207,14 @@ export default function Detail({ shopOwnerUserId }) {
     if (comment) {
       alert("이미 후기가 작성되었습니다."); // 후기가 있으면 알림
     } else {
-      setIsModalOpen(true); // 후기가 없으면 모달 열기
+      setIsLocalModalOpen(true); // 모달 열기
+      setIsModalOpen(true); // 부모 상태 업데이트
     }
   };
-  const handleCloseModal = () => setIsModalOpen(false);
+  const handleCloseModal = () => {
+    setIsLocalModalOpen(false);
+    setIsModalOpen(false);
+  };
 
   //찜돼있는 상태 동기화 하는 useEffect 함수
   useEffect(() => {

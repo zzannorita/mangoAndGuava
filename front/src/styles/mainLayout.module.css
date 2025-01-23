@@ -20,6 +20,9 @@
   align-items: center;
   display: block;
 }
+.recentBoxContainerNo {
+  display: none;
+}
 
 .recentBoxTop {
   display: flex;

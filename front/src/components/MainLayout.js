@@ -8,7 +8,7 @@ import axiosInstance from "../axios";
 import Cookies from "js-cookie";
 import { useLocation, useNavigate } from "react-router-dom";
 
-export default function MainLayout() {
+export default function MainLayout({ isModalOpen }) {
   // 현재 로그인된 사용자 정보 불러오기
   const [nowUserId, setNowUserId] = useState(null);
   useEffect(() => {
@@ -83,7 +83,14 @@ export default function MainLayout() {
       <div className={MainLayoutStyle.container}>
         <Category />
         <RealTime />
-        <div className={MainLayoutStyle.recentBoxContainer}>
+
+        <div
+          className={`${
+            isModalOpen
+              ? MainLayoutStyle.recentBoxContainerNo
+              : MainLayoutStyle.recentBoxContainer
+          }`}
+        >
           <div className={MainLayoutStyle.recentBoxTop}>
             <div>Today</div>
 

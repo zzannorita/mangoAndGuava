@@ -3,13 +3,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import chatStyle from "../styles/chat.module.css";
 import chatTestImg from "../image/userImg.png";
 import mangoImg from "../image/logo.png";
-import chatRemove from "../image/x.png";
 import axiosInstance from "../axios";
 import Modal from "../components/Modal";
 import { useWebSocket } from "../contexts/WebSocketContext";
 import { useMediaQuery } from "react-responsive";
 
-const Chat = () => {
+const Chat = ({ isModalOpen, setIsModalOpen }) => {
   const [message, setMessage] = useState(""); // 입력 메시지
   const [userId, setUserId] = useState(""); // 현재 사용자 ID
   const [otherUserId, setOtherUserId] = useState(""); // 채팅 상대 ID
@@ -142,15 +141,23 @@ const Chat = () => {
       });
   }, [selectedProductData]);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLocalModalOpen, setIsLocalModalOpen] = useState(isModalOpen);
+  //모달 상태가 바뀔 때마다 호출
+  useEffect(() => {
+    setIsLocalModalOpen(isModalOpen);
+  }, [isModalOpen]);
   const handleOpenModal = () => {
     if (comment) {
       alert("이미 후기가 작성되었습니다."); // 후기가 있으면 알림
     } else {
-      setIsModalOpen(true); // 후기가 없으면 모달 열기기
+      setIsLocalModalOpen(true); // 모달 열기
+      setIsModalOpen(true); // 부모 상태 업데이트
     }
   };
-  const handleCloseModal = () => setIsModalOpen(false);
+  const handleCloseModal = () => {
+    setIsLocalModalOpen(false);
+    setIsModalOpen(false);
+  };
 
   const handleSendMessage = () => {
     if (message.trim() !== "") {
