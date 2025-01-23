@@ -33,6 +33,7 @@
 }
 .chatTitleText {
   font-size: x-large;
+  cursor: pointer;
 }
 .chatNickNameText {
 }
