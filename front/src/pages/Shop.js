@@ -192,10 +192,23 @@ export default function Shop() {
                       <span className="impact">
                         {selectedProductFilter === "전체"
                           ? sortedProducts.length
-                          : sortedProducts.filter(
-                              (product) =>
-                                product.tradeState === selectedProductFilter
-                            ).length}
+                          : selectedProductFilter === "판매중"
+                          ? sortedProducts.filter(
+                              (product) => product.tradeState === "판매중"
+                            ).length
+                          : selectedProductFilter === "예약중"
+                          ? sortedProducts.filter(
+                              (product) => product.tradeState === "예약중"
+                            ).length
+                          : selectedProductFilter === "판매완료"
+                          ? sortedProducts.filter(
+                              (product) => product.tradeState === "판매완료"
+                            ).length
+                          : selectedInfoFilter === "구매내역"
+                          ? sortedPurchasedProducts.length
+                          : selectedInfoFilter === "찜한상품"
+                          ? sortedBookmarkedProducts.length
+                          : 0}
                       </span>
                     </div>
                   </div>

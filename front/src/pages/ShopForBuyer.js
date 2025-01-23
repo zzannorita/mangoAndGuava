@@ -236,7 +236,7 @@ export default function ShopForBuyer() {
                   <div className={shopStyle.mainTopBox}>
                     <div className={shopStyle.mainTopLeftBox}>
                       <div>
-                        상품{" "}
+                        상품 &nbsp;
                         <span className="impact">
                           {selectedFilter === "전체"
                             ? sortedProducts.length
