@@ -62,19 +62,3 @@
   flex-direction: column;
   align-items: center;
 }
-
-@media (max-width: 780px) {
-  .container {
-    width: 90%;
-    min-width: unset;
-  }
-}
-@media (max-width: 480px) {
-  .container {
-    min-width: unset;
-    height: 20px;
-  }
-  .recentBoxContainer {
-    display: none;
-  }
-}

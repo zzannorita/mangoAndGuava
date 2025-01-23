@@ -358,21 +358,6 @@ export default function Detail({ shopOwnerUserId }) {
                 <div className={DetailStyle.productDetailInfoBoxes}>
                   {productCreatedDate}
                 </div>
-                <div
-                  className={DetailStyle.productShopEnterBoxNone}
-                  onClick={
-                    String(userId) === String(nowUserId?.userId)
-                      ? handleEnterMyShop
-                      : handleEnterShop
-                  }
-                >
-                  <span className="impact3">{userNickName}</span>님 상점&nbsp;
-                  <img
-                    src={rightImg}
-                    alt="rightImg"
-                    className="smallImgSize"
-                  ></img>
-                </div>
               </div>
             </div>
             <div
