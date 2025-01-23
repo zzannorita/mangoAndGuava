@@ -111,11 +111,14 @@ export default function Alarm({ alarmClick, alarmData }) {
               {alarm.type === "like" && (
                 <div className={AlarmStyle.alarmList} key={index}>
                   <div className={AlarmStyle.alarmListLeftBox}>
-                    <img
-                      src={imageUrl ? imageUrl : imageImg} // 이미지가 있으면 URL을 사용, 없으면 기본 이미지 사용
-                      alt={imageUrl || "default image"}
-                      className={AlarmStyle.alarmListImg}
-                    />
+                    <div className={AlarmStyle.alarmProductImgBox}>
+                      <img
+                        src={imageUrl ? imageUrl : imageImg} // 이미지가 있으면 URL을 사용, 없으면 기본 이미지 사용
+                        alt={imageUrl || "default image"}
+                        className={AlarmStyle.alarmListImg}
+                      />
+                    </div>
+
                     <div>
                       <div className={AlarmStyle.alarmListTitle}>찜 알림</div>
                       <div className={AlarmStyle.alarmListContent}>
@@ -133,11 +136,13 @@ export default function Alarm({ alarmClick, alarmData }) {
               {alarm.type === "follow" && (
                 <div className={AlarmStyle.alarmList} key={index}>
                   <div className={AlarmStyle.alarmListLeftBox}>
-                    <img
-                      src={imageUrl ? imageUrl : imageImg} // 이미지가 있으면 URL을 사용, 없으면 기본 이미지 사용
-                      alt={imageUrl || "default image"}
-                      className={AlarmStyle.alarmListImg}
-                    />
+                    <div className={AlarmStyle.alarmProductImgBox}>
+                      <img
+                        src={imageUrl ? imageUrl : imageImg} // 이미지가 있으면 URL을 사용, 없으면 기본 이미지 사용
+                        alt={imageUrl || "default image"}
+                        className={AlarmStyle.alarmListImg}
+                      />
+                    </div>
                     <div>
                       <div className={AlarmStyle.alarmListTitle}>
                         팔로우 알림
