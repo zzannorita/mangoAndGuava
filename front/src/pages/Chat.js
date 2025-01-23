@@ -43,7 +43,6 @@ const Chat = () => {
       // 원하는 타입별로 처리
       if (newChat.type === "chatting") {
         // alert(`새로운 알림: ${newMessage.payload.message}`);
-        console.log("타입이 chatting");
         // 알림 처리 로직 추가
         const updatedMessage = {
           room_id: newChat.roomId,
@@ -59,8 +58,6 @@ const Chat = () => {
         ) {
           setChatEach((prevMessages) => [...prevMessages, updatedMessage]);
         }
-      } else {
-        console.log("다른 타입의 메시지:", newChat);
       }
     }
   }, [newChat]); // newMessage가 변경될 때 실행
@@ -852,75 +849,3 @@ const Chat = () => {
 };
 
 export default Chat;
-
-// WebSocket 연결
-// useEffect(() => {
-//   let reconnectAttempts = 0;
-//   let isWebSocketConnected = false; // WebSocket 연결 여부를 추적
-
-//   const connectWebSocket = () => {
-//     if (socket.current && socket.current.readyState === WebSocket.OPEN) {
-//       return; // 이미 연결되어 있으면 함수 종료
-//     }
-
-//     socket.current = new WebSocket("ws://localhost:3001");
-
-//     // WebSocket 열리면 userId 전달 (인증)
-//     socket.current.onopen = () => {
-//       reconnectAttempts = 0; // 재연결 시도 횟수 초기화
-//       isWebSocketConnected = true;
-//       socket.current.send(JSON.stringify({ type: "auth", userId }));
-//     };
-
-//     // WebSocket으로 메시지 수신
-//     socket.current.onmessage = (event) => {
-//       const newMessage = JSON.parse(event.data);
-
-//       const updatedMessage = {
-//         room_id: newMessage.roomId,
-//         user_from: newMessage.userFrom,
-//         user_to: newMessage.userTo,
-//         message: newMessage.content,
-//         created_at: newMessage.timestamp,
-//       };
-
-//       if (
-//         updatedMessage.room_id === selectedRoomId &&
-//         String(userId) !== String(updatedMessage.user_from)
-//       ) {
-//         setChatEach((prevMessages) => [...prevMessages, updatedMessage]);
-//       }
-//     };
-
-//     // WebSocket 연결이 닫혔을 때 재연결 시도
-//     socket.current.onclose = () => {
-//       isWebSocketConnected = false;
-//       reconnectWebSocket();
-//     };
-
-//     // WebSocket 오류 발생 시 재연결 시도
-//     socket.current.onerror = (error) => {
-//       console.error("웹소켓 에러 발생 재연결 시도.");
-//       socket.current.close();
-//     };
-//   };
-
-//   const reconnectWebSocket = () => {
-//     if (!isWebSocketConnected && reconnectAttempts < 10) {
-//       reconnectAttempts++;
-//       setTimeout(() => {
-//         connectWebSocket();
-//       }, reconnectAttempts * 1000); // 시도 횟수에 따라 지연 시간 증가
-//     } else if (reconnectAttempts >= 10) {
-//       console.error("WebSocket 재연결 실패. 최대 시도 횟수 초과.");
-//     }
-//   };
-
-//   connectWebSocket(); // 처음 WebSocket 연결
-
-//   return () => {
-//     if (socket.current) {
-//       socket.current.close();
-//     }
-//   };
-// }, [userId, selectedRoomId]);

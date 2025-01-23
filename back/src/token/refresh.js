@@ -8,7 +8,6 @@ const REST_API_KEY = "533d7762a1ee320813d03cb068e53ada";
 router.post("/refresh-token", refreshKakaoToken);
 
 async function refreshKakaoToken(req, res) {
-  console.log("여기 불러와짐.");
   const userId = req.body.userId;
   try {
     const refreshToken = await userDao.getRefreshToken(userId);
