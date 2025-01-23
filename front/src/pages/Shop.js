@@ -128,7 +128,7 @@ export default function Shop() {
               {["구매내역", "찜한상품", "즐겨찾기", "설정"].map((info) => (
                 <div
                   key={info}
-                  className={shopStyle.myProductsListTitle} // 동일한 스타일 적용
+                  className={shopStyle.myProductsListTitle}
                   onClick={() => handleInfoClick(info)}
                 >
                   {info}

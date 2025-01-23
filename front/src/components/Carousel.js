@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import carouselStyle from "../styles/carousel.module.css"; // Detail 캐러셀 스타일
-import HomeStyle from "../styles/home.module.css"; // Home 슬라이드 스타일
+import carouselStyle from "../styles/carousel.module.css";
+import HomeStyle from "../styles/home.module.css";
 
 export default function CombinedCarousel({ type, images }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -37,7 +37,7 @@ export default function CombinedCarousel({ type, images }) {
         }
       />
 
-      {/* 이미지 갯수만큼 점을 생성 */}
+      {/* 이미지 갯수만큼 점 생성 */}
       <div className={carouselStyle.dotsContainer}>
         {images.map((_, index) => (
           <span

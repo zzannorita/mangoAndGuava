@@ -6,7 +6,6 @@ import categoryImg from "../image/category.png";
 import greaterImg from "../image/greater.png";
 
 export default function Category() {
-  ///////////////////카테고리 hover시////////////////////
   const [hoveredCategory, setHoveredCategory] = useState(null);
   const [hoveredSubCategory, setHoveredSubCategory] = useState(null);
   const [hoveredSubSubCategory, setHoveredSubSubCategory] = useState(null);

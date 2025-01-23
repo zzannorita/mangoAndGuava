@@ -112,6 +112,5 @@
 .accountTitle {
   display: flex;
   padding: 20px;
-  /* width: 200px; */
   align-items: center;
 }

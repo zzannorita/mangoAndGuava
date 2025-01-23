@@ -7,7 +7,7 @@ import Cookies from "js-cookie";
 import axiosInstance from "../axios";
 
 const ProductList = ({ products, type }) => {
-  const [updatedProducts, setUpdatedProducts] = useState([]); // 상태로 관리
+  const [updatedProducts, setUpdatedProducts] = useState([]);
 
   //자신의 제품 찜 방지를 위해 userId 가져오기
   const [userId, setUserId] = useState("");

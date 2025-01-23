@@ -232,13 +232,12 @@ export default function LocationList({ onLocationSelect }) {
   // 구/시 선택
   const handleLocationClick = (location) => {
     setSelectedLocation(location);
-    onLocationSelect(`${selectedRegion} ${location}`); // 부모로 선택된 값을 전달
+    onLocationSelect(`${selectedRegion} ${location}`);
   };
 
   return (
     <div className={LocationListStyle.container}>
       <div className={LocationListStyle.wrapper}>
-        {/* 왼쪽: 지역 카테고리 */}
         <div className={LocationListStyle.regions}>
           <div className={LocationListStyle.regionList}>
             {Object.keys(locationData).map((region) => (

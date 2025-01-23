@@ -55,8 +55,7 @@ export default function Update() {
           })
         );
         // 상태 업데이트
-        setImages(product.images); // UI 초기화
-        // setImageFiles((prevFiles) => [...prevFiles, ...filesFromServer]);
+        setImages(product.images); // 이미지 초기화
         // 기존 이미지도 업로드된 파일처럼 처리
         setImageFiles(filesFromServer);
         setProductPrice(product.productPrice);

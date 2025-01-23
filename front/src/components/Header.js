@@ -17,7 +17,6 @@ function Header() {
   ////////////////////////알림///////////////////////////////
   const [clickedAlarm, setClickedAlarm] = useState(false);
   const [userId, setUserId] = useState(null); // 사용자 데이터 상태 추가
-  //const [newMessage, setNewMessage] = useState(false); // 새로운 메시지 알림 상태
   const socket = useRef(null); // useRef를 사용하여 socket 객체 저장
   const [alarmData, setAlarmData] = useState([]);
   const { newAlarm } = useWebSocket(); // 최신 메시지 및 누적 알림 가져오기
@@ -37,9 +36,7 @@ function Header() {
   useEffect(() => {
     const checkLoginStatus = () => {
       const accessToken = Cookies.get("accessToken");
-      //촐추가//
       setUserId(String(Cookies.get("userId")));
-      /////////
       const loginStatus = !!accessToken;
       setIsLogin(loginStatus);
     };

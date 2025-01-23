@@ -137,12 +137,6 @@ export default function Regist() {
 
     const formData = new FormData();
 
-    //이미지 전송
-    // imageFiles.forEach((file, index) => {
-    //   formData.append("productImage", file);
-    //   formData.append("imageOrder[]", index);
-    // });
-
     // 이미지 파일 추가
     imageFiles.forEach((file) => {
       formData.append("productImage", file);
@@ -368,7 +362,7 @@ export default function Regist() {
                 className={registStyle.locationList}
                 onLocationSelect={(address) => {
                   setSelectedTradingAddress(address);
-                  setTradingAddress(address); // 동시에 tradingAddress 설정
+                  setTradingAddress(address);
                 }}
               />
             </div>

@@ -36,7 +36,6 @@ function App() {
             <Route path="/sell" element={<Regist />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/products" element={<Search />} />
-            {/* <Route path="/products?item={search-data}" element={<Search />} /> */}
             <Route path="/chat" element={<Chat />} />
             <Route path="/login" element={<Login />} />
             <Route path="/myShop" element={<Shop />} />
@@ -48,7 +47,6 @@ function App() {
             <Route path="/review" element={<Review />} />
             <Route path="/othersReview" element={<OthersReview />} />
             <Route path="/carousel" element={<Carousel />} />
-            {/* <Route path="/detail?itemId={productId}" element={<Detail />} /> */}
           </Routes>
         </div>
       </Router>

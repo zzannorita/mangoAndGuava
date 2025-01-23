@@ -14,7 +14,7 @@ const Search = () => {
   const queryParams = new URLSearchParams(location.search);
   const query = queryParams.get("q");
 
-  const [products, setProducts] = useState([]); // 초기값을 빈 배열로 설정
+  const [products, setProducts] = useState([]);
 
   /////////////////////페이지네이션/////////////////////
   const [totalPage, setTotalPage] = useState();

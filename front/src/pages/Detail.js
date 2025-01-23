@@ -34,15 +34,15 @@ export default function Detail({ shopOwnerUserId }) {
   const [tradeState, setTradeState] = useState("");
   const [buyerId, setBuyerId] = useState("");
   const [chatNum, setChatNum] = useState("");
-  ///////////////////사용자 상태//////////////////////////////
+  ///////////////////user//////////////////////////////
   const [userNickName, setUserNickName] = useState("");
   const [userId, setUserId] = useState("");
   const [ownerUserId, setOwnerUserId] = useState("");
-  // 카테고리 관련 로직 분리
+  ///////////////////category//////////////////////////////
   const { firstCategory, secondCategory, thirdCategory } =
     getCategoryNames(productCategory);
 
-  /////////////////////로그인상태//////////////////////////
+  /////////////////////login//////////////////////////
   const [isLogin, setIsLogin] = useState(false);
 
   //컴포넌트 마운트될때 로그인상태 확인
@@ -108,7 +108,7 @@ export default function Detail({ shopOwnerUserId }) {
     navigate("/update", { state: { productId } });
   };
 
-  ///////////////////useEffect들//////////////////////////////
+  ///////////////////useEffect//////////////////////////////
   //상품 데이터와 사용자 정보 불러오기
   useEffect(() => {
     axiosInstance
@@ -153,7 +153,7 @@ export default function Detail({ shopOwnerUserId }) {
     });
   });
   // 현재 로그인된 사용자 정보 불러오기
-  const [nowUserId, setNowUserId] = useState(null); // 기본값을 null로 설정
+  const [nowUserId, setNowUserId] = useState(null);
   useEffect(() => {
     const accessToken = Cookies.get("accessToken");
     if (accessToken) {
@@ -372,11 +372,10 @@ export default function Detail({ shopOwnerUserId }) {
                   tradeState === "예약중" ||
                   (tradeState === "판매완료" && comment)
                 ) {
-                  e.preventDefault(); // 클릭 이벤트 차단
+                  e.preventDefault();
                   return;
                 }
 
-                // 조건에 따라 다른 함수 실행
                 if (String(userId) === String(nowUserId?.userId)) {
                   handleEditProduct();
                 } else if (isTransactionComplete) {
@@ -402,7 +401,6 @@ export default function Detail({ shopOwnerUserId }) {
                 ? "채팅하기"
                 : "판매완료"}
             </div>
-            {/* 모달 컴포넌트 */}
             <Modal
               isOpen={isModalOpen}
               onClose={handleCloseModal}

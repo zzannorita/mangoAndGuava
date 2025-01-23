@@ -7,7 +7,6 @@ import RatingAvg from "../components/RatingAvg";
 import axiosInstance from "../axios";
 export default function Favorites({ bookmarkUser }) {
   const [sellerData, setSellerData] = useState([]);
-  const [profileImg, setProfileImg] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {

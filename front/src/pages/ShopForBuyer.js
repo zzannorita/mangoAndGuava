@@ -195,7 +195,6 @@ export default function ShopForBuyer() {
                 </div>
               </div>
               <div className={shopStyle.myShopInfoBox}>
-                {/* 상점 이미지 및 소개글 */}
                 <img
                   className={shopStyle.myShopImg}
                   src={profileImg || userImg}
