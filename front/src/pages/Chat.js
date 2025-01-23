@@ -18,12 +18,10 @@ const Chat = ({ isModalOpen, setIsModalOpen }) => {
   const [selectedProductData, setSelectedProductData] = useState([]);
   const [selectedOtherUserData, setSelectedOtherUserData] = useState([]);
   const [selectedUserData, setSelectedUserData] = useState([]);
-  const socket = useRef(null); // WebSocket 연결, 수신, 해제 등 리렌더랑 방지
   const chatContentRef = useRef(null); //채팅 스크롤참조 위함
   const isMobile = useMediaQuery({ maxWidth: 1000 });
 
   const location = useLocation();
-  const navigate = useNavigate();
 
   const { newChat, sendMessage } = useWebSocket(); // 최신 메시지 및 누적 알림 가져오기
 
