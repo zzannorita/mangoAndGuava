@@ -55,12 +55,10 @@ function setupWebSocket(server) {
         }
 
         if (parsedData.type === "like") {
-          console.log(" 좋아요 알림 도착 ");
           handleLikeNotification(parsedData);
         }
 
         if (parsedData.type === "follow") {
-          console.log(" 팔로우 알림 도착");
           handleFollowNotification(parsedData);
         }
       } catch (error) {
@@ -246,8 +244,6 @@ function setupWebSocket(server) {
       );
     });
   });
-
-  console.log("웹소켓 서버 설정 완료");
 }
 
 module.exports = setupWebSocket;
