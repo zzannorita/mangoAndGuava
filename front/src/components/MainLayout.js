@@ -83,7 +83,7 @@ export default function MainLayout() {
     <div className="container">
       <div className={MainLayoutStyle.container}>
         <Category />
-        {/* <RealTime /> */}
+        <RealTime />
         <div className={MainLayoutStyle.recentBoxContainer}>
           <div className={MainLayoutStyle.recentBoxTop}>
             <div>Today</div>

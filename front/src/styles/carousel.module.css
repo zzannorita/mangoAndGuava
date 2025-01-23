@@ -44,10 +44,3 @@
 .activeDot {
   background-color: #ccc;
 }
-
-@media (max-width: 480px) {
-  .carouselContainer {
-    width: 350px;
-    height: 350px;
-  }
-}
