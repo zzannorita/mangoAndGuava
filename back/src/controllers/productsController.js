@@ -251,48 +251,6 @@ const getProductImage = async (req, res) => {
   }
 };
 
-// const updateProduct = async (req, res) => {
-//   const accessToken = req.headers.authorization?.split(" ")[1];
-//   const updateData = req.body;
-//   const productId = req.params.productId;
-//   console.log(productId, updateData);
-
-//   if (!accessToken) {
-//     return res.status(401).json({ message: "No access token provided" });
-//   }
-
-//   try {
-//     const userResponse = await axios.get("https://kapi.kakao.com/v2/user/me", {
-//       headers: {
-//         Authorization: `Bearer ${accessToken}`,
-//       },
-//     });
-//     const userId = userResponse.data.id;
-
-//     if (!Object.keys(updateData).length) {
-//       return res.status(400).json({ message: "No fields to update" });
-//     }
-
-//     const updateData = await productsDao.updateProductFields(
-//       updateData,
-//       productId,
-//       userId
-//     );
-
-//     return res.json({
-//       code: "SUCCESS_UPDATE_PRODUCT",
-//       data: null,
-//     });
-//   } catch (error) {
-//     if (error.response && error.response.status === 401) {
-//       return res.status(401).json({ message: "Token expired" });
-//     }
-//     return res
-//       .status(500)
-//       .json({ message: "Failed to fetch user data", error: error.message });
-//   }
-// };
-
 const updateProductByState = async (req, res) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
   const tradeState = req.body.tradeState;
@@ -385,7 +343,6 @@ module.exports = {
   getDetailProduct,
   handleProductBookmark,
   getBookmarkList,
-  // updateProduct,
   updateProductByState,
   updateProductByBuyerUserId,
   getProductsByFilter, //이게 수술후 함수
