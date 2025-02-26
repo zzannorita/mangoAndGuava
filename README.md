@@ -7,7 +7,8 @@
 ## 프로젝트 소개
 
 <p align="justify">
-망고와 구아에서는 간편하게 상품을 등록하고, 실시간 채팅으로 구매자와 소통할 수 있습니다. 직거래부터 택배 거래까지 원하는 방식으로 거래하고, 찜과 채팅 알림으로 빠른 거래를 놓치지 마세요!"
+망고와 구아바에서는 간편하게 상품을 등록하고, 실시간 채팅으로 구매자와 소통할 수 있습니다. 
+직거래부터 택배 거래까지 원하는 방식으로 거래하고, 찜과 채팅 알림으로 빠른 거래를 놓치지 마세요!
 </p>
 <br>
 
@@ -17,7 +18,6 @@
 | <img src="https://github.com/zzannorita/LetsDoIt/assets/135790442/ddb59533-4cba-43c1-9b0c-cf5e1c94137d" alt="KakaoTalk_20240502_172636004" width="200" height="200" /><br> |   <img src="https://github.com/zzannorita/LetsDoIt/assets/135790442/3d940561-3601-4e21-9f78-41351132dc0e" alt="KakaoTalk_20240102_200636725" width="200" height="200" /><br> |
 
 <br>
-
 
 ## 기술 스택
 
@@ -45,6 +45,12 @@
 ![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)
 
 <br>
+
+## ERD
+![image](https://github.com/user-attachments/assets/77b892ce-8bd1-4793-a158-c8873d972505)
+
+<br>
+
 
 ## 주요 기능
 
