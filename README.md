@@ -1,7 +1,7 @@
 망고와 구아바  
 =========
 ## 쉽고 안전한 중고 거래, 편리한 망고와 구아바
-![image](https://github.com/zzannorita/LetsDoIt/assets/135790442/988f2639-1cad-4125-818b-6545402c3052)
+![image](https://github.com/user-attachments/assets/99cc3c3e-116b-4e73-836d-3220bd42fbfd)
 
 
 ## 프로젝트 소개
@@ -48,6 +48,7 @@
 
 ## ERD
 ![image](https://github.com/user-attachments/assets/77b892ce-8bd1-4793-a158-c8873d972505)
++ MySQL: chat, notifications, product, productbookmark, productimage, recentviews, shop, shopbookmark, shopcomment, user, wishlist
 
 <br>
 
