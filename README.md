@@ -14,6 +14,7 @@
 
 ## 팀원 소개
 | 신규철(FE , BE)     |  장유리(FE)         |
+| FE(  채팅, 알림, 검색페이지 ) | 카테고리, 등록, 상세, 마이페이지 |
 | :-----------------: | :-----------------: |
 | <img src="https://github.com/zzannorita/LetsDoIt/assets/135790442/ddb59533-4cba-43c1-9b0c-cf5e1c94137d" alt="KakaoTalk_20240502_172636004" width="200" height="200" /><br> |   <img src="https://github.com/zzannorita/LetsDoIt/assets/135790442/3d940561-3601-4e21-9f78-41351132dc0e" alt="KakaoTalk_20240102_200636725" width="200" height="200" /><br> |
 
