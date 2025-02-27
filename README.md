@@ -117,8 +117,8 @@
       <strong>마이페이지</strong>
     </td>
     <td align="center">
-      <img src="https://github.com/zzannorita/LetsDoIt/assets/135790442/0a8e92bf-11cd-48b8-8ccb-8a1328b06a18" alt="판매자 물품 페이지" width="500" height="220" /><br>
-      <strong>판매자 물품 페이지</strong>
+      <img src="https://github.com/zzannorita/LetsDoIt/assets/135790442/0a8e92bf-11cd-48b8-8ccb-8a1328b06a18" alt="판매물품 페이지" width="500" height="220" /><br>
+      <strong>판매물품 페이지</strong>
     </td>
   </tr>
   <tr>
