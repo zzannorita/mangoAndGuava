@@ -162,5 +162,5 @@
 <br>
 
 ## 시연 영상
-<img src="https://github.com/user-attachments/assets/ce9b77a6-9277-4e0e-a87e-7f15b81373af"/>
+<img src="https://github.com/user-attachments/assets/ce9b77a6-9277-4e0e-a87e-7f15b81373af"  alt="시연영상" width="500" height="220" />
 
