@@ -77,7 +77,7 @@
       <strong>메인페이지</strong>
     </td>
     <td align="center">
-      <img src="https://github.com/zzannorita/LetsDoIt/assets/135790442/ef2495d4-0e97-4ebc-b21a-a6e6d9b1a3df" alt="카테고리" width="500" height="220" /><br>
+      <img src="https://github.com/user-attachments/assets/33aa60d0-aea4-43c1-928f-9d9972f4823f" alt="카테고리" width="500" height="220" /><br>
       <strong>카테고리</strong>
     </td>
   </tr>
