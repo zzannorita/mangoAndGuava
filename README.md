@@ -83,37 +83,37 @@
   </tr>
   <tr>
     <td align="center">
-      <img src="https://github.com/zzannorita/LetsDoIt/assets/135790442/0e593fcb-2851-40e6-b04a-b94e582f04a7" alt="판매페이지-1" width="500" height="220" /><br>
+      <img src="https://github.com/user-attachments/assets/b21c3222-b051-4524-a5b7-ece55ad1a17c" alt="판매페이지-1" width="500" height="220" /><br>
       <strong>판매페이지-1</strong>
     </td>
     <td align="center">
-      <img src="https://github.com/zzannorita/LetsDoIt/assets/135790442/acfc1d84-9ece-46c3-b47f-1fad04fbd920" alt="판매페이지-2" width="500" height="220" /><br>
+      <img src="https://github.com/user-attachments/assets/6cb2ee8a-6029-45c3-bbec-6481b651f12f" alt="판매페이지-2" width="500" height="220" /><br>
       <strong>판매페이지-2</strong>
     </td>
   </tr>
   <tr>
     <td align="center">
-      <img src="https://github.com/zzannorita/LetsDoIt/assets/135790442/445ee581-deaf-4026-93d5-5ad13eb96c1e" alt="검색페이지" width="500" height="220" /><br>
+      <img src="https://github.com/user-attachments/assets/c1670ac8-05f4-49de-878c-91bd16a05845" alt="검색페이지" width="500" height="220" /><br>
       <strong>검색페이지</strong>
     </td>
     <td align="center">
-      <img src="https://github.com/zzannorita/LetsDoIt/assets/135790442/617ba388-5d2e-46cc-9347-338e633cb73f" alt="상세페이지" width="500" height="220" /><br>
+      <img src="https://github.com/user-attachments/assets/003b530c-df5e-4d09-ae33-dfceac347427" alt="상세페이지" width="500" height="220" /><br>
       <strong>상세페이지</strong>
     </td>
   </tr>
   <tr>
     <td align="center">
-      <img src="https://github.com/zzannorita/LetsDoIt/assets/135790442/31ed1bb8-daa6-4dca-a535-3c82a1bb68ad" alt="수정페이지" width="500" height="220" /><br>
+      <img src="https://github.com/user-attachments/assets/6ed01f40-c7cb-4174-be1e-dd14b5290051" alt="수정페이지" width="500" height="220" /><br>
       <strong>수정페이지</strong>
     </td>
     <td align="center">
-      <img src="https://github.com/zzannorita/LetsDoIt/assets/135790442/0a8e92bf-11cd-48b8-8ccb-8a1328b06a18" alt="판매자 마이페이지" width="500" height="220" /><br>
+      <img src="https://github.com/user-attachments/assets/a13be9d6-afe0-44d8-b187-6545a50ddcc1" alt="판매자 마이페이지" width="500" height="220" /><br>
       <strong>판매자 마이페이지</strong>
     </td>
   </tr>
   <tr>
     <td align="center">
-      <img src="https://github.com/zzannorita/LetsDoIt/assets/135790442/31ed1bb8-daa6-4dca-a535-3c82a1bb68ad" alt="마이페이지" width="500" height="220" /><br>
+      <img src="https://github.com/user-attachments/assets/2b82b8a7-d57f-429d-9b0c-575a0a7a179c" alt="마이페이지" width="500" height="220" /><br>
       <strong>마이페이지</strong>
     </td>
     <td align="center">
@@ -123,37 +123,37 @@
   </tr>
   <tr>
     <td align="center">
-      <img src="https://github.com/zzannorita/LetsDoIt/assets/135790442/31ed1bb8-daa6-4dca-a535-3c82a1bb68ad" alt="거래후기" width="500" height="220" /><br>
+      <img src="https://github.com/user-attachments/assets/8ca0a3a1-41dd-4f47-9ac0-523f5c1326b0" alt="거래후기" width="500" height="220" /><br>
       <strong>거래후기</strong>
     </td>
     <td align="center">
-      <img src="https://github.com/zzannorita/LetsDoIt/assets/135790442/0a8e92bf-11cd-48b8-8ccb-8a1328b06a18" alt="찜한상품" width="500" height="220" /><br>
+      <img src="https://github.com/user-attachments/assets/efcc22a5-4788-45e4-bf48-6bb6d19ac41c" alt="찜한상품" width="500" height="220" /><br>
       <strong>찜한상품</strong>
     </td>
   </tr>
   <tr>
     <td align="center">
-      <img src="https://github.com/zzannorita/LetsDoIt/assets/135790442/31ed1bb8-daa6-4dca-a535-3c82a1bb68ad" alt="즐겨찾기" width="500" height="220" /><br>
+      <img src="https://github.com/user-attachments/assets/45c9d196-b80f-42c0-b64d-49eecd5f10e1" alt="즐겨찾기" width="500" height="220" /><br>
       <strong>즐겨찾기</strong>
     </td>
     <td align="center">
-      <img src="https://github.com/zzannorita/LetsDoIt/assets/135790442/0a8e92bf-11cd-48b8-8ccb-8a1328b06a18" alt="설정페이지" width="500" height="220" /><br>
+      <img src="https://github.com/user-attachments/assets/3e82beb7-01e5-47ac-bd75-2dba879cc39f" alt="설정페이지" width="500" height="220" /><br>
       <strong>설정페이지</strong>
     </td>
   </tr>
   <tr>
     <td align="center">
-      <img src="https://github.com/zzannorita/LetsDoIt/assets/135790442/31ed1bb8-daa6-4dca-a535-3c82a1bb68ad" alt="채팅페이지" width="500" height="220" /><br>
+      <img src="https://github.com/user-attachments/assets/ec7cbbcf-aaf8-45bb-a7a3-b1d79f374d1e" alt="채팅페이지" width="500" height="220" /><br>
       <strong>채팅페이지</strong>
     </td>
     <td align="center">
-      <img src="https://github.com/zzannorita/LetsDoIt/assets/135790442/0a8e92bf-11cd-48b8-8ccb-8a1328b06a18" alt="후기작성" width="500" height="220" /><br>
+      <img src="https://github.com/user-attachments/assets/d9dcd8b3-f227-4401-946a-7ae17b613ae9" alt="후기작성" width="500" height="220" /><br>
       <strong>후기작성</strong>
     </td>
   </tr>
   <tr>
     <td align="center">
-      <img src="https://github.com/zzannorita/LetsDoIt/assets/135790442/31ed1bb8-daa6-4dca-a535-3c82a1bb68ad" alt="알림림" width="500" height="220" /><br>
+      <img src="https://github.com/user-attachments/assets/9b17e4e6-d7af-4c1c-9195-4196f3237d08" alt="알림림" width="500" height="220" /><br>
       <strong>알림</strong>
     </td>
   </tr>
