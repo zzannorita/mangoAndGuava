@@ -52,7 +52,7 @@
 
 <br>
 
-## figma(https://www.figma.com/design/nGfCAaAjbW0PkpIKtBDisv/%EC%A4%91%EA%B3%A0%EA%B1%B0%EB%9E%98%EC%82%AC%EC%9D%B4%ED%8A%B8?node-id=0-1&t=vlji5nGXAu63nthK-0)
+[figma](https://www.figma.com/design/nGfCAaAjbW0PkpIKtBDisv/%EC%A4%91%EA%B3%A0%EA%B1%B0%EB%9E%98%EC%82%AC%EC%9D%B4%ED%8A%B8?node-id=0-1&t=vlji5nGXAu63nthK-0)
 
 <br>
 
