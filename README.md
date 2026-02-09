@@ -170,12 +170,6 @@
 
 ---
 
-## 시스템 아키텍처
-
-![image](https://github.com/user-attachments/assets/77b892ce-8bd1-4793-a158-c8873d972505)
-
----
-
 ## 데이터베이스 설계
 
 ### ER 다이어그램
